@@ -1,3 +1,42 @@
+## HTML
+
+ 
+<br>
+
+#### <b>정의</b>
+클라이언트가 서버에 http에 맞추어 요청했을때 서버가 문서를 구조화 하여 응답하며, 이때 문서를 구조화 할때 사용하는 HTML언어.
+HTML에서 데이터를 구조화 시키기 위해 태그와 텍스트를 이용한다.
+<br>
+
+#### <b>역할</b>  
+> w3schools 사이트 참고!
+   - 기능적 역할 : form, input, a, iframe, select, img...
+     * 가장 중요한 개념 : form, action, method, submit, name
+
+ -  데이터 구조화, 구분자 역할 : layout div, span, section, header 
+<br>
+
+#### <b>구성</b>
+ -   태그 안 속성
+ -   태그와 태그 사이의 텍스트 
+ -   태그 안 태그
+<br>
+
+#### <b> 그 외 </b>
+- Name은 Python에서 Key:value의 키값과 비슷한 개념의 역할을 한다.
+- ID 는 #으로 
+- Form Method 중 Get 방식은 헤더로 전달하게 되어있고
+헤더는 사이즈가 제한 되어 있기 때문에 (255)
+용량이 큰 메모 타입 등을 보내는데 한계가 있다.
+- Muliple Select 는 Ctrl 누르고 선택시 중복 선택이 가능하다.
+- id / class / name 의 차이점
+  |id|class|name|
+  |:---:|:---:|:---:|
+  |하나의 요소만 가능|여러 요소에 적용가능|여러요소에 적용가능|
+  |CSS 식별자로 사용가능(#id)|CSS에서 식별자로 사용가능(.클래스명)|CSS에서 사용불가
+  
+<br><br>
+#### <b>실습코드</b>
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -94,7 +133,10 @@
         <form action="https://www.google.com/search" method ="get">
         <span><strong>검색어</strong></span> 
         <input type="text" name ="q">
+        <input type="submit" value ="검색">
     <br><br><br>   
+        </form>
+        <form action="html10-formsres.html" method ="get"></form>
         <fieldset>
             <legend>로그인</legend>
             
@@ -107,8 +149,9 @@
             <input type="submit" value ="로그인">
             <input type="reset" value ="취소">
         </fieldset>
-       
+        </form>
     <br><br>
+        <form action="html10-formsres.html" method ="get"></form>
         <fieldset>   <!-- 폼 안에서 섹션 나누기 -->
           <legend>배송정보</legend>  <!-- fieldset의 타이틀 -->
      
@@ -135,12 +178,13 @@
                 <textarea  id="memo" name ="memo" rows ="10" cols ="40"></textarea>
             </li>
         </ul>
-     </fieldset> 
-    </form>
+     </fieldset>      
      <div>
         <input type="submit" value ="주문">
         <input type="reset" value ="취소">
      </div>
+    </form>
+
 </body>
 </html>
 ```
