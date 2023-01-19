@@ -1,6 +1,7 @@
-## CSS
+# CSS
 > Cascading Style Sheet
 
+<br><br>
 - 기능
     - 선택자
     - 스타일   [  (참고사이트)](https://www.w3schools.com) 
@@ -24,8 +25,6 @@
 <br><br>
 
 #### <b>실습코드</b>
-
-![실습결과물](./1%EC%9B%94%EB%8B%AC%EB%A0%A5.png)
 
 ```html
 <!DOCTYPE html>
