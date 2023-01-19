@@ -21,7 +21,7 @@
 
 #### <b>실습코드</b>
 
-![실습결과물](./1%EC%9B%94%EB%8B%AC%EB%A0%A5.png){:width="50" height ="100"}
+![실습결과물](./1%EC%9B%94%EB%8B%AC%EB%A0%A5.png)
 
 ```html
 <!DOCTYPE html>
