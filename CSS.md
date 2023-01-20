@@ -19,6 +19,19 @@
   - class는 여러 요소를 띄어쓰기를 통해 동시 적용 가능 / id 태그는 한번에 하나씩만 사용 가능
   - 자식 태그는 바로 밑 자식 까지 지정 (> 이용)
   - div 태그 : 해당 줄 전체 영역 / span 태그 : 해당 글자 영역
+  - radius 사용시 브라우저마다 조금 다르게 표현될 수 있기때문에 아래와 같이 사용
+```css
+        webkit-border-radius : 50px 50px 50px 50px;
+        moz-border-radius : 50px 50px 50px 50px;
+        ms-border-radius : 50px 50px 50px 50px;
+        o-border-radius : 50px 50px 50px 50px;
+       
+        /*webkit : 구글 사파리
+        moz : 파이어폭스
+        ms : Edge, IE
+        o : 오페라*/
+
+```
 <br/>
 - 참고 <br>
   [구글폰트 사이트](https://fonts.google.com/)
