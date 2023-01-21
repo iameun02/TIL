@@ -19,6 +19,17 @@
   - class는 여러 요소를 띄어쓰기를 통해 동시 적용 가능 / id 태그는 한번에 하나씩만 사용 가능
   - 자식 태그는 바로 밑 자식 까지 지정 (> 이용)
   - div 태그 : 해당 줄 전체 영역 / span 태그 : 해당 글자 영역
+  - span이나 list는 인라인 태그기 때문에 기본적으로 너비나 높이를 지정 불가능
+     * display:block; 스타일을 작성하여 사용
+
+  - Float 사용시 tip
+    * Float :오른쪽 정렬시 정렬이 거꾸로 되는 경우 해결방법 
+             Ul {float:right}
+             Li {float:left}
+    * Float은 문서의 흐름과 별개로 작동하기 때문에 "Footer"가 딸려올라오며 뒤로 겹치는 경우 해결방법
+      (Clear속성을 사용해서 Float속성에서 제외 시켜줘야함)
+      Footer{ Clear : left
+ 	  Float : left}
   - radius 사용시 브라우저마다 조금 다르게 표현될 수 있기때문에 아래와 같이 사용
 ```css
         webkit-border-radius : 50px 50px 50px 50px;
