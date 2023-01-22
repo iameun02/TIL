@@ -1,7 +1,8 @@
 # CSS
 > Cascading Style Sheet
 
-<br><br>
+<br>
+
 - 기능
     - 선택자
     - 스타일   [  (참고사이트)](https://www.w3schools.com) 
@@ -22,11 +23,11 @@
   - span이나 list는 인라인 태그기 때문에 기본적으로 너비나 높이를 지정 불가능
      * display:block; 스타일을 작성하여 사용
 
-  - Float 사용시 tip
-    * Float :오른쪽 정렬시 정렬이 거꾸로 되는 경우 해결방법 
+  - float 사용시 tip
+    * float :오른쪽 정렬시 정렬이 거꾸로 되는 경우 해결방법 
              Ul {float:right}
              Li {float:left}
-    * Float은 문서의 흐름과 별개로 작동하기 때문에 "Footer"가 딸려올라오며 뒤로 겹치는 경우 해결방법
+    * float은 문서의 흐름과 별개로 작동하기 때문에 "Footer"가 딸려올라오며 뒤로 겹치는 경우 해결방법
       (Clear속성을 사용해서 Float속성에서 제외 시켜줘야함)
       Footer{ Clear : left
  	  Float : left}
