@@ -31,9 +31,10 @@
       (Clear속성을 사용해서 Float속성에서 제외 시켜줘야함)
       Footer{ Clear : left
  	  Float : left}
-  - radius 사용시 브라우저마다 조금 다르게 표현될 수 있기때문에 아래와 같이 사용
+  
   - 블록 화면 중앙 정렬시 
     margin : 0 px auto; _그 외 margin top 등을 활용하여 조정
+  - radius 사용시 브라우저마다 조금 다르게 표현될 수 있기때문에 아래와 같이 사용
 ```css
         webkit-border-radius : 50px 50px 50px 50px;
         moz-border-radius : 50px 50px 50px 50px;
@@ -48,9 +49,9 @@
 ```
 <br/>
 - 참고 <br>
-  [구글폰트 사이트](https://fonts.google.com/)
-  [칼라질라 사이트](https://www.colorzilla.com/gradient-editor/)
-  [부트스트랩 사이트](https://www.w3schools.com/bootstrap/default.asp)
+  [구글폰트 사이트](https://fonts.google.com/) <br>
+  [칼라질라 사이트](https://www.colorzilla.com/gradient-editor/) <br>
+  [부트스트랩 사이트](https://www.w3schools.com/bootstrap/default.asp) <br>
 <br><br>
 
 #### <b>실습코드</b>
