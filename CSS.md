@@ -19,7 +19,7 @@
 - 그 외 (태그)
   - class는 여러 요소를 띄어쓰기를 통해 동시 적용 가능 / id 태그는 한번에 하나씩만 사용 가능
   - 자식 태그는 바로 밑 자식 까지 지정 (> 이용)
-  - div 태그 : 해당 줄 전체 영역 / span 태그 : 해당 글자 영역
+  - div 태그(블록요소) : 해당 줄 전체 영역 / span(인라인요소) 태그 : 해당 글자 영역
   - span이나 list는 인라인 태그기 때문에 기본적으로 너비나 높이를 지정 불가능
      * display:block; 스타일을 작성하여 사용
 
@@ -32,6 +32,8 @@
       Footer{ Clear : left
  	  Float : left}
   - radius 사용시 브라우저마다 조금 다르게 표현될 수 있기때문에 아래와 같이 사용
+  - 블록 화면 중앙 정렬시 
+    margin : 0 px auto; _그 외 margin top 등을 활용하여 조정
 ```css
         webkit-border-radius : 50px 50px 50px 50px;
         moz-border-radius : 50px 50px 50px 50px;
@@ -47,6 +49,8 @@
 <br/>
 - 참고 <br>
   [구글폰트 사이트](https://fonts.google.com/)
+  [칼라질라 사이트](https://www.colorzilla.com/gradient-editor/)
+  [부트스트랩 사이트](https://www.w3schools.com/bootstrap/default.asp)
 <br><br>
 
 #### <b>실습코드</b>
