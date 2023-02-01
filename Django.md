@@ -81,3 +81,160 @@
 ##(6). 앱 만들기 <br>
    (1) 앱 생성 : python manage.py startapp hello01(앱명) <br>
       - 앱에는 기본적으로 views.py 파일이 함께 생성된다 <br>
+  
+##7. 모델만들기 <br>
+  1) Setting : 
+     - (dbtest app) Installed_Apps 에 'dbtest' 추가작성 <br>
+ 
+  1) 프로젝트 생성 : django-admin startproject  dbtest <br>
+  2) model.py 파일 생성(앱 생성시 뷰와 동일하게 자동생성) <br>
+      - Myboard 클래스 생성 (table) + myname, mytitle, my content, mydate라는 컬럼 생성 <br>
+
+
+```class Myboard(models.Model):
+      myname = models.CharField(max_length= 100) 
+      mytitle = models.CharField(max_length=500)
+      mycontent = models.CharField(max_length=2000)
+      mydate = models.DateTimeField()
+
+ * admin 페이지에서 저장될 파일명 지정하는 방법
+    def __str__(self):
+        return str({'mytitle' : self.mytitle})
+                      컬럼명        객체.컬럼값		 
+  ```		
+
+  4) cd dbtest (manage.py 있는 dbtest app 위치로 이동) <br>
+  5) migration 파일 생성해줌 (쿼리생성단계) <br>
+     python manage.py makemigrations dbtest <br>
+    -> PK가 없을시에 장고에서 알아서 id 컬럼을 생성해서 PK를 부여한다. <br>
+  6) python manage.py migrate (sqlite 등 db에 실제 테이블 생성) <br>
+  7) admin 으로 확인하기 <br>
+     (1) detest app내에 admin.py 작성 <br>
+     (2) admin.py 에 작성 <br>
+    
+    	from django.contrib import admin  
+<br>
+    	from .models import Myboard 
+<br>
+	    admin.site.register(Myboard) 
+      ```Myboard Table을 볼수 있음(해당 코드 없어도 접속은 가능)```
+  <br>
+     (3) admin 계정 생성 <br>
+         python manage.py createsuperuser
+  <br>
+     (4) python manage.py runserver 
+  <br>
+
+
+  6-1 ) ORM 사용을 위해 DB 연결_ client tool (dbeaver연결) <br>
+    (1)  terminal 창에 설치 명령어 입력 <br>
+            pip install mysqlclient <br>
+   
+  (2) detest 내 settings.py 에서 DB 작성 
+  <br>
+```
+       DATABASES = { 
+      	    'default': {
+        	 'ENGINE': 'django.db.backends.mysql',
+       		 'NAME' : 'employees',    #디비명
+        	 'USER' : 'root',         
+     		 'PASSWORD' : '1234',
+       		 'PORT' : '3306',
+       		 'HOST' : 'localhost',
+ 	 		}
+		      } 
+``` 
+
+   6-2 ) migrations 하위 폴더내 파일들 모두 삭제 후 다시 실행
+
+     python manage.py makemigrations dbtest
+     python manage.py migrate
+
+  * (Migration) 'DIRS': [], 는
+      -> detest/dbtest.templates를 뜻한다. (그대로진행)
+
+   * 참고 : [BASE_DIR/'templates'] : dbtest/templates를 뜻함
+
+
+
+<br><br><br>
+
+### Django Model API에서 기본적으로 제공하는  주요 메서드 
+
+1. 클래스명.objects.all() : 테이블 데이터 전부 가져오기<br>
+
+2. 클래스명.objects.get() : 하나의 Row만 가져오기 <br>
+   - 클래스명.objects.get(pk=1) : Primary Key가 1인 row를 가져오기 <br>
+
+3. 클래스명.objects.filter() : 특정 조건에 맞는 row들을 가져오기 <br>
+   - 클래스명.objects.filter(name='Lee')<br>
+
+4. 클래스명.objects.exclude() : 특정 조건을 제외한 나머지 row들을 가져오기 <br>
+   - 클래스명.objects.exclude(name='Lee')<br>
+
+5. 클래스명.objects.count() : 데이터 row 수 세기<br>
+
+6. 클래스명.objects.order_by() : 키에 따라 데이터 정렬<br>
+   - 클래스명.objects.order_by('id', '-name') #id 오름차순 name내림차순<br>
+
+7. 클래스명.objects.distinct() : 중복된 값은 하나로만 표시<br>
+   - 클래스명.objects.distinct('name')<br>
+
+8. 클래스명.objects.first() : 데이터 중 첫번째 row만을 리턴한다. <br>
+   - 클래스명.objects.order_by('name').first() <br>
+9. 클래스명.objects.last() : 데이터 중 마지막에 있는 row만을 리턴한다. <br>
+   - 클래스명.objects.order_by('name').last()<br>
+
+
+10. UPDATE<br>
+a = 클래스명.objects.get(pk=1)<br>
+a.name = 'Kim'<br>
+a.save()<br>
+
+11.  DELETE<br>
+b = 클래스명.objects.get(pk=1)<br>
+b.delete()<br>
+
+<br><br><br>
+
+### STATIC 
+> css,js 문서를 저장하는 곳
+
+##0. Setting 에 작성 <br>
+```STATICFILES_DIRS = [BASE_DIR/'static'] ```
+
+##1. base_dir에 물리적인 static 폴더 생성 -> 하위에 css 폴더 / js폴더 생성 -> 각각 파일을 하나씩 생성 후 저장 <br>
+
+##2. 프로세스 cycle 진행 (화면에서 확인할 버튼 만들기)
+<br>
+##3. template 문서 내 head영역 내 아래 작성 <br>
+``` 
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<script src ="{% static 'js/test.js' %}" ></script>
+```
+<br><br><br>
+
+### Django Model Form
+
+1. Form vs Model Form (폼과 모델폼의 차이점) <br>
+Form (일반 폼) : 직접 필드 정의, 위젯 설정이 필요 <br>
+Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동으로 폼 필드를 생성 <br>
+
+2. request.POST.get('content')는 POST로 전송된 폼(form) 데이터 항목 중 content 값을 의미한다. <br>
+3.  폼태그 사용시 암호화를 위해 무조건 인풋 태그 위에 {%csrf_token%} 함께 작성 <br>
+   
+4. form tag 의 action 속성에는 urls.py 중 request(url)을 지정해주고 , method 를 통해 'get', 'post'  방식을 정해준다. <br>
+ 
+5. CRUD
+
+1) Create <br>
+   
+   ```result = Myboard.objects.create(myname=myname, mytitle=mytitle,mycontent=mycontent, mydate =timezone.now())```
+
+3) Update <br> ```myboard = Myboard.objects.filter(id=id)
+    result_title = myboard.update(mytitle = mytitle)
+    result_content = myboard.update(mycontent = mycontent)```
+   
+4) Delete <br>  
+```result = Myboard.objects.filter(id=id).delete()```
