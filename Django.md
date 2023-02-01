@@ -46,9 +46,7 @@
      ```HttpResponse("<h1><a href='/'> Hello, World : )!</a></h1>")<br>
      '/' 는 index 첫 화면을 다시 호출해 주는 역할 = path 에서 '' 임
      ```
-<br><br>
-
-  (1)<br>
+<br><br><br>
 
     def index(request):
     return render(request,'프로젝트명/index.html',{'name':'Lee'})   
@@ -83,41 +81,42 @@
       - 앱에는 기본적으로 views.py 파일이 함께 생성된다 <br>
   
 ##7. 모델만들기 <br>
-  1) Setting : 
+  (1) Setting : 
      - (dbtest app) Installed_Apps 에 'dbtest' 추가작성 <br>
  
-  1) 프로젝트 생성 : django-admin startproject  dbtest <br>
-  2) model.py 파일 생성(앱 생성시 뷰와 동일하게 자동생성) <br>
+  (2) 프로젝트 생성 : django-admin startproject  dbtest <br>
+  (3) model.py 파일 생성(앱 생성시 뷰와 동일하게 자동생성) <br>
       - Myboard 클래스 생성 (table) + myname, mytitle, my content, mydate라는 컬럼 생성 <br>
 
 
-```class Myboard(models.Model):
+```python
+  class Myboard(models.Model):
       myname = models.CharField(max_length= 100) 
       mytitle = models.CharField(max_length=500)
       mycontent = models.CharField(max_length=2000)
       mydate = models.DateTimeField()
 
  * admin 페이지에서 저장될 파일명 지정하는 방법
-    def __str__(self):
+      def __str__(self):
         return str({'mytitle' : self.mytitle})
                       컬럼명        객체.컬럼값		 
   ```		
 
-  4) cd dbtest (manage.py 있는 dbtest app 위치로 이동) <br>
-  5) migration 파일 생성해줌 (쿼리생성단계) <br>
+  (4) cd dbtest (manage.py 있는 dbtest app 위치로 이동) <br>
+  (5) migration 파일 생성해줌 (쿼리생성단계) <br>
      python manage.py makemigrations dbtest <br>
     -> PK가 없을시에 장고에서 알아서 id 컬럼을 생성해서 PK를 부여한다. <br>
-  6) python manage.py migrate (sqlite 등 db에 실제 테이블 생성) <br>
-  7) admin 으로 확인하기 <br>
+  (6) python manage.py migrate (sqlite 등 db에 실제 테이블 생성) <br>
+  (7) admin 으로 확인하기 <br>
      (1) detest app내에 admin.py 작성 <br>
      (2) admin.py 에 작성 <br>
     
-    	from django.contrib import admin  
-<br>
-    	from .models import Myboard 
-<br>
-	    admin.site.register(Myboard) 
-      ```Myboard Table을 볼수 있음(해당 코드 없어도 접속은 가능)```
+  ```python
+      from django.contrib import admin  
+      from .models import Myboard 
+      admin.site.register(Myboard) 
+       #Myboard Table을 볼수 있음(해당 코드 없어도 접속은 가능)
+  ```
   <br>
      (3) admin 계정 생성 <br>
          python manage.py createsuperuser
@@ -132,7 +131,7 @@
    
   (2) detest 내 settings.py 에서 DB 작성 
   <br>
-```
+```python
        DATABASES = { 
       	    'default': {
         	 'ENGINE': 'django.db.backends.mysql',
@@ -146,9 +145,10 @@
 ``` 
 
    6-2 ) migrations 하위 폴더내 파일들 모두 삭제 후 다시 실행
-
+```python
      python manage.py makemigrations dbtest
      python manage.py migrate
+```
 
   * (Migration) 'DIRS': [], 는
       -> detest/dbtest.templates를 뜻한다. (그대로진행)
