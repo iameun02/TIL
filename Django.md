@@ -48,12 +48,11 @@
      ```
 <br><br><br>
 
-    def index(request):
-    return render(request,'프로젝트명/index.html',{'name':'Lee'})   
-
-<br>
-
-> BASE_DIR + 프로젝트명/index.html 
+``` 
+def index(request):
+    return render(request,'프로젝트명/index.html',{'name':'Lee'})  
+```
+  BASE_DIR + 프로젝트명/index.html 
    프로젝트명의 폴더를 하나 만들고 그 안에 html을 만드는 이유는
    안 만들어도 동작은 되지만, 
    해당 탬플릿이 어느 app에서 사용되는 것인지 직관적으로 이해하기 위함
@@ -81,10 +80,9 @@
       - 앱에는 기본적으로 views.py 파일이 함께 생성된다 <br>
   
 ##7. 모델만들기 <br>
-  (1) Setting : 
+  (1) 프로젝트 생성 : django-admin startproject  dbtest <br>
+  (2) Setting  <br>
      - (dbtest app) Installed_Apps 에 'dbtest' 추가작성 <br>
- 
-  (2) 프로젝트 생성 : django-admin startproject  dbtest <br>
   (3) model.py 파일 생성(앱 생성시 뷰와 동일하게 자동생성) <br>
       - Myboard 클래스 생성 (table) + myname, mytitle, my content, mydate라는 컬럼 생성 <br>
 
@@ -108,8 +106,8 @@
     -> PK가 없을시에 장고에서 알아서 id 컬럼을 생성해서 PK를 부여한다. <br>
   (6) python manage.py migrate (sqlite 등 db에 실제 테이블 생성) <br>
   (7) admin 으로 확인하기 <br>
-     (1) detest app내에 admin.py 작성 <br>
-     (2) admin.py 에 작성 <br>
+   * detest app내에 admin.py 작성 <br>
+   * admin.py 에 작성 <br>
     
   ```python
       from django.contrib import admin  
@@ -118,18 +116,18 @@
        #Myboard Table을 볼수 있음(해당 코드 없어도 접속은 가능)
   ```
   <br>
-     (3) admin 계정 생성 <br>
-         python manage.py createsuperuser
+
+   * admin 계정 생성 <br>
+      ```python manage.py createsuperuser```
   <br>
-     (4) python manage.py runserver 
-  <br>
+   * python manage.py runserver 
+  <br> <br>
 
 
   6-1 ) ORM 사용을 위해 DB 연결_ client tool (dbeaver연결) <br>
     (1)  terminal 창에 설치 명령어 입력 <br>
             pip install mysqlclient <br>
-   
-  (2) detest 내 settings.py 에서 DB 작성 
+    (2) detest 내 settings.py 에서 DB 작성 
   <br>
 ```python
        DATABASES = { 
