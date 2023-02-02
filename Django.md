@@ -88,13 +88,15 @@ def index(request):
 
 
 ```python
-  class Myboard(models.Model):
+  from django.db import models
+  class Myboard(models.Model): #models 상속받아 클래스 생성 , 클래스 생성시 상속파일들이 함께 생성됨
       myname = models.CharField(max_length= 100) 
       mytitle = models.CharField(max_length=500)
       mycontent = models.CharField(max_length=2000)
       mydate = models.DateTimeField()
 
- * admin 페이지에서 저장될 파일명 지정하는 방법
+ # admin 페이지에서 저장될 파일명 지정하는 방법 
+ # object row 출력시 메모리 출력 대신 정의된 것을 출력하도록 작성
       def __str__(self):
         return str({'mytitle' : self.mytitle})
                       컬럼명        객체.컬럼값		 
@@ -104,7 +106,11 @@ def index(request):
   (5) migration 파일 생성해줌 (쿼리생성단계) <br>
      python manage.py makemigrations dbtest <br>
     -> PK가 없을시에 장고에서 알아서 id 컬럼을 생성해서 PK를 부여한다. <br>
-  (6) python manage.py migrate (sqlite 등 db에 실제 테이블 생성) <br>
+  (6) python manage.py migrate dbtest (sqlite 등 db에 실제 테이블 생성) <br>
+   > (5),(6) 진행시에는 무조건 app명을 사용해서 특정 app만 마이그하는 것이 좋다.. <br>
+   그렇지 않고 전체 migration 진행 후, 다음번의 migrate 진행시에 <br>
+   기존에 만들어져 있는 것과 충돌하여 작업이 이미 되어있다고 인지하고 수행이 안된다. 그럼 초기화 등 추가작업필요
+
   (7) admin 으로 확인하기 <br>
    * detest app내에 admin.py 작성 <br>
    * admin.py 에 작성 <br>
@@ -114,6 +120,7 @@ def index(request):
       from .models import Myboard 
       admin.site.register(Myboard) 
        #Myboard Table을 볼수 있음(해당 코드 없어도 접속은 가능)
+       #여기서 Myboard는 models.py 파일에 만들어놓은 클래스를 호출하는 것이다.
   ```
   <br>
 
@@ -224,15 +231,161 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
    
 4. form tag 의 action 속성에는 urls.py 중 request(url)을 지정해주고 , method 를 통해 'get', 'post'  방식을 정해준다. <br>
  
-5. CRUD
+5. CRUD <br>
+ (참고 : ** Myboard속성 = new작성된값) <br>
 
-1) Create <br>
-   
-   ```result = Myboard.objects.create(myname=myname, mytitle=mytitle,mycontent=mycontent, mydate =timezone.now())```
+   5-1) Create <br>
 
-3) Update <br> ```myboard = Myboard.objects.filter(id=id)
-    result_title = myboard.update(mytitle = mytitle)
-    result_content = myboard.update(mycontent = mycontent)```
+```python
+    insert_proc(request):
+    myname=request.POST['myname']
+    mytitle=request.POST['mytitle']
+    mycontent=request.POST['mycontent']
+
+    result = Myboard.objects.create(myname=myname, mytitle=mytitle,mycontent=mycontent, mydate =timezone.now())
+
+
+    print('===========')
+    print(result)
+    print('===========')
+
+    if result:
+        return redirect('index')
+    else :
+        return redirect('insertform')
+```
+<br>
+
+   5-2) Update <br> 
+```python    
+   mycontent =request.POST['mycontent']
+   id=request.POST['id']
+   mytitle = request.POST['mytitle']
+
+   myboard = Myboard.objects.filter(id=id)
+   result_title = myboard.update(mytitle = mytitle)
+   result_content = myboard.update(mycontent = mycontent)
+
+
+   if result_title + result_content ==2:
+        return redirect('/detail/'+id)
+   else :
+        return redirect('/updateform/'+id)
+``` 
+<br>
    
-4) Delete <br>  
-```result = Myboard.objects.filter(id=id).delete()```
+   5-3) Delete <br>  
+``` python
+    def delete_proc(request, id):
+    result = Myboard.objects.filter(id=id).delete()
+
+    if result[0]:
+        return redirect('index')
+    else:
+        return redirect('/detail/' +id)
+```  
+<br><br><br>
+
+### Paging
+1. 페이지 작업 환경을 위해 데이터 만들어넣기 <br>
+   (1) 터미널 명령어 <br>
+    -  ```python manage.py shell ``` <br>
+    
+   (2) shell 내에서 작업 <br>
+    ```python
+    [1] from django.utils import timezone
+    [2] from dbtest.models import Myboard #Myboard 클래스 객체를 가리킴
+    [3]  for i in range(1,101):
+         temp = Myboard(myname= i , mytitle= i, mycontent = i , mydate = timezone.now())
+   
+         temp.save()
+    [4] quit 
+    ```
+<br>
+
+2. views.py 작성
+   ```python
+   from django.core.paginator import Paginator
+   
+   def index(request):
+    myboard_all = Myboard.objects.all() #.order_by('-id')
+    
+    paginator = Paginator(myboard_all,10)
+    page_num = request.GET.get('page','1') #page값이 없으면 디폴트가 1이다.
+
+    page_obj = paginator.get_page(page_num)
+
+    #총게시물 수
+    print('-------count------')
+    print(page_obj.count)
+    print('-------현재페이지번호------')
+    print(page_obj.number)
+    print('-------총페이지수------')
+    print(page_obj.paginator.num_pages)
+    print('-------총페이지 range 객체------')
+    print(page_obj.paginator.page_range)
+
+    print('-------다음페이지, 이전페이지------')
+    print(page_obj.has_next())
+    print(page_obj.has_previous())
+
+
+    try:
+        print('----다음페이지가 없으면 에러------')
+        print(page_obj.next_page_number())
+
+        print('----이젠페이지가 없으면 에러------')
+        print(page_obj.previous_page_number())
+    except:
+        pass
+
+    print('-------start_index---------')
+    print(page_obj.start_index())
+
+    print('------end_index--------')
+    print(page_obj.end_index())
+
+
+    return render(request, 'index.html',{'list' : page_obj})
+   ```
+
+   <br>
+3. HTML 문서 body 내 작성 
+   ```html
+   <a href="?page=1">First page</a> 
+         <!-- 처음페이지 :request의 get방식 쿼리스트링으로 page값을 넘김 -->
+
+        {% if list.has_previous %}
+            <a href="?page={{list.previous_page_number}}">◀︎</a> 
+            <!-- 이전페이지 -->
+             
+        {% else %}
+            <a>◀︎</a>
+        {% endif %}
+       
+
+       
+
+        {% for i in list.paginator.page_range %}
+            {%if list.number == i %}
+                <a>{{i}}</a>
+            {% else %}  
+                <a href="?page={{i}}">{{i}}</a>   
+            {% endif %}
+        {% endfor %}
+
+        
+        
+        {% if list.has_next %}
+         <a href="?page={{list.next_page_number}}">▶︎</a> 
+         <!-- 다음페이지 -->                                       
+        {% else %}
+         <a>▶︎</a>
+        {% endif %}
+  
+        
+        <a href="?page={{list.paginator.num_pages}}">Last page</a> 
+         <!-- 끝페이지 -->
+
+   ```
+   
