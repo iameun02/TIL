@@ -95,7 +95,7 @@ def index(request):
       mycontent = models.CharField(max_length=2000)
       mydate = models.DateTimeField()
 
- # admin 페이지에서 저장될 파일명 지정하는 방법 
+ # admin 페이지에서 저장될 파일명 지정하는 방법 - 오버라이딩
  # object row 출력시 메모리 출력 대신 정의된 것을 출력하도록 작성
       def __str__(self):
         return str({'mytitle' : self.mytitle})
@@ -200,6 +200,15 @@ a.save()<br>
 b = 클래스명.objects.get(pk=1)<br>
 b.delete()<br>
 
+12. CREATE <br>
+c = 클래스명.objects.create()
+```python
+        name = request.POST['name']
+        pw = request.POST['pw']
+        email = request.POST['email'] 
+
+        result = Mymember.objects.create(myname = name, mypassword = pw, myemail = email)
+```
 <br><br><br>
 
 ### STATIC 
@@ -388,4 +397,267 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
          <!-- 끝페이지 -->
 
    ```
+<br><br><br>  
+
+### login/ logout
+1. 세션만들기
+   1) views.py
+      - register
+      ```python
+      def register(request):
+      #obj =  Mymember.objects.all()
+      if request.method == 'GET':
+        return render(request, 'register.html')
+      elif request.method =='POST':
+        name = request.POST['name']
+        pw = request.POST['pw']
+        email = request.POST['email'] 
+
+        result = Mymember.objects.create(myname = name, mypassword = pw, myemail = email)
+
+      if result:
+            return redirect('index')
+      else:
+            return redirect('register')
+      ```
+      - login
+      ```python
+      def login(request):
+      if request.method == 'GET':
+        return render(request, 'login.html')
+
+      elif request.method =='POST':
+        name= request.POST['name']
+        pw= request.POST['pw']
+
+        obj = Mymember.objects.get(myname=name)
+        if pw == obj.mypassword:
+            request.session['name'] = obj.myname
+            return redirect('index')
+        else:
+            return redirect('login')
+      ```
+      - logout
+      ```python
+      def logout(request):
+      del request.session['name'] 
+      return redirect('index')
+      ```
+   2) Templates
    
+       ```python 
+       #세션 유무에 따라 화면 뿌려주기
+      {% if request.session.name %}
+          <h3><input type="button" value ="로그아웃" onclick ="logouthref()"></h3>
+      {% else %}
+          <h3><input type="button" value ="로그인" onclick ="loginhref()"></h3>
+          <h3><input type="button" value ="회원가입" onclick ="registerhref()"></h3>
+      {% endif %} 
+      ```
+    
+  
+<br><br><br>
+
+### 이미지 업로드, 다운로드
+1. 업로드 <br>
+    ##0. Setting
+      * template path 설정
+      * media url 작성
+          ```python
+              MEDIA_URL = '/media/'
+              MEDIA_ROOT = BASE_DIR/'media' 
+
+            ###해당 위치에 media 디렉토리 만들기 
+          ```
+      * installed_apps: 'updown'
+      
+
+    ##1. urls.py 
+
+    ```python
+      urlpatterns = [
+      path('admin/', admin.site.urls),
+      path('', views.index, name='index'),
+      path('upload/', views.upload_proc, name='upload'),
+      ]
+    ```
+    ##2. views.py
+    ```python
+    from django.core.files.storage import default_storage
+    from django.core.files.base import ContentFile
+
+    def upload_proc(request):
+        file = request.FILES['uploadfile']
+        upload = default_storage.save(file.name, ContentFile(file.read()))
+
+        #default_storage : settings.py에서 설정한 MEDIA_ROOT 즉, BASE_DIR /'media'
+        #default_storage.save(파일명, 파일)
+        #upload_file.name : random을 파일명에 추가해서 올림(덮어쓰이지않도록)
+    ```
+
+    ##3.Template - Form tag 작성
+    ```python
+    <form action="{%url 'upload'%}" method="post" enctype="multipart/form-data"> 
+    ```
+  <br>
+
+2. 다운로드 <br>
+ 
+    ##0.  urls.py
+    ```python
+    path('download/<str:filename>', views.download_proc, name='download'),
+    ```
+
+ 
+    ##1. views.py
+    ```python
+    from django.http import HttpResponse
+    
+    def download_proc(request,filename):
+        return  HttpResponse(default_storage.open(filename).read(), content_type ='application/force-download')
+    ```
+    ##2. Template
+    ```html
+      <input type="button" value = '다운로드' onclick="loaction.href ='/download/{{filename}}'">
+    ```
+<br><br><br>
+
+### 모델 폼 만들기 (##9번부터 해당내용시작)
+
+##0. 프로젝트(myphoto) 생성
+```python
+django-admin startproject myphoto
+```
+
+##1. app 생성 (photo)
+  
+```python 
+cd myphoto
+python manage.py startapp photo
+```
+
+##2. settings.py #project에만 존재
+
+ * INSTALLED_APP : 'photo'
+ * TIME_ZONE = 'Asia/Seoul'
+ * DB연결
+
+
+##3. models.py
+```python
+from django.db import models
+
+class Photo(models.Model):
+    title =models.CharField(max_length=50)
+    author = models.CharField(max_length=50)
+    image = models.CharField(max_length=200)
+    description = models.TextField()
+    price = models.IntegerField()
+
+    def __str__(self):
+        return str(self.title)
+```
+
+##4. migration
+##5. admin.py 작성
+```python
+from django.contrib import admin
+from .models import Photo
+
+admin.site.register(Photo)
+
+ * 터미널 명령어: python manage.py createsuperuser
+```
+##6. (settings.py) ROOT URL은 
+프로젝트 레벨의 urls.py로 기본 설정 되어있기 때문에,
+app으로 작업시에는
+app단위의 urls.py로 이동시켜주는 작업을 최초에 해줘야한다.
+그 후 photo(app level)에서 urls.py 파일 생성후 작성
+```python
+from django.urls import path,include
+
+urlpatterns = [
+    path('', include('photo.urls')),
+# 127.0.0.1/포함 모든 url은 photo.urls로 보내기
+```
+
+##7. views.py 작성
+
+```python
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Photo
+
+def photo_list(request):
+    photo = Photo.objects.all()
+    return render(request, 'photo/photo_list.html', {'photos':photo})
+```
+
+##8. (photo level) templates 디렉토리 생성 <br>
+     > photo 디렉토리 생성 > html 문서 (photo_list) 작성
+
+  * DB에서 list를 가져올 때는 클래스명.objects.all()로 가지고 온후 <br>
+    template 에서 For 문으로 뿌려줘야한다. <br>
+    {*for i in range 객체명*}
+    {{i.title}}
+    {*endfor*}
+
+```html
+    <section>
+        {% for i in photos %} 
+        <div>
+            <h2><a href="{%url 'photo_detail' pk=i.pk %}">{{i.title}}</a></h2>
+            <img src="{{i.image}}" alt="{{i.title}}" width ="300">
+            <p>{{i.author}}, {{i.price}}</p>
+        </div>
+
+        {% endfor %}
+    </section>
+```
+
+##9. 모델폼 사용을 위해 forms.py 파일 생성 후 작성
+```python
+from django import forms
+from .models import Photo
+
+class PhotoForm(forms.ModelForm):
+    class Meta :
+        model = Photo
+        fields = ('title', 'author','image','description','price')
+        
+```
+
+
+##10. views.py 작업
+
+```python
+from .forms import PhotoForm
+
+def photo_edit(request,pk):
+    photo = get_object_or_404(Photo, pk=pk)
+    if request.method =='GET':
+        form = PhotoForm(instance=photo)
+    elif request.method == 'POST':
+        form = PhotoForm(request.POST, instance= photo)
+        if form.is_valid():
+            photo = form.save(commit = False)
+            photo.save()
+
+       
+    return render(request, 'photo/photo_post.html',{'form':form})
+#속성하나하나 일일이 업데이트 시켜주지 않아도, 폼 메소드에서 제공하는 기능으로 일괄 처리를 할 수 있다. 
+```
+##11. Html(template)
+
+```python
+<form action="">
+                {%csrf_token%}
+                {{form.as_p}} 
+                <!-- p tag로 form을 생성해라 -->
+                <button type="submit"> Completed! </button>
+            </form>
+```
+위처럼 form에 action을 안적고 submit을 하게 되면, <br>
+현재 위치한 url을 그대로 재호출하게된다. <br>
+즉 해당 url로 다시 request 가 가게되고, views.py에서 다시 처리를 하게된다.<br>
+그러면 photo_edit 함수에서 이번에는 get방식이 아닌 <br>
+post방식 로직으로 수행을 하게된다.
