@@ -649,7 +649,7 @@ def photo_edit(request,pk):
 ##11. Html(template)
 
 ```python
-<form action="">
+<form action="" method ="post">
                 {%csrf_token%}
                 {{form.as_p}} 
                 <!-- p tag로 form을 생성해라 -->
