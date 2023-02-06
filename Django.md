@@ -734,3 +734,17 @@ upload_file = request.FILES['imagefile']
 upload = default_storage.save(upload_file.name, ContentFile(upload_file.read()))
             return redirect('photo_detail', pk= photo.id)
 ```
+### TIPS!
+```python
+#1. urls.py 파일 : urlpatterns 상단에 app_name을 지정 해줄때 url 호출시 app명: 을 필수로 함께 작성, 그렇지 않으면 No Reverse Error 발생
+
+    app_name ='todo'
+    urlpatterns = []
+    <a href="{% url 'todo:todo_list' %}" class="">Home</a>
+
+#2. models. 여러가지 자료형
+    a = models.DateTimeField(auto_now_add=True)
+    b = models.BooleanField(default = False)
+    c = models.BooleanField(default = False)
+
+```
