@@ -632,23 +632,54 @@ class PhotoForm(forms.ModelForm):
 ```python
 from .forms import PhotoForm
 
+##1. 수정
 def photo_edit(request,pk):
     photo = get_object_or_404(Photo, pk=pk)
     if request.method =='GET':
         form = PhotoForm(instance=photo)
     elif request.method == 'POST':
         form = PhotoForm(request.POST, instance= photo)
+        #폼 생성: 폼 _PhotoForm 사용, instance _Photo 클래스로부터 가져온 photo objects
         if form.is_valid():
+        # form.is_valid(): #Django Form 클래스에서 제공하는 유효성 체크 함수
             photo = form.save(commit = False)
             photo.save()
 
        
     return render(request, 'photo/photo_post.html',{'form':form})
 #속성하나하나 일일이 업데이트 시켜주지 않아도, 폼 메소드에서 제공하는 기능으로 일괄 처리를 할 수 있다. 
+#Form을 생성했으면, return 값으로 밑에 폼을 뿌릴 template path를 설정해주고 (urls path안거침) 생성된 form 을 함께 전달해주면된다.
+
+##2. 등록
+def photo_post(request):
+    if request.method == 'GET':
+        form = PhotoForm()
+        return render(request, 'photo/photo_post.html',{'form':form})
+
+
+    elif request.method =="POST":
+        form = PhotoForm(request.POST) #기존 title = ruquest.POST[title] 코딩구문
+        if form.is_valid():
+            photo = form.save(commit = False)
+            photo.save()
+            return redirect('photo_detail', pk= photo.id )
+
+#신규 Post 코드는 Edit 코드에서 form = PhotoForm(instance=photo) instance만 제외하여 빈 폼을 생성 해주면 된다.
+
+##3. 삭제
+def photo_delete(request, pk):
+    result = Photo.objects.filter(pk=pk).delete()
+    
+    if result[0]:
+        return redirect('photo_list')
+    else:
+        return redirect('photo_detail', pk)
 ```
+
+
 ##11. Html(template)
 
-```python
+``` python
 <form action="" method ="post">
                 {%csrf_token%}
                 {{form.as_p}} 
@@ -661,3 +692,45 @@ def photo_edit(request,pk):
 즉 해당 url로 다시 request 가 가게되고, views.py에서 다시 처리를 하게된다.<br>
 그러면 photo_edit 함수에서 이번에는 get방식이 아닌 <br>
 post방식 로직으로 수행을 하게된다.
+
+<br><br><br>
+
+### image를 파일형식으로 업로드하기
+
+
+#0. models.py
+```python
+from django.conf import settings
+imagefile = models.ImageField(upload_to =settings.MEDIA_ROOT,blank=True, null =True)
+```
+
+##0-1. 터미널 명령어 입력 
+```
+(django level에서) python -m pip install Pillow
+(app level 에서) python manage.py makemigrations photo 
+(app level에서) python manage.py migrate
+```
+
+<br>
+#1. urls.py
+```path('download/<str:filename>/',views.photo_download, name = 'download'),```
+
+<br>
+#2. forms.py
+Form fields 에 'imagefile' 추가 및 기존'image'필드 삭제 : Character field > file type으로 변경하는 절차
+
+<br>
+#3. Views.py
+
+```python
+if form.is_valid():
+            photo = form.save(commit = False)
+            photo.save() 
+
+# 밑에 추가작성
+
+
+upload_file = request.FILES['imagefile']
+upload = default_storage.save(upload_file.name, ContentFile(upload_file.read()))
+            return redirect('photo_detail', pk= photo.id)
+```
