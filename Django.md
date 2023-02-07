@@ -564,7 +564,7 @@ class Photo(models.Model):
         return str(self.title)
 ```
 
-##4. migration
+##4. migration <br>
 ##5. admin.py 작성
 ```python
 from django.contrib import admin
@@ -785,7 +785,7 @@ return redirect('todo:todo_list')
 ```
 
 ##5. 화면에 이미지 사진 보여지게 하기
-  * 방법 1. Template 에 ir문 넣기
+  * 방법 1. Template 에 if문 넣기
 ```python
 
 {% if obj.imagefile %}
