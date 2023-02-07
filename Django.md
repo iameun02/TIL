@@ -991,11 +991,11 @@ def result(request, question_id):
 기본적으로 객체에 접근할 수 있는 매니저의 이름은 모델명(소문자)_set 으로 지어진다고 한다.<br>
 ForeignKey로 어떠한 모델 A(Question)를 참조하고 있는 모델 B(Choice)는 <br>
 모델 A에 접근할 때 미리 ForeignKey로 지정 해두었던 변수 (question)를 통해 접근할 수 있고, <br>
->> c= Choice.objects.get(pk=1) 
+>> c= Choice.objects.get(pk=1) <br>
     c.question.question_text 
 
 >참조되고 있는 모델 A는 모델 B에 접근할 때 모델명(소문자)_set의 형태로 접근한다. <br>
->>q = Question.objects.get(pk=1) 
+>>q = Question.objects.get(pk=1) <br>
 q.choice_set.all()
 
 #8. Template_result
