@@ -695,45 +695,102 @@ post방식 로직으로 수행을 하게된다.
 
 <br><br><br>
 
-### image를 파일형식으로 업로드하기
+### 파일형식의 이미지 필드 생성하기
 
 
-#0. models.py
+#0. settings.py
+```python
+MEDIA_URL = '/media/'
+MEDIA_ROOT =BASE_DIR/'media'
+```
+작성후 해당 위치에 media 디렉토리 생성하기 <br>
+
+##1. models.py (모델변경 : ImageField 추가)
 ```python
 from django.conf import settings
-imagefile = models.ImageField(upload_to =settings.MEDIA_ROOT,blank=True, null =True)
+imagefile = models.ImageField(upload_to=settings.MEDIA_ROOT,blank=True, null=True)
 ```
 
-##0-1. 터미널 명령어 입력 
+##1-1. 터미널 명령어 입력 
 ```
 (django level에서) python -m pip install Pillow
-(app level 에서) python manage.py makemigrations photo 
+(app level 에서) python manage.py makemigrations todo 
 (app level에서) python manage.py migrate
 ```
 
 <br>
-#1. urls.py
-```path('download/<str:filename>/',views.photo_download, name = 'download'),```
-
-<br>
-#2. forms.py
-Form fields 에 'imagefile' 추가 및 기존'image'필드 삭제 : Character field > file type으로 변경하는 절차
-
-<br>
-#3. Views.py
+##2. urls.py <br>
 
 ```python
-if form.is_valid():
-            photo = form.save(commit = False)
-            photo.save() 
+from django.conf import settings
+from django.conf.urls.static import static
+## urlpatterns [] 뒤에 작성
+ + static(settings.MEDIA_URL,document_root =settings.MEDIA_ROOT )
+  ```
 
-# 밑에 추가작성
+<br>
+#3. forms.py ('imagefile' 추가 ) <br>
 
-
-upload_file = request.FILES['imagefile']
-upload = default_storage.save(upload_file.name, ContentFile(upload_file.read()))
-            return redirect('photo_detail', pk= photo.id)
+```python
+class TodoForm(forms.ModelForm):
+    class Meta:
+        model = Todo
+        fields = ('title' , 'description','important','complete','imagefile')
 ```
+
+<br>
+
+##3. Template Form 에 enctype 추가작성
+```<form method="POST" enctype="multipart/form-data">```
+
+##4. Views.py
+
+```python
+
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+
+
+
+def todo_post(request):
+    if request.method == "GET":
+        form = TodoForm()
+        return render(request, 'todo/todo_post.html',{'form':form})
+
+    else :
+        form = TodoForm(request.POST)
+        if form.is_valid():
+            todo = form.save(commit=False)
+            todo.save()
+
+###추가작성 시작부분
+            upload_file = request.FILES['imagefile']
+            upload = default_storage.save(upload_file.name,ContentFile(upload_file.read()))
+
+#default_storage = /media 에 파일 업로드
+
+Todo.objects.filter(id=todo.id).update(imagefile=upload)
+
+#신규로 저장한 todo의 id를 참조해서 image 값을 update함
+
+###~추가영역 끝부분
+
+return redirect('todo:todo_list')
+```
+
+##5. 화면에 이미지 사진 보여지게 하기
+
+```python
+
+{% if obj.imagefile %}
+                <p>
+                  <img src="/media/{{obj.imagefile}}" alt="" width="300">
+                </p>
+              {% endif %}
+# TIPS: 웹화면에서 F11 눌러 해당 코드가 객체들을 잘 불러왔는지 확인 필요
+```
+
+
 ### TIPS!
 ```python
 #1. urls.py 파일 : urlpatterns 상단에 app_name을 지정 해줄때 url 호출시 app명: 을 필수로 함께 작성, 그렇지 않으면 No Reverse Error 발생
