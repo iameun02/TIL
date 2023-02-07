@@ -979,11 +979,25 @@ def result(request, question_id):
             <label for="choice{{forloop.counter}}">{{i.choice_text}}</label>
           <!-- forloop.counter : 인덱스가 1부터 시작 -->
           <!-- forloop.counter0 : 인덱스가 0부터 시작 -->
+          <!-- choice1부터 ~ id가 생성되며 labeling 에 사용 -->
+
         {% endfor %}
         <input type="submit" value="Vote!">  
     </form>
     <!-- _set은 고정이며, choice는 연결된 고정명(소문자) -->
 ```
+
+> 참고 <br> 
+기본적으로 객체에 접근할 수 있는 매니저의 이름은 모델명(소문자)_set 으로 지어진다고 한다.<br>
+ForeignKey로 어떠한 모델 A(Question)를 참조하고 있는 모델 B(Choice)는 <br>
+모델 A에 접근할 때 미리 ForeignKey로 지정 해두었던 변수 (question)를 통해 접근할 수 있고, <br>
+>> c= Choice.objects.get(pk=1) 
+    c.question.question_text 
+
+>참조되고 있는 모델 A는 모델 B에 접근할 때 모델명(소문자)_set의 형태로 접근한다. <br>
+>>q = Question.objects.get(pk=1) 
+q.choice_set.all()
+
 #8. Template_result
 ```html
    <h1>{{question.question_text}}</h1>
