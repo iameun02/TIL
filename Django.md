@@ -898,15 +898,18 @@ urlpatterns = [
 
  * polls.urls.py
 ```python
-
 from django.urls import path
 from . import views
 
 app_name = 'polls'
 urlpatterns = [
     path('', views.index, name ='index'),
+    path('<int:question_id>/', views.detail, name ='detail'),
+    path('<int:question_id>/vote/',views.vote, name ='vote'),
+    path('<int:question_id>/result/',views.result, name ='result'),
 
 ]
+
 ```
 
 
@@ -949,7 +952,6 @@ def result(request, question_id):
 
 #6. Template_index
 ```html
- 
     {% if question_list %}
         <ul>
             {% for i in question_list %}
@@ -963,8 +965,7 @@ def result(request, question_id):
 ```
 #7. Template_detail
 
-```html
-  
+```html  
     <h1>{{question.question_text}}</h1>
     {% if error_message %}
     <p><strong>{{error_message}}</strong></p>
@@ -972,11 +973,12 @@ def result(request, question_id):
 
     <form action="{%url 'polls:vote' question.id %}" method="post">
         {%csrf_token%}
-        {% for choice in question.choice_set.all %}
-            <input type="radio" name="choice" value = {{choice.id}}
+        {% for i in question.choice_set.all %}
+            <input type="radio" name="choice" value = {{i.id}}
                 id = 'choice{{forloop.counter}}' >
-            <label for="choice{{forloop.counter}}">{{choice.choice_text}}</label>
-    
+            <label for="choice{{forloop.counter}}">{{i.choice_text}}</label>
+          <!-- forloop.counter : 인덱스가 1부터 시작 -->
+          <!-- forloop.counter0 : 인덱스가 0부터 시작 -->
         {% endfor %}
         <input type="submit" value="Vote!">  
     </form>
