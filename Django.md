@@ -26,12 +26,12 @@
        - path('',views.index) : 공백 즉, 첫 화면에 접근시 view 파일 index함수로 보내라
 
   (3) include <br>
-     ① import : from django.urls import path, include
+     ① import : from django.urls import path, include <br>
      ② url patterns 작성<br>
      [예시] <br>
-      - path('hello01/',include('hello01.urls'))
-      - https://127.0.0.1/hello01/로 시작하는 모든 하위폴더를 포함하여 처리
-      - https://127.0.0.1/hello01/blog 등..
+      - path('hello01/',include('hello01.urls')) <br>
+      - https://127.0.0.1/hello01/로 시작하는 모든 하위폴더를 포함하여 처리 <br>
+      - https://127.0.0.1/hello01/blog 등.. <br>
  
 ##3. (프로젝트단) views.py 작성<br>
 
@@ -407,7 +407,7 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
 
 ### login/ logout
 1. 세션만들기
-   1) views.py
+ ##1. views.py
       - register
       ```python
       def register(request):
@@ -449,7 +449,7 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
       del request.session['name'] 
       return redirect('index')
       ```
-   2) Templates
+ ##2.  Templates
    
        ```python 
        #세션 유무에 따라 화면 뿌려주기
@@ -469,10 +469,9 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
     ##0. Setting
       * template path 설정
       * media url 작성
-          ```python
+          ```
               MEDIA_URL = '/media/'
               MEDIA_ROOT = BASE_DIR/'media' 
-
             ###해당 위치에 media 디렉토리 만들기 
           ```
       * installed_apps: 'updown'
@@ -480,7 +479,7 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
 
     ##1. urls.py 
 
-    ```python
+    ```
       urlpatterns = [
       path('admin/', admin.site.urls),
       path('', views.index, name='index'),
@@ -488,7 +487,7 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
       ]
     ```
     ##2. views.py
-    ```python
+    ```
     from django.core.files.storage import default_storage
     from django.core.files.base import ContentFile
 
@@ -502,7 +501,7 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
     ```
 
     ##3.Template - Form tag 작성
-    ```python
+    ```
     <form action="{%url 'upload'%}" method="post" enctype="multipart/form-data"> 
     ```
   <br>
@@ -510,20 +509,20 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
 2. 다운로드 <br>
  
     ##0.  urls.py
-    ```python
+    ```
     path('download/<str:filename>', views.download_proc, name='download'),
     ```
 
  
     ##1. views.py
-    ```python
+    ```
     from django.http import HttpResponse
     
     def download_proc(request,filename):
         return  HttpResponse(default_storage.open(filename).read(), content_type ='application/force-download')
     ```
     ##2. Template
-    ```html
+    ```
       <input type="button" value = '다운로드' onclick="loaction.href ='/download/{{filename}}'">
     ```
 <br><br><br>
@@ -531,13 +530,13 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
 ### 모델 폼 만들기 (##9번부터 해당내용시작)
 
 ##0. 프로젝트(myphoto) 생성
-```python
+```
 django-admin startproject myphoto
 ```
 
 ##1. app 생성 (photo)
   
-```python 
+``` python 
 cd myphoto
 python manage.py startapp photo
 ```
@@ -948,7 +947,21 @@ def result(request, question_id):
 
 ```
 
-#6. Template_detail
+#6. Template_index
+```html
+ 
+    {% if question_list %}
+        <ul>
+            {% for i in question_list %}
+                <li> 
+                    <a href="{%url 'polls:detail' i.id %}">{{i.question_text}}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <strong> 투표항목이 존재하지 않습니다. </strong>
+    {% endif %}
+```
+#7. Template_detail
 
 ```html
   
@@ -968,4 +981,13 @@ def result(request, question_id):
         <input type="submit" value="Vote!">  
     </form>
     <!-- _set은 고정이며, choice는 연결된 고정명(소문자) -->
+```
+#8. Template_result
+```html
+   <h1>{{question.question_text}}</h1>
+    <ul>
+        {%for i in question.choice_set.all %}
+            <li>{{i.choice_text}} - {{i.votes}} votes</li>
+        {% endfor %}
+    </ul>
 ```
