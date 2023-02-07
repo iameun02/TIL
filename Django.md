@@ -321,7 +321,6 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
     
     paginator = Paginator(myboard_all,10)
     page_num = request.GET.get('page','1') #page값이 없으면 디폴트가 1이다.
-
     page_obj = paginator.get_page(page_num)
 
     #총게시물 수
@@ -376,12 +375,19 @@ Model Form (모델 폼) : 모델과 필드를 지정하면 모델폼이 자동�
        
 
         {% for i in list.paginator.page_range %}
-            {%if list.number == i %}
-                <a>{{i}}</a>
+            {% if i >= list.number|add:-3 and i <= list.number|add:+3 %} 
+            <!-- 아래위 +3page만 노출 -->
+
+            {%if list.number == i %} 
+            <!-- 현재페이지에 있으면 링크없애기 -->
+                <span style="color:lightslategrey;">{{i}}</span>
             {% else %}  
                 <a href="?page={{i}}">{{i}}</a>   
             {% endif %}
+
+            {% endif %}
         {% endfor %}
+
 
         
         
@@ -779,7 +785,7 @@ return redirect('todo:todo_list')
 ```
 
 ##5. 화면에 이미지 사진 보여지게 하기
-
+  * 방법 1. Template 에 ir문 넣기
 ```python
 
 {% if obj.imagefile %}
@@ -789,7 +795,16 @@ return redirect('todo:todo_list')
               {% endif %}
 # TIPS: 웹화면에서 F11 눌러 해당 코드가 객체들을 잘 불러왔는지 확인 필요
 ```
+  * 방법 2 . views.py 함수에 if문 넣기
 
+```python
+if 'imagefile' in request.FILES.key():
+            upload_file = request.FILES['imagefile']
+            upload = default_storage.save(upload_file.name,
+            ContentFile(upload_file.read()))
+         
+            Todo.objects.filter(id=todo.id).update(imagefile=upload)          
+```
 
 ### TIPS!
 ```python
