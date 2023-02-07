@@ -819,4 +819,143 @@ if 'imagefile' in request.FILES.key():
     b = models.BooleanField(default = False)
     c = models.BooleanField(default = False)
 
+#3. visual studio tool 에서 'Django template' 확장 설치가능
+
+
+```
+<br><br><br>
+
+### 두개의 테이블을 활용 : 투표 프로젝트 만들기
+
+
+#0. Setting 
+ Installed apps 에 'polls' 추가
+
+#1. models.py
+
+```python
+
+from django.db import models
+
+# Create your models here.
+
+class Question(models.Model):
+    question_text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.question_text
+
+
+class Choice(models.Model):
+    choice_text = models.CharField(max_length=200)
+    votes = models.IntegerField(default=0)
+    question_id = models.ForeignKey(Question, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.choice_text
+
+```
+
+
+#1-1. migrations
+
+#2. admin.py
+
+ python manage.py createsuperuser
+
+``` python
+from django.contrib import admin
+from .models import Question,Choice
+
+admin.site.register(Question)
+admin.site.register(Choice)
+```
+
+
+
+#4. urls.py
+
+ * mypolls.urls.py
+```python
+from django.contrib import admin 
+from django.urls import path,include
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('polls/', include('polls.urls')),]
+```
+    
+
+ * polls.urls.py
+```python
+
+from django.urls import path
+from . import views
+
+app_name = 'polls'
+urlpatterns = [
+    path('', views.index, name ='index'),
+
+]
+```
+
+
+
+#5. views.py
+
+```python
+from django.shortcuts import render, get_object_or_404
+from .models import Question,Choice
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+# Create your views here.
+
+
+def index(request):
+    question_list = Question.objects.all()
+    return render (request, 'polls/index.html' , {'question_list':question_list})
+
+def detail(request, question_id):
+    question = get_object_or_404(Question, id= question_id)
+    return  render(request, 'polls/detail.html', {'question':question})
+
+def vote(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    try:
+        select_choice = question.choice_set.get(id=request.POST['choice'])
+    except(KeyError, Choice.DoesNotExist):
+        return render(request, 'polls/detail.html', {'question':question, 'error_message':'아무것도 입력되지 않았습니다.'})
+    else:
+        select_choice.votes += 1
+        select_choice.save()
+
+    return HttpResponseRedirect(reverse('polls:result', args = (question_id,)))
+
+def result(request, question_id):
+    question = get_object_or_404(Question, id=question_id)
+    return render(request, 'polls/result.html',{'question':question})
+
+```
+
+#6. Template_detail
+
+```html
+  
+    <h1>{{question.question_text}}</h1>
+    {% if error_message %}
+    <p><strong>{{error_message}}</strong></p>
+    {%endif%}
+
+    <form action="{%url 'polls:vote' question.id %}" method="post">
+        {%csrf_token%}
+        {% for choice in question.choice_set.all %}
+            <input type="radio" name="choice" value = {{choice.id}}
+                id = 'choice{{forloop.counter}}' >
+            <label for="choice{{forloop.counter}}">{{choice.choice_text}}</label>
+    
+        {% endfor %}
+        <input type="submit" value="Vote!">  
+    </form>
+    <!-- _set은 고정이며, choice는 연결된 고정명(소문자) -->
 ```
