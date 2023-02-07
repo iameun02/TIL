@@ -820,7 +820,17 @@ if 'imagefile' in request.FILES.key():
     c = models.BooleanField(default = False)
 
 #3. visual studio tool 에서 'Django template' 확장 설치가능
+#4. Restful api
 
+    지금껏 다뤄온 방식은 웹서비스를 위해
+    Html document로 응답 및 통신을 한다면,
+
+    restful은 웹서비스가 목적이 아니라서 json으로 요청/답변을 한다. 
+
+    그러므로 restful에는 template 절차가 없고 대신
+
+    Views 요청 json >db로 바꿔주는 'deserializers'
+    Db > json로 바꿔주는 'serializer' 작업절차가 있다.
 
 ```
 <br><br><br>
