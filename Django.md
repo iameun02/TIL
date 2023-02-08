@@ -1007,3 +1007,128 @@ q.choice_set.all()
         {% endfor %}
     </ul>
 ```
+<br><br><br>
+
+### Django에서 제공하는 USER Model을 사용해보기
+
+##0. Settings
+  - installed app :  'mymember',
+  - templates 디렉만들기
+
+##1. model.py : 작성필요없음 (django의 User 모델 사용)
+
+##2. forms.py
+
+```python
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+
+class MymemberForm(UserCreationForm):
+    class Meta : 
+        model = User
+        fields = ('username','password1','password2','email','first_name','last_name')
+
+```
+
+##3. Migration
+```python manage.py makemigrations 절차필요 없음. Python manage.py migrate 만 진행```
+
+
+##4. urls.py
+
+```python 
+from django.contrib import admin
+from django.urls import path
+from . import views
+from django.contrib.auth import views as auth_views #기존 views와 명이 동일하여 alias 사용
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.index, name='index'),
+    path('register/', views.register, name='register'),
+    path('login/', auth_views.LoginView.as_view(template_name ='login.html'), name ='login'),
+path('result/', views.result, name='result'),
+path('logout/', auth_views.LogoutView.as_view(), name ='logout'),]
+
+#'login'의 경우 django에서 제공하는 view함수를 사용하고 있으며, 
+
+#get방식일때는 template_name에 들어가있는 'login.html'문서를 보여주고,
+
+#post 방식일 때는 settings.py에 선언된 LOGIN_REDIRECT URL를 호출하게 된다. 
+
+#이때 LoginView 함수를 직접 핸들링 할 수 없으니, return 값을 setting에서 지정 해준다. 로그인 성공시 객체세션정보를 추가하여 리턴하게 된다.
+
+#'logout'도 동일한 방식이며 get방식일때 '/' 화면으로 이동하게 된다.
+
+```
+
+##5. settings.py
+
+```html
+LOGIN_REDIRECT_URL ='/result'
+LOGOUT_REDIRECT_URL = '/' 
+```
+
+
+##6. views.py
+
+```python
+from django.shortcuts import render, redirect
+from .forms import MymemberForm
+
+def index(request):
+    return render(request, 'index.html')
+
+
+def register(request):
+    if request.method == 'GET' :
+        return render(request, 'register.html', {'form' : MymemberForm()})
+    else :
+        form = MymemberForm(request.POST)
+        
+        if form.is_valid():
+            form.save()
+
+        return redirect('index')
+
+
+def result(request):
+        return render(request, 'logout.html')
+```
+
+                                                                                                                
+
+##7-1. Template_login
+
+```html
+<body>
+    <form action="{%url 'login' %}" method= "post">
+        {%csrf_token%}
+        ID : <input type="text" name = 'username'>
+        <br>
+        PW : <input type="password" name ='password'>
+        <br>
+
+        <input type="submit" value ="login">
+
+    </form>
+</body>
+
+<!-- Form. 의 다양한 활용법
+#as_p
+#as_ul
+#as_table 
+-->
+```
+
+
+
+##7-2. Template_logout
+```html
+<body>
+    <h1> Hello {{user.username}}</h1>
+    <h2>{{user.email}}</h2>
+    <a href="/logout/"> logout </a>
+</body>
+```
