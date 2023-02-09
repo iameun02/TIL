@@ -1132,3 +1132,411 @@ def result(request):
     <a href="/logout/"> logout </a>
 </body>
 ```
+
+<br><br><br>
+
+### Final Project
+myworld라는 프로젝트내에서 
+users와 board라는 두가지 앱을 생성할것이고,
+
+users에서는 로그인 프로세스
+board에서는 게시판을 구현해 볼 것이다.
+
+장고에서 제공하는 모델을 오버라이딩,
+폼은 모델폼을 사용해보자
+
+ajax로 댓글구현까지해보고
+마지막으로, 게시판 내에 투표를 만들어보고 끝내자.
+--------------------------------------------------------
+
+[0] Django
+
+##0. project : myworld
+     django-admin startproject myworld
+     
+     app : bbs, users
+     cd lecture
+     python manage.py startapp users
+     python manage.py startapp board
+
+[1] myworld
+
+##1. Settings
+ - installed apps :  'board','users'
+ - templates: 'DIRS': [BASE_DIR/'templates'],
+ - static
+   STATICFILES_DIRS =[BASE_DIR/'static']
+ - media
+   MEDIA_URL = '/media/'
+   MEDIA_ROOT = BASE_DIR/'media'
+   # MEDIA_ROOT는 리스트형태가 아닌것 주의!
+ - auth
+   AUTH_USER_MODEL = 'users.Member'
+   # 인증에 사용할 class를 users.Member로 지정, default는 auth_user로 되어있다. 
+
+   AUTHENTIFICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',]  
+    # 정해져 있음  대소문자 구분 됨
+  
+  - DB
+
+[2] users
+
+
+##0. users_models.py
+
+❶ Django 에서 제공하는 user 모델을 오버라이딩 할때는 AbstractUser로 import하고
+  settings에 AUTH_USER_MODEL = 'users.Member'을 작성하여
+  해당 모델로 바꿔줘야한다.
+
+```python
+from django.db import models
+from django.conf import settings
+from django.contrib.auth.models import AbstractUser
+
+
+class Member(AbstractUser):
+    mobile = models.CharField(max_length=20)
+    image = models.ImageField(upload_to= settings.MEDIA_ROOT, blank = True, null = True)
+
+#AbstractUser 모델을 상속받아서 mobile+image를 추가한 오버라이딩 클래스 Member를 생성한다.
+
+
+
+```
+❷ django 에서 제공하는 User 모델 그대로 사용 : 모델링 작업없이 바로 폼작업으로 가면됨 
+
+##1. migration
+     python manage.py makemigrations users
+     python manage.py migrate
+
+##2. (Model 확인을 위해) Admins.py
+
+from django.contrib import admin
+from .models import Member
+admin.site.register(Member)
+*python manage.py createsuperuser
+
+
+
+##3. forms.py
+
+Django에서는 내장폼으로 forms.Form과 forms.ModelForm을 제공한다.
+
+Form을 HTML의 <form>태그를 다루기위한 도구라면 
+ModelForm은 Form에 Model과 연동되어있다.
+
+그렇기 때문에 Form은 코드를 통해 중복여부를 체크 해야하지만,
+ModelForm은 속성을 통해 자체적으로 유효성 검사를 체크 해준다.
+
+
+ ```python
+from .models import Member
+from django import forms
+from django.contrib.auth.forms import UserCreationForm
+
+#회원가입시에는 ModelForm을 상속받은 UserCreationForm 사용
+class MemberForm(UserCreationForm):
+    class Meta:
+        model = Member
+        fields =['username','password1','password2','email','mobile','image']
+
+#로그인에는 ModelForm 사용
+class LoginForm(forms.ModelForm):
+    class Meta:
+        model = Member
+        fields = ['username', 'password']
+
+        label ={
+            'username' : '사용자이름',
+            'password' : '비밀번호'
+        }
+
+        widgets = {
+            'username' : forms.TextInput(
+                attrs ={
+                    'class' : 'form-control',
+                    'placeholder' : '사용자이름을 입력하세요'
+                }
+            ),
+            'password' :forms.PasswordInput(
+                attrs={
+                    'class' : 'form-control',
+                    'placeholder' : '비밀번호를 입력하세요'
+                }
+            )
+        }
+
+```
+
+
+##4. Urls 작업
+
+❶ myworld.urls.py
+
+```python
+
+from django.contrib import admin
+from django.urls import path,include
+from django.views.generic.base import TemplateView
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('users/',include('users.urls')),
+    path('board/',include('board.urls')),
+    path('', TemplateView.as_view(template_name = 'index.html'), name='home')
+] +static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+
+
+```
+❷ users.urls.py
+
+```python
+
+from django.urls import path,include
+from django.conf.urls.static import static
+from django.conf import settings
+from . import views
+
+app_name ='users'
+urlpatterns = [
+    path('login/', views.login, name ='login'),
+    path('signup/', views.signup, name='signup'),
+    path('signupProcess/', views.signupProcess, name='signupProcess'),
+    path('login/', views.login, name='login'),
+    path('logout/', views.logout, name='logout'),
+    path('loginProcess/', views.loginProcess, name='loginProcess'),
+] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+
+```
+
+
+
+
+
+##5. users.views.py
+```python
+#signupProcess 소스 코드 : 맥에서는 Createuser를 통한 request.FILES 적용이 안됨
+
+
+from django.shortcuts import render, redirect
+from .models import Member
+from .forms import MemberForm,LoginForm
+from django.contrib.auth import login as django_login, logout as django_logout
+from django.contrib.auth import authenticate
+from django.http import HttpResponse
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+
+def login(request):
+    login_form = LoginForm()
+    return render(request, 'users/login.html',{'login_form' : login_form})
+
+
+
+def loginProcess(request):
+    if request.method =='POST':
+        login_form = LoginForm(request.POST)
+        username = login_form.data['username']
+        password = login_form.data['password']
+
+        user = authenticate(username= username, password=password) #장고에서 로그인 성공여부 확인해줌
+        if user is not None:
+            django_login(request,user)
+            return redirect('home')
+        else:
+            return HttpResponse('Failed to Login, Try it again')
+    return HttpResponse('인증실패, POST가 아닙니다.')
+
+
+
+def logout(request):
+    django_logout(request)
+    return redirect('home')
+    #장고에서 세션종료해줌
+
+
+def signup(request):
+    member_form = MemberForm()
+    return render(request, 'users/signup.html',{'member_form':member_form})
+
+
+def signupProcess(request):
+    if request.method == "POST":
+        member_form = MemberForm(request.POST)
+        if member_form.is_valid():
+    
+            if 'image' in request.FILES.keys(): #이미지첨부된 경우
+                new_user = member_form.save(commit=False)
+                new_user.save()
+                upload_file = request.FILES['image']
+                upload = default_storage.save(upload_file.name,ContentFile(upload_file.read()))
+                # default_storage = /media,  화일 업로드 기능
+                Member.objects.filter(username=new_user.username).update(image=upload_file)
+
+            else: # 이미지 첨부 안됨
+                new_user = Member.objects.create_user(
+                    username = member_form.cleaned_data['username'], #validation이 완료된 데이터
+                    email=member_form.cleaned_data['email'],
+                    password=member_form.cleaned_data['password1'],
+                    mobile=member_form.cleaned_data['mobile'],
+                )
+
+            # from django.contrib.auth import login as django_login
+            # 로그인 세션처리 함
+            django_login(request,new_user)
+            return redirect('home')
+        else:
+            return HttpResponse('isvaild하지 않습니다.')
+            # redirect('users:signup')
+```
+
+##6. bootstrap4 설치를 위해 터미널 pip install django-bootstrap4 입력 및
+     settings.py installedapps 에'bootstrap4'추가
+
+##7. templates
+
+ * index.html
+  
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body class ='text-center'>
+    <header>
+        <div>
+            <h3>Lecture Project</h3>
+        </div>
+    </header>
+</body>
+<main>
+    <p>Django Framework</p>
+    <p class='lead'>
+        {%if request.user.is_authenticated %}
+            <img src="/media/{{request.user.image}}" alt="" witdh = '50px', height = '50px'>
+            {{request.user.username}}님 환영합니다. 
+            <a href="/bbs/list" class = 'btn btn-lg btn-primary'>Enter BBS</a>
+            <a href="/users/logout" class = 'btn btn-lg btn-danger'>Logout</a>
+        {%else%}
+            로그인이 필요합니다.
+            <a href="/users/signup/" class = 'btn btn-lg btn-success'>회원가입</a>
+            <a href="/users/login/" class = 'btn btn-lg btn-primary'>login</a>
+        {% endif %}
+    </p>
+</main>
+<img src="/static/notice.jpg" alt="" width ='1024'>
+<footer>
+    <div>
+        <p>Copyright 2023</p>
+    </div>
+</footer>
+</html>
+```
+
+ * base.html
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-2.2.4.min.js" crossorigin = 'anoymouse'></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    {% block html_header %}
+    {% endblock %}
+</head>
+<body>
+    
+    {% block html_body %}
+    {% endblock %}
+
+
+</body>
+</html>
+```
+* signup.html
+
+```html
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block html_header %}
+<style>
+  .bd-placeholder-img {
+    font-size: 1.125rem;
+    text-anchor: middle;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+  }
+
+  @media (min-width: 768px) {
+    .bd-placeholder-img-lg {
+      font-size: 3.5rem;
+    }
+  }
+</style>
+
+<!-- Custom styles for this template -->
+<link href="/static/css/signin.css" rel="stylesheet">
+{% endblock %}
+
+{% block html_body %}
+
+<main class="form-signin">
+    <form action="/users/signupProcess/" method = "POST" enctype= "multipart/form-data">
+        {%csrf_token%}
+        <h1 class ='h3 mb-3 fw-normal' >Register Now!</h1>
+        {% bootstrap_form member_form %}
+
+        <br>
+        <button type="submit" class = "w-100 btn blt-lg btn-primary">Registration</button>
+    </form>
+</main>
+
+{% endblock %}
+```
+ * login.html 
+  
+```html
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block html_header %}
+
+
+<!-- Custom styles for this template -->
+<link href="/static/css/signin.css" rel="stylesheet">
+{% endblock %}
+
+{% block html_body %}
+
+<main class="form-signin">
+    <form action="/users/loginProcess/" method = "POST" >
+        {%csrf_token%}
+        <h1 class ='h3 mb-3 fw-normal' >Login!</h1>
+        {{ login_form }}
+
+        <br>
+        <button type="submit" class = "w-100 btn blt-lg btn-primary">Login</button>
+    </form>
+</main>
+
+{% endblock %}
+```
+
+
+
