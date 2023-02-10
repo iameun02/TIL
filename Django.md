@@ -1135,18 +1135,24 @@ def result(request):
 
 <br><br><br>
 
-### Final Project
-myworld라는 프로젝트내에서 
-users와 board라는 두가지 앱을 생성할것이고,
+### Final Project :bulb:!!!
 
-users에서는 로그인 프로세스
-board에서는 게시판을 구현해 볼 것이다.
+myworld라는 프로젝트내에서 users와 board라는 두가지 앱을 생성할것이며, <br>
 
+users에서는 로그인 프로세스를,
+board에서는 게시판을 구현해 볼 것이다.<br>
+<br>
 장고에서 제공하는 모델을 오버라이딩,
 폼은 모델폼을 사용해보자
+<br>
+비동기 방식인 ajax로 댓글구현까지해보자.<br>
+ajax는 모든 폼 내용 을 100% 주고받지 않고, <br>
+요청한 영역에 대한 부분만 통신하기때문에 <br>
+효율적이며, 통신 중 에도 다른 작업을 병행해서 진행할수있게 해준다. <br><br>
+ajax통신시에는 html문서가 아닌 xtml 또는 json파일로 주고 받는다. <br>
+이 ajax를 객체화 한것이 리엑트나 뷰이다. <br>
 
-ajax로 댓글구현까지해보고
-마지막으로, 게시판 내에 투표를 만들어보고 끝내자.
+
 --------------------------------------------------------
 
 [0] Django
@@ -1169,15 +1175,36 @@ ajax로 댓글구현까지해보고
  - media
    MEDIA_URL = '/media/'
    MEDIA_ROOT = BASE_DIR/'media'
-   # MEDIA_ROOT는 리스트형태가 아닌것 주의!
+   <!-- MEDIA_ROOT는 리스트형태가 아닌것 주의! -->
  - auth
    AUTH_USER_MODEL = 'users.Member'
-   # 인증에 사용할 class를 users.Member로 지정, default는 auth_user로 되어있다. 
+    <!-- 인증에 사용할 class를 users.Member로 지정, default는 auth_user로 되어있다.  -->
 
    AUTHENTIFICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',]  
-    # 정해져 있음  대소문자 구분 됨
+    <!-- 정해져 있음  대소문자 구분 됨 -->
   
   - DB
+
+
+##2. urls.py
+```python
+
+from django.contrib import admin
+from django.urls import path,include
+from django.views.generic.base import TemplateView
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('users/',include('users.urls')),
+    path('board/',include('board.urls')),
+    path('', TemplateView.as_view(template_name = 'index.html'), name='home')
+] +static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
+
+```
+
+
 
 [2] users
 
@@ -1423,7 +1450,7 @@ def signupProcess(request):
         {%if request.user.is_authenticated %}
             <img src="/media/{{request.user.image}}" alt="" witdh = '50px', height = '50px'>
             {{request.user.username}}님 환영합니다. 
-            <a href="/bbs/list" class = 'btn btn-lg btn-primary'>Enter BBS</a>
+            <a href="/board/list" class = 'btn btn-lg btn-primary'>Enter BBS</a>
             <a href="/users/logout" class = 'btn btn-lg btn-danger'>Logout</a>
         {%else%}
             로그인이 필요합니다.
@@ -1483,7 +1510,7 @@ def signupProcess(request):
     user-select: none;
   }
 
-  @media (min-width: 768px) {
+  @media (min-width: 768px) {s
     .bd-placeholder-img-lg {
       font-size: 3.5rem;
     }
@@ -1530,7 +1557,6 @@ def signupProcess(request):
         <h1 class ='h3 mb-3 fw-normal' >Login!</h1>
         {{ login_form }}
 
-        <br>
         <button type="submit" class = "w-100 btn blt-lg btn-primary">Login</button>
     </form>
 </main>
@@ -1538,5 +1564,499 @@ def signupProcess(request):
 {% endblock %}
 ```
 
+* static > css > signin.css 디렉토리 및 파일 생성후 작성<br>
+  
+```html
+  
+  html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+  ```
+<br>
+[3] board <br>
+##0. urls.py
+
+```python
+
+from django.urls import path
+from . import views
+
+app_name ='boards'
+
+urlpatterns = [
+     path('list/', views.b_list, name='b_list'),
+     path('create/', views.b_create, name='b_create'),
+     path('<int:board_id>/detail', views.b_detail, name='b_detail'),
+     path('<int:board_id>/update', views.b_update, name='b_update'),
+     path('<int:board_id>/updateProcess', views.b_update_process, name='b_update_process'),
+     path('<int:board_id>/like', views.b_like, name='b_like'),
+     path('<int:board_id>/delete', views.b_delete, name='b_delete'),
+
+    path('commentCreate/', views.c_create, name='c_create'),
+] 
+```
+
+##1. models.py
+```python
+from django.db import models
+
+# Create your models here.
+class Board(models.Model):
+    
+    #b_no = models.IntegerField(primary_key=True)
+    b_title = models.CharField(max_length=100)
+    b_author = models.CharField(max_length=20)
+    b_content = models.CharField(max_length=500)
+    b_date = models.DateTimeField(auto_now_add=True)
+    b_comment_count = models.IntegerField(default=0)
+    b_like_count =models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.b_title
+    
+
+class Comment(models.Model):
+    c_author = models.CharField(max_length=20)
+    c_content = models.CharField(max_length=500)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.c_content
+
+```
+
+##2. migration <br>
+
+##3. forms.py
+```python
+from django import forms
+from .models import Board
+
+class BoardForm(forms.ModelForm):
+    class Meta:
+        model = Board
+        fields = ['b_title','b_author','b_content']
+
+        labels = {
+            'b_title' : '글제목',
+            'b_author' : '글 작성자',
+            'b_content' : '글 내용'
+        }
+        widgets= {
+            'b_title' : forms.TextInput(
+                attrs={
+                    'class':'form-control w-50',
+                    'placeholder':'글 제목을 입력하세요',
+                }
+            ),
+            'b_author' : forms.TextInput(
+                attrs={
+                    'class':'form-control w-25',
+                    'placeholder':'글 작성자를 입력하세요',
+                }
+            ),
+            'b_content' : forms.Textarea(
+                attrs={
+                    'class':'form-control w-75',
+                    'placeholder':'글 내용을 입력하세요',
+                }
+            )
+        }
+
+class BoardDetailForm(forms.ModelForm):
+    class Meta:
+        model = Board
+        fields = '__all__'
+
+        labels = {
+            'b_title' : '글제목',
+            'b_author' : '글 작성자',
+            'b_content' : '글 내용',
+            'b_comment_count' : '댓글 개수',
+            'b_like_count' : '좋아요 개수'
+        }
+
+        widgets= {
+            'b_title' : forms.TextInput(
+                attrs={
+                    'class':'form-control w-50',
+                }
+            ),
+            'b_author' : forms.TextInput(
+                attrs={
+                    'class':'form-control w-25',
+                }
+            ),
+            'b_content' : forms.Textarea(
+                attrs={
+                    'class':'form-control w-75',
+                }
+            ),
+            'b_comment_count': forms.TextInput(
+                attrs={
+                    'class': 'form-control w-25',
+                }
+            ),
+            'b_like_count' : forms.TimeInput(
+                attrs={
+                    'class' : 'form-control w-25',
+                }
+            )
+        }
 
 
+    def show_board_detail(self):
+        fields= list(BoardDetailForm().base_fields)
+        for field in fields:
+            self.fields[field].widget.attrs.update({
+                'readonly' : 'readonly'
+            })
+
+    def show_board_update(self):
+        self.fields['b_like_count'].widget.attrs.update({
+            'readonly':'readonly'
+        })
+        self.fields['b_comment_count'].widget.attrs.update({
+            'readonly':'readonly'
+        })
+```
+##4. views.py
+
+```python
+from django.shortcuts import render,redirect, get_object_or_404
+from .models import Board, Comment
+from .forms import BoardForm , BoardDetailForm
+from django.http import JsonResponse
+
+def b_list(request):
+
+    if request.user.is_authenticated:
+        posts = Board.objects.all()
+        return render(request, 'board/list.html', {'posts' :posts})
+    else : 
+        return redirect('home')
+
+
+def b_create(request):
+    if request.method =="GET":
+        board_form = BoardForm()
+
+    else :
+        board_form = BoardForm(request.POST)
+        if board_form.is_valid():
+            board_form.save()
+            return redirect('board:b_list')
+    return render(request, 'board/create.html',{'board_form':board_form})
+
+
+def b_detail(request, board_id):
+    post = get_object_or_404(Board, id=board_id)
+
+    board_detail_form = BoardDetailForm(instance=post)
+    board_detail_form.show_board_detail()
+
+    return render(request, 'board/detail.html', {'board_detail_form' : board_detail_form})
+
+def b_update(request, board_id):
+    post = get_object_or_404(Board, id=board_id)
+
+    board_detail_form = BoardDetailForm(instance=post)
+    board_detail_form.show_board_update()
+
+    return render(request, 'board/update.html', {'board_detail_form' : board_detail_form})
+
+
+def b_update_process(request,board_id):
+    post = get_object_or_404(Board, id=board_id) #수정처리 전 post
+    if request.method =="POST":
+        board_detail_form = BoardDetailForm(request.POST, instance=post)
+        if board_detail_form.is_valid():
+            board_detail_form.save()
+            board_detail_form.show_board_detail()
+
+            return render(request, 'board/detail.html', {'board_detail_form' : board_detail_form})
+    return redirect('home')
+
+
+def b_like(request, board_id):
+    post = get_object_or_404(Board, id = board_id)
+    post.b_like_count +=1
+    #post.b_author= 'Lisa'
+    post.save()
+
+    # 트랜젝션처리를 하고 싶으면 모델이 아닌 모델폼객체를 사용하여 접근해야함
+    # board_detail_form = BoardDetailForm(instance=post)
+    # board_detail_form.b_like_count +=1
+    # new_post = board.detail_form.save(commit = False)
+    # board_detail_form.b_like_count =100
+    # new_post.save
+
+    board_detail_form = BoardDetailForm(instance=post)
+    board_detail_form.show_board_detail()
+    return render(request, 'board/detail.html', {'board_detail_form' : board_detail_form})
+
+
+
+
+def b_delete(request, board_id):
+    post = get_object_or_404(Board, id=board_id).delete()
+    return redirect('board:b_list')
+
+
+def c_create(request):
+    
+    # from .models import Board, Comment
+    # from django.http import JsonResponse    
+    comment = Comment()
+    comment.c_author = request.GET['user_name']
+    comment.c_content = request.GET['user_content']
+    comment.board_id = request.GET['board_id']
+
+    print ('---------------------------')
+    print (request.GET['board_id'])
+    print (comment.c_author)
+    print (comment.c_content)
+    print (comment.board_id)
+    print ('---------------------------')
+
+    comment.save()
+
+    return JsonResponse({
+        'comment_author': request.GET['user_name'],
+        'comment_content': request.GET['user_content'],
+        'comment_id': request.GET['board_id']
+    }, json_dumps_params= { 'ensure_ascii' : True } )
+  
+```
+
+##5. Template <br>
+
+ * create.html
+  ```python
+  {% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block html_body %}
+   
+    <div class='container'>
+        <h1>새글 작성</h1>
+
+        <form method="post">
+        {% csrf_token %}
+        {% bootstrap_form board_form %}
+
+            <br>
+
+            <button class="btn btn-primary" 
+                    type="submit">등록</button>
+            <button class="btn btn-secondary"
+                    type="button"
+                    id="board_list_btn" onclick="location.href='{% url 'board:b_list' %}'">리스트로 돌아가기</button>
+        <form>    
+    </div>
+
+{% endblock %}
+  ```
+ * detail.html
+  ```python
+  {% extends 'base.html' %}
+{% load bootstrap4 %}
+
+{% block html_body %}
+<script src="/static/js/c_comment.js"></script>
+    <div class='container'>
+        <h1>글 상세 보기</h1>
+        글번호 : <span id = 'board_id'>{{board_detail_form.initial.id}}</span>
+        {% bootstrap_form board_detail_form %}
+    
+
+    <br>
+
+    <button class='btn btn-secondary' 
+        onclick="location.href='{% url 'board:b_list'%}'" >리스트로 돌아가기</button>
+    <button class='btn btn-info' 
+        onclick="location.href='{% url 'board:b_update' board_detail_form.initial.id  %}'">수정</button>
+    <button class='btn btn-danger' 
+        onclick="location.href='{% url 'board:b_delete' board_detail_form.initial.id %}'">삭제</button>
+    <button class='btn btn-warning'
+        onclick="location.href='{% url 'board:b_like' board_detail_form.initial.id %}'">좋아요</button>
+
+    </div>
+    <br>
+    <div class = 'container'>
+        <div>
+            <label for="c_name">이름</label>
+            <input type="text" class='form-control w-25' id='c_name'>
+
+            <label for="c_content">내용</label>
+            <input type="text" class='form-control w-50' id='c_content'>
+            <br>
+
+            <button class = 'btn btn-primary' id ='comment_create_btn'>댓글등록</button>
+            <br><br>
+
+        </div>
+
+
+        <table class ='table table-hover'>
+            <thead>
+                <tr>
+                    <th>글 작성자</th>
+                    <th>글 내용</th>
+                    <th>삭제</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </tbody>
+
+
+
+
+        </table>
+    </div>
+{% endblock %}
+  ```
+ * list.html
+```python
+{% extends 'base.html' %}
+
+
+{%block html_body%}
+    <div class ='container'>
+        <h1>Bulletin Board System(BBS)</h1>
+        <button class ='btn btn-primary' 
+        onclick =" location.href ='{%url 'board:b_create' %}' ">새글작성</button>
+       
+
+        <table class = 'table table-hover'>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>글제목</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>댓글수</th>
+                    <th>좋아요수</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for post in posts %}
+                <tr>
+                    <td>{{post.id}}</td>
+                    <td><a href="{%url 'board:b_detail' post.id %}">{{post.b_title}}</a> </td>
+                    <td>{{post.b_author}}</td>
+                    <td>{{post.b_date}}</td>
+                    <td>{{post.b_comment_count}}</td>
+                    <td>{{post.b_like_count}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{%endblock html_body%}
+```
+ * update.html
+```python
+{% extends 'base.html' %}
+{% load bootstrap4 %}
+{%block html_body%}
+    <div class='container'>
+        <h1>글 수정하기</h1>
+        <form action="{% url 'board:b_update_process' board_detail_form.initial.id  %}" method='post'>
+            {%csrf_token%}
+            {% bootstrap_form board_detail_form %}
+       
+        
+ 
+ 
+    \
+        <br>
+
+        <button class='btn btn-secondary' 
+            onclick="location.href='{% url 'board:b_list'%}'" >리스트로 돌아가기</button>
+        <button class='btn btn-info' type = 'submit'>완료</button>  
+    </div>
+         </form>
+{% endblock %}
+```
+### Ajax (비동기)방식으로 댓글 구현허가
+
+* base.html 구문추가
+```python
+
+<script src='https://code.jquery.com/jquery-2.2.4.min.js' crossorigin='anoymouse'></script>
+```
+
+* detail.html
+```python
+<script src="/static/js/c_comment.js"></script>
+글번호 : <span id = 'board_id'>{{board_detail_form.initial.id}}</span>
+
+```
+
+* c_comment.js (script 디렉토리 > js 파일생성 후 작성)
+  
+```python
+
+$(function(){ // onload function : 모두 로드되었을 때 
+    $('#comment_create_btn').on('click',function(){ //comment_create_btn 클릭되었을때 실행함수
+
+        $.ajax({
+            async:true, // 비동기방식으로 ajax를 호출
+            url : '/board/commentCreate/',  
+            type : 'GET',
+            //서버에 전송할 데이터
+            data :{
+                board_id : $('#board_id').text(),
+                user_name : $('#c_name').val(),
+                user_content : $('#c_content').val()
+            }
+        })
+    })
+    })
+
+    
