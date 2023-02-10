@@ -1867,7 +1867,6 @@ def c_create(request):
 ```
 
 ##5. Template <br>
-
  * create.html
   ```python
   {% extends 'base.html' %}
@@ -1878,7 +1877,7 @@ def c_create(request):
     <div class='container'>
         <h1>새글 작성</h1>
 
-        <form method="post">
+        <form method="post">ß
         {% csrf_token %}
         {% bootstrap_form board_form %}
 
