@@ -2023,7 +2023,7 @@ def c_create(request):
          </form>
 {% endblock %}
 ```
-### Ajax (비동기)방식으로 댓글 구현허가
+### Ajax (비동기)방식으로 댓글 구현해보기
 
 * base.html 구문추가
 ```python
