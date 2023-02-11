@@ -8,9 +8,9 @@
 
   + 사이트
 
-     https://www.acmicpc.net/
-     https://swexpertacademy.com/main/main.do
-     https://programmers.co.kr/
+     https://www.acmicpc.net/ <br>
+     https://swexpertacademy.com/main/main.do <br>
+     https://programmers.co.kr/ <br>
   
   + 도서 Introduction to Alogorithm
 
@@ -20,23 +20,24 @@
    ##2. (alt+f11) 터미널 : git clone 복사한주소붙여넣기 <br>
    ##3. 파이참 셋팅 (Tools- Terminal : bash) <br>
    ##4. <br>
-       ❶ git pull origin master 업데이트된 문제파일 받아오기 <br>
-       ❷ git switch -c 브랜치명 <br>
+       ❶ ```git pull origin master``` 업데이트된 문제파일 받아오기 <br>
+       ❷ ```git switch -c``` 브랜치명 <br>
          (혹시 브랜치 수정이 필요한 경우, 삭제후 재생성 <br>
-	   git switch master <br>
-	   git branch -D 잘못된브랜치명 <br>
-       확인을 위해 git branch <br>
+	   ```git switch master``` <br>
+	   ```git branch -D 잘못된브랜치명``` <br>
+       확인을 위해 ```git branch``` <br>
         ❸ 문제파일 우측파일 클릭 후 내 이름으로된 파일 생성 후 문제풀기 <br>
         
      *  프로그래머스 : 제공하는 기본 소스코드를 파이참에 복붙 후, <br>
- 			 test를 위해 구현 함수를 호출하고, <br>
-             호출시 화면에서 제공된 샘플 입출력 데이터를 파라미터로 넣어준다. <br>
+         test를 위해 구현 함수를 호출하고, <br>
+         호출시 화면에서 제공된 샘플 입출력 데이터를 파라미터로 넣어준다. <br>
 
-    * 백준 :
+     * 백준 :
              ``` import sys
-		sys.stdin =open('input.txt') 
-             	소스코드를 상단에 쓰면 계속해서 input을 안넣어줘도 된다. 
-        	단 소스제출시 위 코드는 제거후 제출``` <br>
+               sys.stdin =open('input.txt') ```
+
+            소스코드를 상단에 쓰면 계속해서 input을 안넣어줘도 된다. <br>
+         	단 소스제출시 위 코드는 제거후 제출``` <br>
 
     ❹ 소스를 add + commit <br>
     ❺ (주의! 브랜치명으로 push) git push origin 브랜치명 <br>
