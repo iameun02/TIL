@@ -16,16 +16,16 @@
 
 
 2. Work Flow <br>
-   ##1. 공유 Repository의 우측 code 버튼 클릭 후 http주소 복사 <br>
-   ##2. (alt+f11) 터미널 : git clone 복사한주소붙여넣기 <br>
-   ##3. 파이참 셋팅 (Tools- Terminal : bash) <br>
-   ##4. <br>
+   #1. 공유 Repository의 우측 code 버튼 클릭 후 http주소 복사 <br>
+   #2. (alt+f11) 터미널 : git clone 복사한주소붙여넣기 <br>
+   #3. 파이참 셋팅 (Tools- Terminal : bash) <br>
+   #4. <br>
        ❶ ```git pull origin master``` 업데이트된 문제파일 받아오기 <br>
        ❷ ```git switch -c``` 브랜치명 <br>
          (혹시 브랜치 수정이 필요한 경우, 삭제후 재생성 <br>
 	   ```git switch master``` <br>
 	   ```git branch -D 잘못된브랜치명``` <br>
-       확인을 위해 ```git branch``` <br>
+       확인을 위해 ```git branch```) <br>
         ❸ 문제파일 우측파일 클릭 후 내 이름으로된 파일 생성 후 문제풀기 <br>
         
      *  프로그래머스 : 제공하는 기본 소스코드를 파이참에 복붙 후, <br>
@@ -36,8 +36,8 @@
              ``` import sys
                sys.stdin =open('input.txt') ```
 
-            소스코드를 상단에 쓰면 계속해서 input을 안넣어줘도 된다. <br>
-         	단 소스제출시 위 코드는 제거후 제출``` <br>
+            소스코드를 상단에 쓰면 계속해서 input을 안넣어줘도 된다.
+         	단 소스제출시 위 코드는 제거후 제출 
 
     ❹ 소스를 add + commit <br>
     ❺ (주의! 브랜치명으로 push) git push origin 브랜치명 <br>
@@ -45,7 +45,7 @@
 
 
 
-#3. 소스코드
+3. 소스코드
 ``` python
 
 1. a,b = ____.split()
