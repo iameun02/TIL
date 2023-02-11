@@ -1210,39 +1210,40 @@ urlpatterns = [
 [2] users
 
 
-##0. users_models.py
+##0. users_models.py <br>
+     ❶ Django 에서 제공하는 user 모델을 오버라이딩 할때는 AbstractUser로 import하고 settings에 AUTH_USER_MODEL = 'users.Member'을 작성하여
+     해당 모델로 바꿔줘야한다.
 
-❶ Django 에서 제공하는 user 모델을 오버라이딩 할때는 AbstractUser로 import하고
-  settings에 AUTH_USER_MODEL = 'users.Member'을 작성하여
-  해당 모델로 바꿔줘야한다.
 
-```python
+ ```python
 from django.db import models
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 
 class Member(AbstractUser):
-    mobile = models.CharField(max_length=20)
-    image = models.ImageField(upload_to= settings.MEDIA_ROOT, blank = True, null = True)
+mobile = models.CharField(max_length=20)
+image = models.ImageField(upload_to= settings.MEDIA_ROOT, blank = True, null = True)
 
 #AbstractUser 모델을 상속받아서 mobile+image를 추가한 오버라이딩 클래스 Member를 생성한다.
 
 
 
 ```
-❷ django 에서 제공하는 User 모델 그대로 사용 : 모델링 작업없이 바로 폼작업으로 가면됨 
+ ❷ django 에서 제공하는 User 모델 그대로 사용 : 모델링 작업없이 바로 폼작업으로 가면됨 <br> <br> 
 
-##1. migration
-     python manage.py makemigrations users
-     python manage.py migrate
+##1. migration <br>
+    ```python manage.py makemigrations users``` <br>
+    ``` python manage.py migrate```
 
 ##2. (Model 확인을 위해) Admins.py
 
+```python 
 from django.contrib import admin
 from .models import Member
 admin.site.register(Member)
-*python manage.py createsuperuser
+```
+```python manage.py createsuperuser```
 
 
 
@@ -1274,7 +1275,7 @@ class LoginForm(forms.ModelForm):
         model = Member
         fields = ['username', 'password']
 
-        label ={
+        labels={
             'username' : '사용자이름',
             'password' : '비밀번호'
         }
