@@ -3,7 +3,7 @@
 
 <br>
 
-### Intro
+## Intro
 1. 알고리즘 연습 url (for 코딩테스트) 
 
   + 사이트
@@ -57,4 +57,123 @@
 6. For inx in range(N-1, -1, -1) : N개까지 끝에서부터 하나씩 차례로 읽어옴
 
 ```
+<br><br>
+
+## 문제풀이
+-----
+* <h3>SWEA</h3>
+   
+   ```python
+   #1945 간단한 소인수분해
+   import sys
+   sys.stdin = open('input.txt')
+
+
+   T = int(input())
+
+   for tc in range(1, T+1):
+      N = int(input())
+      num = [2,3,5,7,11]
+      cnt = [0,0,0,0,0]
+      for i in range(len(num)):
+         while True: # '0' 즉 값이 False가 될 때 까지 무한루프 돌리기
+               if N % num[i] == 0: # i로 소인수분해 되는 경우라면
+                  N = N // num[i] # i로 나누어 N에 몫을 남기어 준다.
+                  cnt[i] += 1 # i cnt에 +1 증가
+               else:
+                  break
+      print(f'#{tc} {cnt}')
+   ```
+
+   ```python
+   #2001- 파리퇴치
+   import sys
+   sys.stdin = open('input.txt')
+
+   T = int(input()) #테스트케이스 개수
+
+   for tc in range(1, T + 1):
+      N, M = map(int,input().split())
+      array = [list(map(int, input().split())) for _ in range(N)]
+      max = 0
+
+
+      for i in range(N-(M-1)): #초기 셀 선택 (가로)
+         for j in range(N-(M-1)):  #초기 셀 선택(세로)
+
+               sum = 0
+               for a in range(M): #값 순회 (가로)
+                  for b in range(M): #세로
+                     sum += array[i+a][j+b] #i,j를 더함으로써 시작점 좌표를 지정해줌 (M이 2일때 a,b는 0,1)
+                  if sum > max:
+                     max = sum
+
+      print(f'#{tc} {max}')
+   ```
+   ```python
+   #5789-현주의상자바꾸기
+   import sys
+   sys.stdin = open('input.txt')
+
+
+   T = int(input())
+
+   for tc in range(1, T+1):
+      N, Q = map(int,input().split())
+      array = [0 for _ in range(N+1)]
+
+
+      for i in range(1, Q+1):
+            a,b = map(int,input().split())
+            for j in range (a-1, b):
+                  #print(i)
+                  array[j] = i
+      print(array)
+    ```
+* <h3>Programmers</h3>
+
+   ```python
+   #12928
+   def solution(n):
+      answer = 0
+
+      for i in range(1,n+1):
+         if n%i ==0:
+               answer += i
+         print(answer)
+      return answer
+   ```
+   ```python
+   #92334
+   def solution(id_list, report, k):
+     a =[]
+     b = []
+     answer =[]
+
+     for i in set(report):
+         a.append(i.split(' ')[1])
+
+     for j in id_list:
+          if a.count(j) >= k:
+              b.append(j)
+
+     answer = [i.split()[0] for i in set(report) if i.split()[1] in b]
+
+     return [answer.count(i) for i in id_list]
+
+
+
+   # [2,1,1,0]
+      print(solution(
+                     ["muzi", "frodo", "apeach", "neo"]
+                     ,["muzi frodo", "apeach frodo", "frodo neo", "muzi neo", "apeach muzi"]
+                     ,2))
+   # [0,0]
+      print(solution(
+                  ["con", "ryan"]
+            ,["ryan con", "ryan con", "ryan con", "ryan con"]
+            ,3))
+
+   ```
+* <h3> Bak </h3>
 
