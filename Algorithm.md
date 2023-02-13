@@ -45,22 +45,61 @@
 
 
 
-3. 소스코드
-``` python
+3. 소스활용
+   ``` python
+   1. a,b = ____.split()
+   2. List 중복 제거시 : (set) 
+   3. List comprehension
+   4. Enumerate (index를 함께 발생시켜줌)
+   5. 변수명은 boolean값이 리턴될경우 is__로 시작하며, 리스트와 튜플은 복수형으로 지어준다. 함수명은 동사형
+      (파이참에서 shift+F6 을 누르면 변수명을 일괄변경 가능하다.)
+   6. For inx in range(N-1, -1, -1) : N개까지 끝에서부터 하나씩 차례로 읽어옴
+   7. input 자료 입력받기
 
-1. a,b = ____.split()
-2. List 중복 제거시 : (set) 
-3. List comprehension
-4. Enumerate (index를 함께 발생시켜줌)
-5. 변수명은 boolean값이 리턴될경우 is__로 시작하며, 리스트와 튜플은 복수형으로 지어준다. 함수명은 동사형
-   (파이참에서 shift+F6 을 누르면 변수명을 일괄변경 가능하다.)
-6. For inx in range(N-1, -1, -1) : N개까지 끝에서부터 하나씩 차례로 읽어옴
+      a = int(input())                        정수형 변수 1개 입력 받는 예제
+      b, c = map(int, input().split())        정수형 변수 2개 입력 받는 예제
+      
+      # map object는 list형으로 변환을 안해줘도 unpacking(쪼개주는 기능)을 해주는 특징을 가짐
+      # 근데 1회용이다. 한번 소비되면 데이터가 날라가기때문에 재사용을 위해선 list로 변수 할당 후 사용해야한다.
+   
+      d = float(input())                      실수형 변수 1개 입력 받는 예제
+      e, f, g = map(float, input().split())   실수형 변수 3개 입력 받는 예제
+      h = input()                             문자열 변수 1개 입력 받는 예제
 
-```
-<br><br>
+
+   8. for _ in range(n) 인덱스(변수)가 사용되지 않아, 필요하지 않고 반복기능만 사용할 때 간단히 쓰인다.
+
+   9. 반복문을 활용한 자료 탐색
+
+   * 행탐색
+   For row in range(N):
+      for col in range(N):
+         print(matrix[row][col])
+
+   * 열탐색
+   For col in range(N):
+      for row in range(N):
+         print(matrix[row][col])
+
+   * 대각탐색
+   For i in range(N):
+      print(matrix[i][i])
+
+   * 역방향 대각탐색
+   For j in range(N):
+      print(matix[j][N-1-j])
+
+   10. 코드구문을 중복으로 사용 해야 할때는 함수 접근 방식을 고려해본다.
+
+
+   ```
+<br>
+
+-----
+<br>
 
 ## 문제풀이
------
+
 * <h3>SWEA</h3>
    
    ```python
@@ -175,5 +214,5 @@
             ,3))
 
    ```
-* <h3> Bak </h3>
+* <h3> Baekjoon </h3>
 
