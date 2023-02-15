@@ -174,6 +174,43 @@
                   array[j] = i
       print(array)
     ```
+
+    ```python
+    import sys
+    sys.stdin = open('input.txt')
+
+
+    T = int(input()) #테스트케이스 개수
+
+    for tc in range(1, T+1):
+      N,M = map(int,input().split())
+      array = list(map(int, input().split()))
+
+
+
+      ''' Make prefix sum array '''
+      summation = 0 #초기값
+      prefix_sum = [0] #접두사합 리스트
+      max = 0
+
+      for i in array:
+         summation += i
+         prefix_sum.append(summation)
+      #print(prefix_sum)
+
+      ''' Get interval sum ''' #M 이 구간길이
+      for num in range(1, N+1): #1부터 10까지
+         left = num
+         right = num + (M-1)
+         if right <= N: #right의 최대가 len(array)
+               inter_sum = prefix_sum[right] - prefix_sum[left - 1]
+         else:
+               if inter_sum > max:
+                  max = inter_sum
+                  print(max)
+   ```
+         
+
 * <h3>Programmers</h3>
 
    ```python
@@ -221,3 +258,22 @@
    ```
 * <h3> Baekjoon </h3>
 
+---
+<br>
+
+## 유형별 접근방법
+* <h3> 구간합 (Interval Sum) 구하기</h3>
+ > 연속적으로 나열된 N개의 수가 있을 떄 특정 구간의 모든 수를 합한 값을 계산하는 문제
+
+𝑁개의 정수로 구성된 수열과 𝑀개의 쿼리(Query)정보가 주어졌을때, <br>
+각 쿼리는 [𝐿𝑒𝑓𝑡와 𝑅𝑖𝑔ℎ𝑡] 구간으로 구성된다. <br>
+
+이때 접두사 합 개념을 이용해 빠르게 계산이 가능하다. <br>
+(✓ 접두사 합(Prefix Sum): 배열의 맨 앞부터 특정 위치까지의 합을 미리 구해 놓은 것) <br><br>
+접두사 합을 활용한 알고리즘 <br>
+ - 𝑁개의 수 위치 각각에 대하여 접두사 합을 계산하여 𝑃에 저장
+ - 구간 합은 𝑃[𝑅𝑖𝑔ℎ𝑡] - 𝑃[𝐿𝑒𝑓𝑡 - 1]이다
+  
+  
+  * <h3></h3>
+  >
