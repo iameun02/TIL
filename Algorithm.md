@@ -43,9 +43,13 @@
     ❺ (주의! 브랜치명으로 push) git push origin 브랜치명 <br>
     ❻ PR(Pull Request : 병합)
 
+3. pycharm 활용
+   -  디버깅 활용하기 (F7 누르면 코드를 한줄씩 실행시키며 결과확인가능) 
+   
 
 
-3. 소스활용
+
+4. 소스활용
    ``` python
    1. a,b = ____.split()
    2. List 중복 제거시 : (set) 
@@ -90,14 +94,33 @@
       print(matix[j][N-1-j])
 
    10. 코드구문을 중복으로 사용 해야 할때는 함수 접근 방식을 고려해본다.
+
    11. false (if/ if not 구문 또는 while 문 뒤에서 0 으로 처리 되는 경우)
       - None, 0, 그외 비어있는 값 모두 : 빈문자열 (''), 빈리스트([]), 빈딕셔너리 ({}), 빈set (set()) 등
 
    12. print(* 변수명) 
       - 변수가 리스트일 경우 리스트 안에 있는 요소들만 프린트해줌
    13. matrix 생성방법
-      - [[0 for in range(N)] for _ in range(N)] 
+      [[0 for in range(N)] for _ in range(N)]
+      
+        # 색칠하기_겹치는 부분 문제 푸는 2가지 접근법
+         #1. Matrix 를 만들어서 숫자합으로 비교
+         #2. 좌표를 List로 나열 후에 비교
+
+
+   14. a = sum(array[left:right]) #슬라이싱한것을 sum할수 있다.
+   15. max(list) #list에서 min/max 가능
+   16. dictionary{key,value} 활용 = list + enumerate함수활용
+
+   17. 초기값으로 최대/최소값 선언해주기 
+      * 최소값 : 최초에 최대로 지정 Min = float('INF')
+      * 최대값 : 최초에 최소로 지정 Max = -float('INF')
+      * 또는  min = max = idx[0] 설정 
+
+   18. 미래,또는 답이 있을때 효율적인 방법을 구하는 문제는 끝에서부터 답을 찾아가는 접근법을 활용한다.
    ```
+5. 참고
+   - visualgo 사이트 :  정렬 종류 공부할 때 활용해보기
 <br>
 
 -----
@@ -232,7 +255,7 @@
 
 
       for k, v in dict.items():
-         if v > max:
+         if v >= max: # 동등한 값이 존재할 경우, 등호가 있으면 뒤에 위치한 숫자, 없으면 앞에 위치한 숫자가 추출됨
                max = v
                ans = [k,v]
       print( f'#{tc} {ans[0]} {ans[1]}')
