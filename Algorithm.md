@@ -108,7 +108,8 @@
 * <h3>SWEA</h3>
    
    ```python
-   #1945 간단한 소인수분해
+   #1945_간단한 소인수분해
+
    import sys
    sys.stdin = open('input.txt')
 
@@ -130,7 +131,7 @@
    ```
 
    ```python
-   #2001- 파리퇴치
+   #2001_파리퇴치
    import sys
    sys.stdin = open('input.txt')
 
@@ -155,7 +156,7 @@
       print(f'#{tc} {max}')
    ```
    ```python
-   #5789-현주의상자바꾸기
+   #5789_현주의상자바꾸기
    import sys
    sys.stdin = open('input.txt')
 
@@ -176,7 +177,7 @@
     ```
 
     ```python
-    #4835 -구간합
+    #4835_구간합
     import sys
     sys.stdin = open('input.txt')
 
@@ -213,7 +214,8 @@
 * <h3>Programmers</h3>
 
    ```python
-   #12928
+   #12928_약수의 합
+
    def solution(n):
       answer = 0
 
@@ -224,7 +226,8 @@
       return answer
    ```
    ```python
-   #92334
+   #92334_신고 결과 받기
+
    def solution(id_list, report, k):
      a =[]
      b = []
@@ -255,6 +258,32 @@
             ,3))
 
    ```
+   ```python
+   #121687_실습용로봇
+
+   def solution(command):
+    loc = [0, 0]
+    direction = [[0, 1], [1, 0], [0, -1], [-1, 0]]
+    chk = 0
+
+    for i in command:
+        chk %= len(direction)
+        if i =="G" :
+            loc[0] += direction[chk][0]
+            loc[1] += direction[chk][1]
+        elif i == "L":
+            chk -= 1
+        elif i == 'R':
+            chk += 1
+        elif i == "B":
+            loc[0] -= direction[chk][0]
+            loc[1] -= direction[chk][1]
+
+    return loc
+
+   print(solution("GRGRGRB"))
+   ```
+
 * <h3> Baekjoon </h3>
 
 ---
