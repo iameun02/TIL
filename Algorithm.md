@@ -176,16 +176,15 @@
     ```
 
     ```python
+    #4835 -구간합
     import sys
     sys.stdin = open('input.txt')
-
 
     T = int(input()) #테스트케이스 개수
 
     for tc in range(1, T+1):
       N,M = map(int,input().split())
       array = list(map(int, input().split()))
-
 
 
       ''' Make prefix sum array '''
@@ -207,7 +206,7 @@
          else:
                if inter_sum > max:
                   max = inter_sum
-                  print(max)
+                  print(f'#{tc} {max}')
    ```
          
 
