@@ -511,7 +511,7 @@ Process
   > 현 상황에서 지금 당장 좋은 것만 고르는 방법이며 탐욕적으로 접근시에 정확한 답을 찾을수 있다는 보장이 있을때 효과적
 
   ```python
-  #예제 3-1 #최소 개수의 동전으로 거스름돈 주기
+  #예제 3-1_최소 개수의 동전으로 거스름돈 주기
 
    n = 1260 #거스름돈
    count =0
@@ -530,3 +530,42 @@ Process
   ```
 <br><br><br>
 
+```python
+#예제 3-2_큰 수의 법칙
+import sys
+sys.stdin = open('input.txt')
+
+
+N, M, K = list(map(int, input().split()))
+array = list(map(int, input().split()))
+result = 0
+
+array.sort(reverse= True)
+
+first = array[0]
+second= array[1]
+
+#[방법1] : input양이 많아지면 비효율적
+# while True: #7. 반복 수행
+#     for i in range(K): #1. 최대 K번까지
+#         if M == 0: #8. K번까지 수행 중에 M=0 이되면 for문 break
+#             break
+#         result += first #2. result에 first를 더한다.
+#         M -= 1 #3. 각 수행 마다 M을 차감
+#     if M ==0: #4. K번 모두 수행 후 M=0 이면 break
+#         break
+#     result += second #5. 그렇지 않으면 result에 second를 더해준다.
+#     M-=1 #6. M을 차감해준다.
+#
+# print(result)
+
+#[방법2]
+count = int(M/ (K+1)) * K #반복되는 수열 K+1이 M에 몇 번 등장하는지 구하고 거기다 K를 곱하면 가장 큰 수의 등장횟수가 구해진다.
+count += M % (K+1) #반복되는 수열로 나눈 나머지만큼 큰 수가 추가로 등장할 횟수를 추가하여 합산해준다.
+#결국 count 변수에는 큰수의 등장 횟수를 구한 것임
+
+result = 0
+result += (count) * first #등장횟수에 큰수를 곱하여 계산
+result += (M-count) * second #전체 등장횟수 -큰수등장횟수 = 두번째로 큰수 등장횟수, 얘도 횟수에 수를 곱하여 계산후 합산
+print(result)
+```
