@@ -415,6 +415,76 @@ Process
 
    ```
 
+   ```python
+   #s4871_그래프 경로
+   
+   import sys
+   sys.stdin = open('input.txt')
+
+   T = int(input())
+
+   for tc in range(1, T+1):
+      V, E = map(int, input().split())
+      # 빈 인접 리스트 그래프 생성
+      graph = [[] for _ in range(V+1)]
+      #0번 인덱스는 사용안할거니까 V+1로 만들어준다.
+
+      # 간선 입력
+      for _ in range(E):
+         start, end = map(int, input().split())
+         graph[start].append(end)
+         # 양방향(무향)그래프 일 경우 아래 줄 추가
+         #graph[end].append(start)
+      S, G = map(int, input().split())
+      print(graph)
+
+      def dfs():
+         # S => G 로 갈 수 있는가?
+         # DFS
+         # 방문 여부
+         visited = [False for _ in range(V+1)]
+         # 목적지
+         to_visits = [S]
+
+         while to_visits:
+               # 현재 위치 = 목적지들에서 마지막
+               current = to_visits.pop()
+               # 현재 위치를 방문한 적이 없다면,
+               if not visited[current]:
+                  print(current)
+                  # 현재 위치 방문 체크
+                  visited[current] = True
+                  # 현재 위치에서 갈 수 있는 정점들을 목적지들에 추가
+                  to_visits += graph[current]
+      #dfs()
+
+      def bfs():
+         from collections import deque
+
+         # 방문 여부
+         visited = [False for _ in range(V + 1)]
+         # 목적지
+         to_visits = deque()
+         to_visits.append(S)
+
+
+         while to_visits:
+               # 현재 위치 = 목적지들에서 마지막
+               current = to_visits.popleft()
+               # 현재 위치를 방문한 적이 없다면,
+               if not visited[current]:
+                  print(current)
+                  # 현재 위치 방문 체크
+                  visited[current] = True
+                  # 현재 위치에서 갈 수 있는 정점들을 목적지들에 추가
+                  to_visits += graph[current]
+
+      bfs()
+   
+   # ☻ DFS : 도착한 노드의 '연결된 노드들 중 마지막 노드'를 계속 꼬리물기 식으로 타고 끝까지 들어가며 하나씩 탐색 ❯ 연결의 끝점까지 도달했는데 값을 못 찾을 경우 Back!
+
+   # ☻ BFS : 도착한 노드에 연결된 노드를 모두 탐색 후, 없으면 왼쪽 연결 노드를 물고 이동, 이동하여 도착한 노드에 연결된 노드를 모두 탐색 후 없으면 왼쪽 연결 노드를 물고 이동, 이과정을 반복, 연결이 없는 노드에 도착시 Back!
+   ```
 * <h3>Programmers</h3>
 
    ```python
