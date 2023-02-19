@@ -557,6 +557,58 @@ Process
 
    print(solution("GRGRGRB"))
    ```
+   ```python
+   #71_송아지찾기
+   #bfs이용
+
+   def solution(s,e):
+      #목적지가 뒤에 위치하면 가까이가자
+      if s < e:
+         count = (e-s)// 5 #최대 보폭 5로 나눠줌(간만큼 카운팅)
+         s += count * 5 #가까워진 만큼 출발점 갱신
+
+      #목적지가 뒤에 있으면 뒤로 후진
+      elif s > e:
+         count =0
+
+
+      #방문여부
+      from collections import deque
+      visited = [False for _ in range(10001)] #좌표 10000까지 갈수있음
+      #목적지
+      to_visits = deque() #데크사용
+      to_visits.append(s)
+
+
+      while to_visits:
+         #목적지 수 만큼 반복
+         for _ in range(len(to_visits)):
+               #현재 위치 갱신
+               current = to_visits.popleft()
+               print('현위치',current)
+               #방문여부 체크
+               if not visited[current] :
+                  #방문체크
+                  visited[current] = True
+                  #e 도달 했으면 끝
+                  if current == e:
+                     return count
+                  # 도달하지 못했으면 이동가능한 선택지들 : 해당좌표에서의 연결좌표 역할 >탐색 >없으면 왼쪽 꼬리 물고 이동
+                  for nxt in [current-1, current+1, current+5]:
+                     if 0< nxt <= 10000 and not visited[nxt]:
+                           to_visits.append(nxt)
+
+         count +=1
+      return count
+
+   #3
+   print(solution(5, 14))
+   #5
+   print(solution(8, 3))
+
+
+
+   ```
 
 * <h3> Baekjoon </h3>
 
