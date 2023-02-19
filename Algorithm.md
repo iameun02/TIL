@@ -276,6 +276,20 @@ Process
 3. 방문한 적이 없다면 POP된 정점을 방문체크한다.
 4. 현재 위치에서 갈수 있는 정점들을 목적지에 추가한다.
 
+> <h3>Deque(데크)</h3> <br>
+> 앞, 뒤 양쪽 방향에서 엘리먼트(element)를 추가하거나 제거할 수 있는 '양방향 큐'를 가리킨다. 데크는 양 끝 엘리먼트의 append와 pop이 압도적으로 빠르다. <br>
+> 리스트(list) : O(n) 소요  vs  데크(deque) : O(1) 소요 <br>
+> 무엇보다 데크를 이용하면 Stack과 Queue를 모두 구현할 수 있다. <br>
+> 
+> 
+>  ```deque.append(item): item을 데크의 오른쪽 끝에 삽입``` <br>
+   ```deque.appendleft(item): item을 데크의 왼쪽 끝에 삽입``` <br>
+   ```deque.pop(): 데크의 오른쪽 끝 엘리먼트를 가져오는 동시에 데크에서 삭제``` <br>
+   ```deque.popleft(): 데크의 왼쪽 끝 엘리먼트를 가져오는 동시에 데크에서 삭제``` <br>
+   ```deque.remove(item): item을 데크에서 찾아 삭제``` <br>
+   ```deque.rotate(num): 데크를 num만큼 회전한다(양수:오른쪽, 음수:왼쪽)``` <br>
+
+
 ---
 <br>
 
