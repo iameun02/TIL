@@ -650,7 +650,7 @@ Process
 
     #만약 500,400,100원의 경우라면 (무작위로 주어진 경우) 작은 단위의 동전들을 종합해 다른해가 나올수 있기때문에 그리디 알고리즘 사용불가 -> 다이나믹 프로그래밍으로 해결 
   ```
-<br><br><br>
+<br>
 
 ```python
 #예제 3-2_큰 수의 법칙
@@ -690,4 +690,24 @@ result = 0
 result += (count) * first #등장횟수에 큰수를 곱하여 계산
 result += (M-count) * second #전체 등장횟수 -큰수등장횟수 = 두번째로 큰수 등장횟수, 얘도 횟수에 수를 곱하여 계산후 합산
 print(result)
+```
+<br>
+
+```python
+#예제 3-3_숫자 카드 게임
+
+import sys
+sys.stdin = open('input3.txt')
+
+M, N = map(int,input().split())
+
+array = [list(map(int,input().split())) for _ in range(M)]
+#print(array)
+minimum = 0
+
+for i in array:
+    #print(min(i))
+    if min(i) >= minimum:
+        minimum = min(i)
+print(minimum)
 ```
