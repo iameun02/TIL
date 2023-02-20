@@ -118,6 +118,12 @@
       * 또는  min = max = idx[0] 설정 
 
    18. 미래,또는 답이 있을때 효율적인 방법을 구하는 문제는 끝에서부터 답을 찾아가는 접근법을 활용한다.
+
+   19. 고마운 파이썬 순열과 조합 
+       from itertools import combinations, permutations
+                              #조합          #순열
+   20. 고마운 파이썬의 정렬
+       객체명.sort()
    ```
 5. 참고
    - visualgo 사이트 :  정렬 종류 공부할 때 활용해보기
@@ -288,6 +294,17 @@ Process
    ```deque.popleft(): 데크의 왼쪽 끝 엘리먼트를 가져오는 동시에 데크에서 삭제``` <br>
    ```deque.remove(item): item을 데크에서 찾아 삭제``` <br>
    ```deque.rotate(num): 데크를 num만큼 회전한다(양수:오른쪽, 음수:왼쪽)``` <br>
+
+### 4. DP (Dynamic Programming)
+문제를 작은 문제로 쪼개서 기존 답을 재활용하는 방식으로 접근하기 <br>
+(기억하는 프로그래밍:Memoization) <br>
+DP는 1.재귀 2. Memoization 두가지 방식으로 모두 표현가능하지만 <br>
+Memoization이 기억을 이용하여 연산하기 때문에 훨씬 더 빨라 DP문제에 보통 선택된다. <br>
+<br>
+
+반면 재귀함수는 DFS문제에 대신 사용될 수 있는 방법론이다. <br>
+함수 호출을 하는데 사용되는 DFS 정의가 바로 '재귀'의 기능이기도 하기때문 <br>
+(*bfs는 안됨)
 
 
 ---
@@ -552,8 +569,113 @@ Process
          print(f'#{tc} {0}')
       else:
          print(f'#{tc} {1}')
+   #참고 : 문자열 포함여부는 한번에 if char in '(){}'로 표현가능
+   ```
+   ```python
+   #s4837_부분집합의합 (복습필요!)
+   #방법1_itertools
+      import sys
+      sys.stdin = open('input.txt')
+
+
+      #                        조합           순열
+      from itertools import combinations, permutations
+
+      T = int(input())
+
+      for tc in range(1, T+1):
+         N, K = map(int, input().split())
+         numbers = [i for i in range(1, 13)]
+         count = 0
+
+         for case in combinations(numbers, N):
+            if sum(case) == K:
+                  count += 1
+
+         print(f'#{tc} {count}')
+
+   #방법2_recursive(재귀함수)
+      import sys
+      sys.stdin = open('input.txt')
+
+
+      def dfs(idx):
+         global count
+
+         # 현재 idx 가 numbers의 길이와 같다 => 부분 집합 완성
+         if idx == len(numbers):
+            # 조건을 만족했다면, count 추가
+            if len(subset) == N and sum(subset) == K:
+                  count += 1
+            return
+
+         subset.append(numbers[idx])
+         dfs(idx+1)
+         # visited[idx] = True
+
+         subset.pop()
+         dfs(idx+1)
+         # visited[idx] = False
+
+
+      T = int(input())
+
+      for tc in range(1, T+1):
+         N, K = map(int, input().split())
+         numbers = [i for i in range(1, 13)]
+
+         # 부분집합 / 포함 여부 둘 중에 하나만 있어도 됨
+         # 부분 집합
+         subset = []
+         # 포함 여부
+         # visited = [False] * 12
+
+         count = 0
+         dfs(0)
+         print(f'#{tc} {count}')
 
    ```
+   ```python
+   #s4869_종이붙이기(복습하기!)
+   import sys
+   sys.stdin = open('input.txt')
+
+   T = int(input())
+
+
+   def make_square(n):
+      if n == 1:
+         return 1
+      elif n == 2:
+         return 3
+
+      # Dynamic Programming => DP => 문제를 작은 문제로 쪼개서 접근하기
+      return make_square(n-1) + make_square(n-2) * 2
+
+
+   def make_square2(n):
+      # 최적화 => memoization => 기억 하기
+      answers = [0, 1, 3]
+
+      if n <= 2:
+         return answers[n]
+
+      for i in range(1, n+1):
+         x = answers[i-1]
+         y = 2 * answers[i-2]
+         answers.append(x+y)
+
+      return answers[n]
+
+
+   for tc in range(1, T+1):
+      w = int(input()) // 10
+      print(f'#{tc} {make_square(w)}')
+   ```
+
+
+
+
 * <h3>Programmers</h3>
 
    ```python
