@@ -503,6 +503,7 @@ Process
    
    ```python
    #s4873_반복문자지우기
+   
    import sys
    sys.stdin = open('input.txt')
 
@@ -527,6 +528,7 @@ Process
    
    ```python
    #s4866_괄호검사
+
    import sys
    sys.stdin = open('input.txt')
 
@@ -777,4 +779,25 @@ for i in array:
     if min(i) >= minimum:
         minimum = min(i)
 print(minimum)
+```
+```python
+#예제 3-5_1이될때까지
+
+import sys
+sys.stdin= open('input.txt')
+
+N = 25
+K =3
+cnt =0
+
+while True:
+    if N % K ==0:
+        N /= K
+        cnt +=1
+    else :
+        N -=1
+        cnt +=1
+    if N ==1:
+        break
+print(cnt)
 ```
