@@ -499,6 +499,59 @@ Process
 
    # ☻ BFS : 도착한 노드에 연결된 노드를 모두 탐색 후, 없으면 왼쪽 연결 노드를 물고 이동, 이동하여 도착한 노드에 연결된 노드를 모두 탐색 후 없으면 왼쪽 연결 노드를 물고 이동, 이과정을 반복, 연결이 없는 노드에 도착시 Back!
    ```
+   
+   
+   ```python
+   #s4873_반복문자지우기
+   import sys
+   sys.stdin = open('input.txt')
+
+   T = int(input())
+
+
+   for tc in range(1, T+1):
+      string = list(input())
+      answer =[]   #빈 리스트 : false
+
+      for s in string:
+         if answer and s == answer[-1]: # 리스트가 비어있지 않고, 끝자리 인덱싱과 s가 같다면
+               answer.pop() #리스트에서 제거
+         else:
+               answer.append(s)  #리스트에 추가
+
+      print(f'#{tc} {len(answer)}') #len함수로 list 요소세기
+
+
+
+   ```
+   
+   ```python
+   #s4866_괄호검사
+   import sys
+   sys.stdin = open('input.txt')
+
+   T = int(input())
+
+   for tc in range(1, T+1):
+      string = list(input())
+      brace = 0 #중괄호
+      braket = 0 #소괄호
+
+      for i in string:
+         if i == '{':
+               brace +=1
+         elif i == '}':
+               brace -=1
+         elif i == '(':
+               braket +=1
+         elif i == ')':
+               braket -=1
+      if brace ==0 and braket ==0:
+         print(f'#{tc} {0}')
+      else:
+         print(f'#{tc} {1}')
+
+   ```
 * <h3>Programmers</h3>
 
    ```python
