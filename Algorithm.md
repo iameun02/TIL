@@ -588,7 +588,7 @@ Memoization이 기억을 이용하여 연산하기 때문에 훨씬 더 빨라 D
          numbers = [i for i in range(1, 13)]
          count = 0
 
-         for case in combinations(numbers, N):
+         for case in combinations(numbers, N): #numbers 원소로 N개 원소의 조합만들기
             if sum(case) == K:
                   count += 1
 
@@ -642,17 +642,17 @@ Memoization이 기억을 이용하여 연산하기 때문에 훨씬 더 빨라 D
 
    T = int(input())
 
-
+   #재귀
    def make_square(n):
-      if n == 1:
+      if n == 1: #Base Case (재귀문은 더이상 깊이 탐색하지 않도록 root역할을 할 Base Case지정이 필요하다.)
          return 1
-      elif n == 2:
+      elif n == 2: #Base Case
          return 3
 
       # Dynamic Programming => DP => 문제를 작은 문제로 쪼개서 접근하기
-      return make_square(n-1) + make_square(n-2) * 2
+      return make_square(n-1) + make_square(n-2) * 2 #점화식 (DP는 관계 속 규칙을 찾아내는게 중요)
 
-
+   #Memo
    def make_square2(n):
       # 최적화 => memoization => 기억 하기
       answers = [0, 1, 3]
