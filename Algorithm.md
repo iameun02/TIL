@@ -797,8 +797,39 @@ Memoization이 기억을 이용하여 연산하기 때문에 훨씬 더 빨라 D
    #5
    print(solution(8, 3))
 
+   ```
+
+   ```python
+   #p87946_피로도 (순열(조합영역)과 재귀(조건만족판단)를 활용해 풀이)
+
+   from itertools import permutations
+
+   def solution(k, dungeons):
+      result = []
+      cnt =0
+      def rc(idx,k):
+         nonlocal result
+         nonlocal cnt
+
+         if idx >= 3:
+               return cnt
+
+         if i[idx][0] <= k:
+               k -= i[idx][1]
+               cnt += 1
+               rc(idx + 1,k)
 
 
+      for i in list(permutations(dungeons,3)):
+         rc(0,80)
+         result.append(cnt)
+         if max(result) == 3: #가능한 최대의 값을 이미 만족시켰으면 반복문 중단
+               break
+         cnt= 0
+      print(max(result)) 
+
+
+   print(solution(80,[[80,20],[50,40],[30,10]]))
    ```
 
 * <h3> Baekjoon </h3>
