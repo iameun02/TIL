@@ -888,6 +888,51 @@ Memoization이 기억을 이용하여 연산하기 때문에 훨씬 더 빨라 D
 
    print(solution(80,[[80,20],[50,40],[30,10]]))
    ```
+   ```python
+   #p121683_외톨이알파벳
+
+   def solution(string):
+      dict = {}
+      visited = {}
+      for i in list(string):
+         visited[i] = False
+      result =[]
+
+
+      for idx,i in enumerate(list(string)):
+         #등장횟수 처리
+         try:
+               dict[i] += 1
+         except:
+               dict[i] = 1
+
+         #방문횟수 및 구간이 True인가? pop
+         if dict[i] >=2 and visited[i]:
+            result.append(i)
+
+         #해당 요소 구간 처리
+         try:
+               if i == list(string)[idx+1]: #다음요소가 동일하면 아직 바꾸지말고
+                  visited[i] = False
+               else: #동일하지 않으면 바꾸기
+                  visited[i] = True
+         except:pass
+
+
+
+      if result == [] :
+         return 'N'
+      else:
+         return set(result)
+
+
+
+
+   print(solution("edeaaabbccd"))
+   print(solution("eeddee"))
+   print(solution("string"))
+   print(solution("zbzbz"))
+   ```
 
 * <h3> Baekjoon </h3>
 
