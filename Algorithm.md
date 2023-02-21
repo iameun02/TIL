@@ -53,7 +53,7 @@
    ``` python
    1. a,b = ____.split()
    2. List 중복 제거시 : (set) 
-   3. List comprehension
+   3. List comprehension [i for i in range(n)]
    4. Enumerate (index를 함께 발생시켜줌)
    5. 변수명은 boolean값이 리턴될경우 is__로 시작하며, 리스트와 튜플은 복수형으로 지어준다. 함수명은 동사형
       (파이참에서 shift+F6 을 누르면 변수명을 일괄변경 가능하다.)
@@ -133,6 +133,10 @@
            global a #함수밖변수
            nonlocal b #함수내변수 (global이아님 주의!)
 
+   22. list 요소 counting : dictionary 활용
+     for i in range(리스트명) :
+         try : dict[i]  += 1 #기존에 키값이 존재하면 1 증가
+         except : dict[i] = 1 #기존에 키값이 없으면 1 입력
 
 
    ```
@@ -1055,4 +1059,26 @@ while True:
     if N ==1:
         break
 print(cnt)
+```
+```python
+#예제 4-1_상하좌우
+n = 5
+M = ('R R R U D D')
+
+x,y = 1,1
+dx = [0, 0, -1, 1]
+dy = [-1, 1, 0, 0]
+move = ['L','R','U','D']
+
+
+for plan in list(M.split()):
+    for i in range(len(move)):
+        if plan == move[i]:
+            nx = x + dx[i]
+            ny = y + dy[i]
+    if nx <1 or ny <1 or nx > n or ny > n:
+        continue
+    x,y = nx, ny
+
+print(x,y)
 ```
