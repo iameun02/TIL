@@ -941,7 +941,50 @@ Memoization이 기억을 이용하여 연산하기 때문에 훨씬 더 빨라 D
    print(solution("string"))
    print(solution("zbzbz"))
    ```
+   ```python
+   #p86971_전령망둘로 나누기 (재풀이필요..;ㅁ;)
 
+   def solution(n, wires):
+      # 간선연결정보
+      edge = [[] for _ in range(n+1)]
+      for i,j in wires:
+         edge[i].append(j)
+         #edge[j].append(i) _이것도 포함해야하는데..
+      # 노드방문여부
+      visited = [False] * (n+1)
+      min = float('inf')
+
+      for i in range (len(visited)-1):
+         visited[i] = True
+         to_visit = [1]
+         cnt_v1 = 0
+         cnt_v2 =0
+      # 노드 카운팅(DFS)
+         while to_visit:
+               current = to_visit.pop()
+               # true를 만났을 때
+               if visited[current-1]:
+                  cnt_v1 +=1
+               else:
+                  to_visit += edge[current]
+                  cnt_v1 +=1
+                  #print(to_visit)
+
+         cnt_v2 = n - cnt_v1
+         if abs(cnt_v1 - cnt_v2) < min:
+               min = abs(cnt_v1 - cnt_v2)
+
+         visited[i] = False
+
+      return min
+
+
+
+   print(solution(9 ,[[1, 3], [2, 3], [3, 4], [4, 5], [4, 6], [4, 7], [7, 8], [7, 9]]))
+   print(solution(4 ,[[1,2],[2,3],[3,4]] ))
+   print(solution(7, [[1,2],[2,7],[3,7],[3,4],[4,5],[6,7]]))
+   
+   ```
 * <h3> Baekjoon </h3>
 
 ---
