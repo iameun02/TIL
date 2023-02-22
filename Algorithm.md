@@ -895,6 +895,10 @@ Memoization이 기억을 이용하여 연산하기 때문에 훨씬 더 빨라 D
    ```python
    #p121683_외톨이알파벳
 
+   ##Review: try-except 문은 예외처리용으로 코테에는 '지양'
+   ## index + 1 이 오류나는걸 처리하기 위해선 , index를 사용하지말고 range를 사용해서 out of range 에러가 발생안하도록 코딩
+   ## 또는 마지막 인덱스는 if문으로 건너뛰게끔 해줄수도 있음
+
    def solution(string):
       dict = {}
       visited = {}
@@ -903,7 +907,7 @@ Memoization이 기억을 이용하여 연산하기 때문에 훨씬 더 빨라 D
       result =[]
 
 
-      for idx,i in enumerate(list(string)):
+      for idx,i in enumerate(string): #문자열은 enumerate 사용시 list(string)로 안감싸줘도 된다!
          #등장횟수 처리
          try:
                dict[i] += 1
