@@ -1082,3 +1082,18 @@ for plan in list(M.split()):
 
 print(x,y)
 ```
+```python
+#예제 4-2_시간
+
+n = 5
+count = 0
+
+for t in range(n+1):
+    for m in range(60):
+        for s in range(60):
+            if '3' in str(t) + str(m) + str(s):
+                count +=1
+
+print(count)
+
+```
