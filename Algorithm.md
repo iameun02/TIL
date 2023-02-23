@@ -1113,6 +1113,7 @@ n = 5
 M = ('R R R U D D')
 
 x,y = 1,1
+#이동할 방향을 기록해주는 변수 dx, dy
 dx = [0, 0, -1, 1]
 dy = [-1, 1, 0, 0]
 move = ['L','R','U','D']
@@ -1143,4 +1144,24 @@ for t in range(n+1):
 
 print(count)
 
+```
+
+```python
+#예제 4-3_왕실의 나이트
+
+input = list('b1')
+row = int(input[1])
+col = int(ord(input[0])) -int(ord('a')) +1 
+# input의 문자에서 a 유니코드(97) 만큼을 빼줘서 차이를 이용해 10진수로 활용(a의경우 1로 만들어줌)
+#ord(c)는 문자의 유니코드 숫자 값을 리턴하는 함수이다. (chr 함수와 반대)
+steps = [(-2,-1), (-1,-2) ,(1,-2), (2,-1), (2,1), (1,2), (-1,2), (-2,1)]
+
+cnt = 0
+for step in steps:
+    next_row = row+step[0]
+    next_col = col+step[1]
+    if next_row >= 1 and next_row <=8 and next_col >= 1 and next_col <=8:
+        cnt +=1
+
+print(cnt)
 ```
