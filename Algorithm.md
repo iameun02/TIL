@@ -985,6 +985,65 @@ Memoization이 기억을 이용하여 연산하기 때문에 훨씬 더 빨라 D
    print(solution(7, [[1,2],[2,7],[3,7],[3,4],[4,5],[6,7]]))
    
    ```
+   ```python
+   #p42884_ 단속카메라
+
+   #[풀이1 : 집합이용]
+   def solution(routes):
+
+      result = [[] for i in range(len(routes))]
+
+      #차마다 달린 주행거리를 각각 list로 만들기
+      i=0
+      for s,e in routes:
+               result[i] = [j for j in range(s,e+1)]
+               i+=1
+
+      # 집합을 활용하여 차선마다 주행거리를 비교해서 중복구간이 있는 차선들은 모두 True로 체크후,
+      # 카메라 1대 설치 (cnt +=1)
+      cnt = 0
+      visited = [False] * len(routes)
+      for i in range(len(result)):
+         if not visited[i]:
+               for j in range(len(result)):
+                  if set(result[i]) & set(result[j]):
+                     if j == i:
+                           continue
+                     visited[j] = True
+                     visited[i] = True
+
+               if visited[i] == True: #중복구간이 있는 차선그룹당
+                  cnt +=1  #카메라 1대 설치
+
+      # 중복구간이 없는 차들은 차당 카메라 1대설치
+      left =[1 for x in visited if x == False]
+      
+      return cnt + sum(left)
+
+   print(solution([[-20,-15], [-14,-5], [-18,-13], [-5,-3]]))
+   print(solution([[1,3], [3,4], [5,6]]))
+
+
+   #[풀이2: 그리디 이용]
+   def solution(routes):
+      answer = 0
+      routes.sort(key=lambda x: x[1])
+      camera = -30001
+      print(routes)
+      cnt = 0
+      for i in range(len(routes)):
+         s, e = routes[i]
+         if camera < s:
+               cnt += 1
+               camera = e
+      answer = cnt
+
+      return answer
+
+
+   print(solution([[-20, -15], [-14, -5], [-18, -13], [-5, -3]]))
+
+   ```
 * <h3> Baekjoon </h3>
 
 ---
