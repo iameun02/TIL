@@ -1129,6 +1129,26 @@ x[1] 기준으로 sorting 하기
    print(solution([[-20, -15], [-14, -5], [-18, -13], [-5, -3]]))
 
    ```
+   ```python
+   #p121684_체육대회
+   
+   from itertools import permutations ,product
+   def solution(ability):
+      answer = 0
+
+      for case in permutations(ability, len(ability[0])): #ability 내 리스트로 특정 자리 수에 맞게 생성 가능한 순열 경우의 수를 모두 뽑는다.
+         #(두자리인 경우 리스트 2개씩 비교)
+         sum = 0 
+         for i in range(len(case)): # 주어진 case마다  
+               sum += case[i][i] #각 i열 list의 i번째 요소를 합산 (순열이기때문에 이경우만 고려하면된다.)
+         answer = max(answer, sum)
+
+      return answer
+
+
+   print(solution([[40, 10, 10], [20, 5, 0], [30, 30, 30], [70, 0, 70], [100, 100, 100]]))
+   print(solution([[20, 30], [30, 20], [20, 30]]))
+   ```
 * <h3> Baekjoon </h3>
 
 ---
