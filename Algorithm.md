@@ -734,6 +734,33 @@ Memoization이 기억을 이용하여 연산하기 때문에 훨씬 더 빨라 D
 
       print("#{} {}".format(T, max(max_r, max_c, max_d)))
    ```
+   ```python
+   #s5202_화물도크
+   
+   sys.stdin = open('input.txt')
+
+   T = int(input())
+   for tc in range(1, T+1):
+      n = int(input())
+
+      #정렬
+      anw =[]
+      for i in range(n):
+         anw.append(list(map(int,input().split())))
+         #result = list(map(int,input().split()))
+      anw.sort(key= lambda x:x[1]) #작업이 빨리 끝나는 순으로 정렬
+      print(anw)
+
+      load = 0
+      cnt = 0
+      for s,e in anw:
+         if s >= load:
+               load = e
+               cnt +=1
+
+      print(cnt)
+   ```
+
 
 
 
