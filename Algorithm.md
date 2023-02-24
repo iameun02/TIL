@@ -28,11 +28,11 @@
        확인을 위해 ```git branch```) <br>
         ❸ 문제파일 우측파일 클릭 후 내 이름으로된 파일 생성 후 문제풀기 <br>
         
-     *  프로그래머스 : 제공하는 기본 소스코드를 파이참에 복붙 후, <br>
-         test를 위해 구현 함수를 호출하고, <br>
-         호출시 화면에서 제공된 샘플 입출력 데이터를 파라미터로 넣어준다. <br>
+     * 프로그래머스 : 제공하는 기본 소스코드를 파이참에 복붙 후, <br>
+                  test를 위해 구현 함수를 호출하고, <br>
+                  호출시 화면에서 제공된 샘플 입출력 데이터를 파라미터로 넣어준다. <br>
 
-     * 백준 :
+     * SWEA :
              ``` import sys
                sys.stdin =open('input.txt') ```
 
@@ -52,7 +52,7 @@
 4. 소스활용
    ``` python
    1. a,b = ____.split()
-   2. List 중복 제거시 : (set) 
+   2. List 중복 제거시 : set(list) 
    3. List comprehension [i for i in range(n)]
    4. Enumerate (index를 함께 발생시켜줌)
    5. 변수명은 boolean값이 리턴될경우 is__로 시작하며, 리스트와 튜플은 복수형으로 지어준다. 함수명은 동사형
@@ -147,6 +147,7 @@
    ```
 5. 참고
    - visualgo 사이트 :  정렬 종류 공부할 때 활용해보기
+   - pythontutor 사이트
 <br>
 
 -----
@@ -176,8 +177,8 @@ input양의 변화량이 아닌, input양에 따라 '연산의 횟수'의 변화
 [예시] #67258_보석쇼핑
 <br>
   1) for 중첩 반복문을 적용시 ➡︎ O(n^2) <br>
-1) (n)*(n+1)/2 알고리즘 적용시 : ➡︎ O(1) <br>
-2) 두 포인터 접근방식 적용시 ➡︎ O(n) (정확히는 O(2n)이지만, n으로 표기) <br><br>
+  2) (n)*(n+1)/2 알고리즘 적용시 : ➡︎ O(1) <br>
+  3) 두 포인터 접근방식 적용시 ➡︎ O(n) (정확히는 O(2n)이지만, n으로 표기) <br><br>
 
 
 ### 2. 자료구조 (DS) 
@@ -233,7 +234,7 @@ input양의 변화량이 아닌, input양에 따라 '연산의 횟수'의 변화
            ``` 노드를 인덱스로 사용 [[0번사용안함],[],[],[]...] ``` <br><br>
          * 무향일 때 코드화   <br>
           ``` graph[start].append(end)``` <br>
-         ```graph[end].append(start) #'순열'개념```
+          ```graph[end].append(start) #'순열'개념```
          <br>
          * 유향일 때 코드화 <br>
          ```graph[start].append(end) #'조합'개념```
@@ -384,7 +385,7 @@ Heap : Tree에서 특정 특성을 가진 트리 <br>
       heapq.pop : O(logn) <br>
       heapq.push = O(logn) <br>
       
-   * list는 삽입 O(1), 탐색: O(n))
+   * list는 삽입 O(1), 탐색: O(n)
    * 파이썬 정렬 sort() : O(nlogn)
   
 - 힙활용 소스코드
