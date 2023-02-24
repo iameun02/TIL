@@ -1562,3 +1562,32 @@ while True:
 
 print(count)
 ```
+```python
+#피보나치 수열 구하기
+def fibo(n):
+    # 재귀로 작성하시오.
+    if n <= 1:
+        return n
+    return fibo(n-1) + fibo(n-2)
+for i in range(1, 20):
+    print(fibo(i), end=' ')
+
+
+'''출력 결과
+1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181
+'''
+
+def fibo(n):
+    # 메모이제이션(memoization)을 활용하여 작성하시오.
+    fibo = [0,1]
+    for i in range(2,n+1):
+        fibo.append(fibo[i-1] + fibo[i-2])
+    return fibo[n]
+
+for i in range(1, 20):
+    print(fibo(i), end=' ')
+
+'''출력 결과
+1 1 2 3 5 8 13 21 34 55 89 144 233 377 610 987 1597 2584 4181 
+'''
+```
