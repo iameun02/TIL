@@ -1264,13 +1264,14 @@ Heap : Tree에서 특정 특성을 가진 트리 <br>
    ```
    
    ```python
-   #p121688_신입사원교육(꼭풀어보기..!, dfs,sort방법으로 풀이는 가능하지만 시간초과발생 > heap문제)
+   #p121688_신입사원교육(꼭풀어보기..!, dfs+sort방법으로 풀이는 가능하지만 시간초과발생 > heap문제)
    from itertools import combinations
 
    def solution(ability, number):
       n = len(ability)
       minimum = float('INF')
-
+      
+      #1. dfs풀이
       def dfs(x, arr):
          nonlocal minimum
 
@@ -1291,13 +1292,23 @@ Heap : Tree에서 특정 특성을 가진 트리 <br>
                dfs(x+1, copy_arr)
 
       dfs(0, ability)
-
       return minimum
 
+      #2. heap풀이
+      def solution(ability, number):
+         heapq.heapify(ability)
+         print(ability)
+         for _ in range(number):
+            p1 = heapq.heappop(ability)
+            p2 = heapq.heappop(ability)
+            p3 = p1 + p2
+            heapq.heappush(ability, p3)
+            heapq.heappush(ability, p3)
+
+         print(sum(ability))
 
    print(solution([10, 3, 7, 2], 2))
    print(solution([1, 2, 3, 4], 3))
-
    ```
 * <h3> Baekjoon </h3>
 
