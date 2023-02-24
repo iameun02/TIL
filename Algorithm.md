@@ -876,7 +876,7 @@ Heap : Tree에서 특정 특성을 가진 트리 <br>
       print(cnt)
    ```
    ```python
-      #s5209_최소생산비용
+      #s5209_최소생산비용 (복습하기, 특히 순열문제를 재귀로 바꾸어 푸는방법 중요_재귀풀이로 백트래킹이 가능하기 때문에 구현방법 익숙해져야함)
 
       import sys
       sys.stdin = open('input.txt')
