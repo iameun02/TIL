@@ -361,7 +361,64 @@ x[1] 기준으로 sorting 하기
    
 <br><br>
 
-### 6. 참고_객체 In Python
+### 6. Heap
+
+>Tree (Cycle 이 없는 그래프) <br>
+Heap : Tree에서 특정 특성을 가진 트리 <br>
+- heap은 완전 이진트리다
+  > 이진트리의 특성 <br>
+   1~N까지의 번호 순서대로 이진 트리가 생성되었을때, <br>
+    ```V번째 자식 노드들 번호 : V*2, V*2+1``` <br>
+    ```V번째 부모 노드 번호 : V//2``` <br><br>
+   차수 : 자식노드의 개수 <br><br>
+   <순회 종류> <br>
+   전위순회 : 자손노드보다 루트노드 먼저 방문 <br> 
+   중위순회 : 왼쪽자손 > 루트 >오른쪽 <br>
+   후위순회 : 루트보다 자손을 먼저 방문 <br>
+
+- 최대힙 : 루트가 언제나 제일 커야함, 서브트리에서도 마찬가지 
+- 최소힙 : 루트가 언제나 가장 작아야됨, 서브트리에서도 마찬가지
+- 시간복잡도 :
+   * heap은 삽입, 탐색 : O(logn) > 정렬이 아님, 젤 최상 루트값만 조정 해주는 것!
+      heapify = O(n) <br>
+      heapq.pop : O(logn) <br>
+      heapq.push = O(logn) <br>
+      
+   * list는 삽입 O(1), 탐색: O(n))
+   * 파이썬 정렬 sort() : O(nlogn)
+  
+- 힙활용 소스코드
+   ```python
+   #리스트에서 최소합 구하기 (p121688_신입사원교육문제)
+   import heapq
+
+   #기존 리스트를 최소힙으로 만들겠다.
+   heapq.heapify(리스트명)
+
+   P1 = heapq.heappop(리스트명)
+   #최소힙에서 최소값 pop (가장 낮은 값)
+   P2 = heapq.heappop(리스트명)
+   #최소힙에서 두번째로 최소값 pop
+   P3 = P1 + P2
+
+   heapq.heappush(리스트명,P3)
+   heapq.heappush(리스트명,P3)
+   ```
+
+
+이처럼, 
+최대/최소 문제는 힙의 시간복잡도를 이길 수 없다. <br>  
+
+다만, heapq 자체는 최소힙만 지원을 하기때문에 <br>
+최대힙을 이용하기 위해서는 음수화로 알고리즘 수행 후, <br>
+```리스트명2 = list(map(lambda x:-x, 리스트명))``` <br>
+맨 마지막에 다시 마이너스로 부호를 바꿔서 return 하는 식으로 활용된다. <br><br>
+
+
+
+
+
+### 7. 참고_객체 In Python
 
 모든 파이썬 프로그래밍은 객체와 객체간의 상호작용으로 설명할 수 있다. <br>
 .함수 = 다 메서드
@@ -818,14 +875,70 @@ x[1] 기준으로 sorting 하기
 
       print(cnt)
    ```
+   ```python
+      #s5209_최소생산비용
 
+      import sys
+      sys.stdin = open('input.txt')
+      from itertools import permutations
+
+      T = int(input())
+
+      for tc in range(1, T+1):
+         N = int(input())
+         matrix = [list(map(int,input().split())) for _ in range(N)]
+         #print(matrix)
+         answer = float('inf')
+
+      # #1. 순열풀이
+         for case in permutations(matrix,N):
+            sum = 0
+            for i in range(N):
+                  sum += case[i][i]
+            answer = min(answer, sum)
+
+         print(f'#{tc} {answer}')
+
+      #2. 재귀풀이
+         def solution(matrix):
+            result = float('inf')
+            # 공장수
+            fac_cnt = len(matrix)
+            # 제품수
+            prod_cnt = len(matrix[0])
+            # 공장포함여부
+            visited = [False for _ in range(fac_cnt)]
+
+            def dfs(prod_idx, total):
+                  nonlocal result
+
+                  if prod_idx == prod_cnt:
+                     result = min(total, result)
+                     return
+
+                  for fac_idx in range(N):
+                     if not visited[fac_idx]:
+                        visited[fac_idx] = True
+                        #new_total = 지금까지 생산비용 + 이번선택에 의한 생산비용
+                        new_total =  total + matrix[prod_idx][fac_idx]
+                        #Backtraing(가지치기) : new_total이 result보다 작을때만
+                        if new_total < result:
+                              dfs(prod_idx + 1, new_total) #+1이필요
+                        visited[fac_idx] = False
+
+            dfs(0, 0)
+            return result
+
+         print(solution(matrix))
+      
+   ```
 
 
 
 * <h3>Programmers</h3>
 
    ```python
-   #12928_약수의 합
+   #p12928_약수의 합
 
    def solution(n):
       answer = 0
@@ -837,7 +950,7 @@ x[1] 기준으로 sorting 하기
       return answer
    ```
    ```python
-   #92334_신고 결과 받기
+   #p92334_신고 결과 받기
 
    def solution(id_list, report, k):
      a =[]
@@ -870,7 +983,7 @@ x[1] 기준으로 sorting 하기
 
    ```
    ```python
-   #121687_실습용로봇
+   #p121687_실습용로봇
 
    def solution(command):
     loc = [0, 0]
@@ -895,7 +1008,7 @@ x[1] 기준으로 sorting 하기
    print(solution("GRGRGRB"))
    ```
    ```python
-   #71_송아지찾기
+   #p71_송아지찾기
    #bfs이용
 
    def solution(s,e):
@@ -1149,6 +1262,43 @@ x[1] 기준으로 sorting 하기
    print(solution([[40, 10, 10], [20, 5, 0], [30, 30, 30], [70, 0, 70], [100, 100, 100]]))
    print(solution([[20, 30], [30, 20], [20, 30]]))
    ```
+   
+   ```python
+   #p121688_신입사원교육(꼭풀어보기..!, dfs,sort방법으로 풀이는 가능하지만 시간초과발생 > heap문제)
+   from itertools import combinations
+
+   def solution(ability, number):
+      n = len(ability)
+      minimum = float('INF')
+
+      def dfs(x, arr):
+         nonlocal minimum
+
+         if x == number:
+               total = sum(arr)
+               if total < minimum:
+                  minimum = total
+               return
+
+         for case in combinations(range(n), 2):
+               copy_arr = arr[:]
+               p1, p2 = case
+               copy_arr[p1] = copy_arr[p2] = copy_arr[p1] + copy_arr[p2]
+
+               if sum(copy_arr) > minimum:
+                  continue
+
+               dfs(x+1, copy_arr)
+
+      dfs(0, ability)
+
+      return minimum
+
+
+   print(solution([10, 3, 7, 2], 2))
+   print(solution([1, 2, 3, 4], 3))
+
+   ```
 * <h3> Baekjoon </h3>
 
 ---
@@ -1271,6 +1421,10 @@ while True:
         break
 print(cnt)
 ```
+<br>
+
+ * <h3>구현</h3>
+  > 완전탐색(모든 경우의수를 다 계산하는 해결방법) + 시뮬레이션 (문제에서 제시한 알고리즘을 한단계씩 차례대로 직접수행)
 ```python
 #예제 4-1_상하좌우
 n = 5
@@ -1328,4 +1482,71 @@ for step in steps:
         cnt +=1
 
 print(cnt)
+```
+
+```python
+# 예제 4-4_게임개발
+
+import sys
+sys.stdin = open('input4.txt')
+#0 북
+#1 동
+#2 남
+#3 서
+
+
+n, m = list(map(int,input().split()))
+x, y, direction = list(map(int,input().split()))
+visited = [[0] * n for _ in range(m)]
+visited[x][y] = 1 #현재좌표 방문처리
+
+#방향정의
+dx = [0,1,0,-1]
+dy = [1,0,-1,0]
+
+
+#맵
+array =[]
+for i in range(n):
+    array.append(list(map(int, input().split())))
+
+#왼쪽회전함수
+def turnleft():
+    global direction
+    direction -=1
+    if direction == -1:
+        direction =3
+
+count = 1 #현재위치 방문처리용 카운팅
+turntime = 0
+while True:
+     turnleft() # 회전 및 이동
+     nx = x + dx[direction]
+     ny = y + dy[direction]
+
+    # 0: 육지, 1:바다
+     if visited[nx][ny] == 0 and array[nx][ny]==0:
+         #방문처리 맵에도 F, 전체맵에도 F여야됨
+         visited[nx][ny] = 1
+         x= nx
+         y= ny
+         #print(visited[x][y])
+         count += 1
+         turntime =0 # 이동했으면 초기화
+         continue
+     else:
+         turntime +=1
+
+     #사면 모두 이동불가능하다면
+     if turntime == 4: #후진은 경우의 수가 중복인것같은데 왜 또처리하는지..모르겠음
+         # nx= x-dx[direction]
+         # ny = y- dy[direction]
+         # if array[nx][ny] ==0:
+         #     x= nx
+         #     y= ny
+         # else:
+        break
+        turntime = 0
+
+print(count)
 ```
