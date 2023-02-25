@@ -1312,7 +1312,54 @@ Heap : Tree에서 특정 특성을 가진 트리 <br>
    print(solution([1, 2, 3, 4], 3))
    ```
 * <h3> Baekjoon </h3>
+```python
+#b1260_ DFS와 BFS
+import sys
+sys.stdin = open('input.txt')
 
+T= int(input())
+
+for tc in range(1, T+1) :
+    N, E, S = list(map(int, input().split()))
+    dict = [[] for _ in range(N+1)] #node + 1
+    link = [list(map(int,input().split())) for _ in range(E)]
+
+    # 간선정보
+    for k, e in link: #양방향
+        dict[k].append(e)
+        dict[e].append(k)
+
+
+    print(dict)
+
+    def dfs():
+        to_visits = [S]
+        visited = [False] * (N + 1)
+
+        while to_visits:
+            current = to_visits.pop()
+            if not visited[current]:
+                print(current)
+                visited[current] = True
+                to_visits += sorted(dict[current], reverse=True) #스텍이니 역순정렬
+
+    #dfs()
+
+    from collections import deque
+    def bfs():
+        to_visits = deque()
+        to_visits.append(S)
+        visited = [False] * (N + 1)
+
+        while to_visits:
+            current = to_visits.popleft()
+            if not visited[current]:
+                print(current)
+                visited[current] =True
+                to_visits += sorted(dict[current]) #정렬
+    bfs()
+
+```
 ---
 <br>
 
