@@ -1360,6 +1360,44 @@ for tc in range(1, T+1) :
     bfs()
 
 ```
+```python
+#b2644
+import sys
+sys.stdin = open('input_b2644.txt')
+T = int(input())
+from collections import deque
+
+for tc in range(1, T+1):
+     N = int(input())
+     S, E= list(map(int, input().split()))
+     M = int(input()) #관계
+     graph = [[] for _ in range(N+1)]
+
+
+     for _ in range(M):
+         a, b =list(map(int,input().split()))
+         graph[a].append(b)
+         graph[b].append(a)
+
+#bfs
+     visited = [False] * (N+1)
+     to_visits = deque([(S,0)])
+     visited[S] = True #현재 위치 True
+
+     while to_visits:
+         current, cnt = to_visits.popleft()
+         if current == E:
+             print(cnt)
+             break
+
+         for i in graph[current]:
+             if not visited[i]:
+                 to_visits.append((i, cnt+1))
+                 visited[i] = True
+     else:
+         print(-1)
+
+```
 ---
 <br>
 
