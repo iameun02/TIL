@@ -67,9 +67,9 @@
  11. n개 column 에 대한 aggregation
          df_hk[['age','salary']].agg(['mean','sum','count'])
      n개 column 에 대한 n개 aggregation_각각 요약정보를 다르게 출력하고 싶을때 딕셔너리 이용
-     이때 # 1개 column에 2개 이상 aggregation을 적용하면 마지막 aggregation이 적용
-         df_hk[['age','salary']].agg({'age':'mean',  'salary':'max'})
-      두개를 다 사용하고 싶다면, 아래 방법 활용 (각각 열을 정의하여 생성)
+     이때 1개 column에 2개 이상 aggregation을 적용하면 마지막 aggregation이 적용 (age : max적용됨)
+         df_hk[['age','salary']].agg({'age':'mean', 'age':'max', 'salary':'max'})
+     두개를 다 사용하고 싶다면, 아래 방법 활용 (각각 열을 정의하여 생성)
          df_hk[['age','salary']].agg(age_mean = ('age','mean'), age_max = ('age','max'), sal_cnt = ('salary','count'), sal_median = ('salary','median'))
 
 
@@ -88,8 +88,8 @@
             np.where(df_hk['age']<=40, '40대','50대이상'))[:10]
       # cut
       pd.cut(x = df_hk['age'], bins = [0,20,30,40,100], labels = ['10대', '20대', '30대', '40대이상'], right= True)
-      Right = True : 오른쪽 값을 해당구간에 포함하는게 T, 다음 구간에 포함하는게 F 
-                     즉, 이하인지 미만인지 
+      * right = True : 오른쪽 값을 해당구간에 포함하는게 T, 다음 구간에 포함하는게 F 
+                       즉, 이하인지 미만인지 
       
       bins수 (구간이다보니) > label수
 
