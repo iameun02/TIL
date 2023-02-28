@@ -1407,7 +1407,48 @@ for tc in range(1, T+1):
               print('answer:',-1)
      bfs()
 
+```
+```python
+#b2606_바이러스
 
+import sys
+sys.stdin = open('input_b2606.txt')
+from collections import deque
+
+N = int(input())
+M = int(input())
+
+graph = [[] for _ in range(N+1)]
+
+
+
+a=  [list(map(int, input().split())) for _ in range(M)]
+
+
+for s,e in a :
+    graph[s].append(e)
+    graph[e].append(s)
+print(graph)
+
+def bfs(S):
+    visited = [False for _ in range(N + 1)]
+    to_visits = deque()
+    to_visits.append(S)
+
+    cnt = 0
+    while to_visits:
+        current = to_visits.pop()
+        #print(current)
+        if not visited[current]:
+            visited[current] = True
+            to_visits += graph[current]
+            if current ==S:
+                continue
+            else:
+                cnt += 1
+    print(cnt)
+
+bfs(1)
 
 ```
 ---
