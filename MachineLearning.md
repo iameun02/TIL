@@ -10,11 +10,12 @@
 4. z = 행삭제 취소
 
 
-<br>
+<br><br>
 
 ## Numpy/ Pandas 코드
 
 ```python
+    [numpy]
  1. 함수 및 메서드
     type(): 자료형 정보 (list, array 등) 
     .dtype : 데이터 타입정보 (int, float 등)
@@ -105,7 +106,60 @@
       df_hk['birthday'].dt.day
       df_hk['birthday'].dt.weekday #월요일은 0
       df_hk['birthday'].dt.day_name() #day_name은 ()필요
-
-
-
+ 17. Array 생성
+    np.array([1,2,3])
+    np.zeros((3,3))
 ```
+<br><br>
+
+## Series 와 DataFrame
+[Series] :  Pandas의 1차원
+ 1) 함수 및 메서드
+      A = pd.Series([1,2,3])
+      A.values
+      A.index
+      A.idxmax(최대값의 위치)
+      A.isin([1,2])
+
+[DataFrame] : 1차원 Series를 모아놓은 것 Pandas의 2차원 
+ 1) 함수 및 메서드
+   Crosstab  
+    - 두변수를 조합하여 살펴볼때 사용하는 pandas 함수 (빈도표)
+    - normalize 인자에 True,1,0값을 할당하여 값을 정규화할수있음
+      pd.crosstab(df['aa'], df['bb'])
+
+
+      pd.DataFrame([1,2,3], [4,5,6]], columns = ['A', 'B', 'C'])
+      pd.DataFrame({'A':[1,4], 'B':[2,5], 'C':[3,6]})
+      pd.DataFrame(np.arange(6).reshape(2,3) +1 , columns=['A','B','C'])
+
+<br><br>
+
+## 표본추출
+
+1. 단순임의추출
+2. 층화표본추출 (의료-코호트분석)
+3. 계통추출
+    - 첫표본을 무작위로 추출하고 표집간격 k만큼 떨어진 곳에서 데이터 추출
+4. 군집추출
+
+[code]
+  > 샘플 추출은 단순임의 추출이 기본이지만, groupby 를 사용하면 층화 표본추출 기능을 구현할 수 있다. ]
+Sklearn - train_test_split
+df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
+
+1)  pandas - sample() <br>
+   n= 표본개수 frac= 비율, random_state = 표본추출결과를 고정
+   Replace : 복원추출 여부, weights : 가중치
+   파라미터 n 과 frac은 동시사용은 불가 ```(frac은 비율로 추출 0.005등)``` <br>
+      ```python
+      df.groupby('season').sample(n=2, random_state= 42) >> 층화추출기능
+      ```
+
+
+2) scikit-learn <br>
+   ```python
+      from sklearn.model_selection import train_test_split
+
+      df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
+   ```
