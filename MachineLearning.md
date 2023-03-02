@@ -107,8 +107,10 @@
       df_hk['birthday'].dt.weekday #월요일은 0
       df_hk['birthday'].dt.day_name() #day_name은 ()필요
  17. Array 생성
-    np.array([1,2,3])
-    np.zeros((3,3))
+     np.array([1,2,3])
+     np.zeros((3,3))
+
+ 18. .tolist()
 ```
 <br><br>
 
@@ -132,6 +134,36 @@
       pd.DataFrame([1,2,3], [4,5,6]], columns = ['A', 'B', 'C'])
       pd.DataFrame({'A':[1,4], 'B':[2,5], 'C':[3,6]})
       pd.DataFrame(np.arange(6).reshape(2,3) +1 , columns=['A','B','C'])
+
+<br><br>
+
+## 통계
+ 1. mode
+    ```python
+    from scipy.stats import mode
+    mode(array) #mode : 최빈값 (빈도값이 모두 동일 할 때는 첫번째 값 리턴), count : 빈도수)
+    ```
+
+
+ 2. [조건부확률]은 crosstab을 활용하여 푼다.
+    pd.crosstab(df['a'], df['b'])
+
+ 3. [중심극한 정리 증명]
+   ```python
+   import matplotlib.pyplot as plt
+   import numpy as np
+   import random
+
+
+   avg_values = []
+   for i in range (1,10000): # 횟수를 증가시키면 정규분포로 변화
+   random_sample = random.sample(range(1, 1000),100)
+   x = np.mean(random_sample)
+   avg_values.append(x)
+
+   plt.hist(avg_values, bins = 100)
+   plt.show()
+   ```
 
 <br><br>
 
@@ -227,3 +259,198 @@ df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
       df5['datetime']=pd.to_datetime(df5['datetime'])
       df5['hour']= df5['datetime'].dt.hour
       df5.groupby('hour')['registered'].mean().idxmax()
+  ```
+   <br><br>
+
+   ## 데이터 시각화
+
+ ```import matplotlib.pyplot as plt``` <br>
+ ```import seaborn as sns ```<br><br>
+
+ ## #1. histogram 
+
+<b>[matplotlib]</b> <br>
+속성값 참고 : https://matplotlib.org/stable/api/markers_api.html
+```python
+figure = plt.figure(figsize=(5, 4), facecolor ='pink')
+plt.plot([0,1,2,3],[1,4,9,12], color = 'red', marker = 'o', markersize = 3,
+         linestyle ='dashed', linewidth = 0.5)
+plt.plot([0,1,2,3],[10,20,30,40], color = 'gray', marker = '', markersize = 8,
+         linestyle ='solid', linewidth = 0.5)
+
+plt.xlabel('x_label')
+plt.ylabel('y_label')
+plt.title('matplotlib chart')
+
+
+plt.show()
+```
+<br><br>
+<b>[seaborn]</b> <br>
+
+* seaborn의 histogram은 histplot과 displot이 대표적이며 histplot은 axes레벨, displot은 figure레벨임
+```python
+# seaborn histogram histplot
+figure = plt.figure(figsize = (3,2))
+sns.histplot(df_hk['age'], kde=True) 
+#kde:추청선 보여주기
+sns.histplot(x='age', data=df_hk, kde=True, bins=30)
+```
+ <br>
+
+## #2. distplot
+
+<b>[seaborn]</b> <br>
+   ```python
+   # seaborn histogram distplot 확률밀도함수(추정선)
+figure = plt.figure(figsize = (3,2))
+sns.distplot(df_hk['age'])
+```
+ <br>
+
+## #3. countplot
+<b>[seaborn]</b> <br>
+   ```python
+plt.figure(figsize=(4, 3))
+sns.countplot(x='company', data=df_hk)
+```
+ <br>
+
+## #4. barplot
+<b>[matplotlib]</b> <br>
+```python
+# bar 값을 만들어야 함
+
+plt.figure(figsize=(4, 3))
+a_mean = df_hk[df_hk['company'] == 'A'].salary.mean()
+b_mean = df_hk[df_hk['company'] == 'B'].salary.mean()
+c_mean = df_hk[df_hk['company'] == 'C'].salary.mean()
+X = df_hk['company'].unique()
+
+plt.bar(x=X, height=[a_mean,b_mean,c_mean])
+plt.xticks([0,1,2],['company A','company B','company C']) # plt.xticks([0,1,2] 눈금간격
+plt.show()
+```
+<b>[seaborn]</b> <br>
+* seaborn barplot y값 default mean으로 계산 (sum, median 변경 가능)
+
+```python
+plt.figure(figsize=(3,2))
+sns.barplot(data = df_hk, x= 'company', y= 'salary')
+
+
+#confidence interval을 없애고, color를 green으로 통일, 평균외에 총합/ 중앙값으로 표현. 
+# hue 인자를 사용하여 x값 세분화 (남/여 데이터로 한번 더 나누기) #x,y축 데이터 바꿔주면 축 바꿔서 그려줌
+# estimator= np.median, np.sum
+
+plt.figure(figsize=(3,2))
+sns.barplot(data = df_hk, x= 'company', y= 'salary', estimator='sum', ci=None ,color='green', hue='gender')
+
+```
+## #5. boxplot
+<b>[matplotlib]</b> <br>
+```python
+# matplotlib boxplot, x(범주형), y(연속형)
+plt.figure(figsize=(3,4))
+plt.boxplot(x= df_hk[['age','height']],data=df_hk)
+plt.show
+
+# matplotlib boxplot, x(범주형), y(연속형)
+a_age = df_hk[df_hk['company']=='A']['age']
+b_age = df_hk[df_hk['company']=='B']['age']
+c_age = df_hk[df_hk['company']=='C']['age']
+
+plt.figure(figsize=(3,4))
+plt.boxplot([a_age, b_age, c_age])
+plt.show
+```
+
+<b>[seaborn]</b> <br>
+```python
+# seaborn boxplot, x(범주형), y(연속형)에 대한 4분위값을 표현
+plt.figure(figsize=(3,4))
+sns.boxplot(data=df_hk, x= 'company' ,y='age')
+
+# hue 인자를 사용하여 x값 세분화
+plt.figure(figsize=(3,4))
+sns.boxplot(data=df_hk, y= 'company' ,x='age', hue='gender')
+```
+<br>
+
+## #6. Pie Chart
+<b>[matplotlib]</b> <br>
+```python
+plt.figure(figsize=(3,4))
+a_count = df_hk[df_hk['company'] == 'A'].company.count()
+b_count = df_hk[df_hk['company'] == 'B'].company.count()
+c_count = df_hk[df_hk['company'] == 'C'].company.count()
+
+plt.pie(x = ([a_count,b_count,c_count]), 
+        labels=(['company A','company B','company C']), autopct='%.1f%%') # autopct 전체 백분율, ' %.2f '는 소숫점 2자리
+
+plt.show()
+```
+## #7. Scatter Plot
+<b>[seaborn]</b> <br>
+
+```python
+#hue 인자를 사용하여 x값 세분화
+sns.scatterplot(df_hk, x= 'age', y='salary',hue='company')
+```
+## #8. heatmap
+<b>[seaborn]</b> <br>
+```python
+#DataFrame의 corr()은 숫자형 값만 상관도를 구함> 상관도를 먼저 구해야됨
+
+# annotation(주석) 인자로 상관계수 표시
+plt.figure(figsize=(4,4))
+corr=  df_hk.corr()
+sns.heatmap(corr, annot = True)
+#DataFrame의 corr()은 숫자형 값만 상관도를 구함
+
+```
+<br><br>
+
+## 가설검정
+
+1. t_test_1sample
+
+
+* t-test를 할 data의 mean 근처의 값으로 t-test후 t통계량과 p_value 관찰 #모집단 평균을 알고 있음
+```python 
+from scipy.stats import ttest_1samp
+ttest_1samp(df_hk['age'], popmean = 39.24)[1] < 0.05  
+
+# 결과값 : TtestResult(statistic=0.0, pvalue=1.0, df=249)
+1.0 < 0.05
+# 결과 : False, 결과 해석: 95% 신뢰수준으로 100% 일치
+# popmean: 모집단의 평균
+```
+
+2. Two sample t-test
+```python
+from scipy.stats import ttest_ind
+ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')].salary)
+
+#결과 : Ttest_indResult(statistic=5.941362455469809, pvalue=1.2532322871358408e-08)
+
+```
+
+
+
+
+   2-1.  sample t-test (A>=B) #less_귀무가설(B)보다 작다(하단측검정)
+   ```python
+   ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')].salary,
+         alternative='less')
+
+   #결과값: Ttest_indResult(statistic=5.941362455469809, pvalue=0.9999999937338386)
+   ```
+
+  2-2. sample t-test (A<=B) #greater_귀무가설(B)보다 크다(상단측검정)
+   ```python
+   ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')].salary,
+            alternative='greater')
+
+   #Ttest_indResult(statistic=5.941362455469809, pvalue=6.266161435679204e-09)
+ ```
