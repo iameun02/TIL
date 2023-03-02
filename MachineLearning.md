@@ -454,3 +454,24 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
 
    #Ttest_indResult(statistic=5.941362455469809, pvalue=6.266161435679204e-09)
  ```
+
+ > 예제 
+ 1) iris 데이터를 사용하여('iris.csv') species column 'virginica'의 'sepal_width' 모평균이 3.14와 같은지 가설을 수립하고 유의수준 0.05에서 검정하시오
+      ```python
+      # H0 : 'virginica'의 'sepal_width' 모평균이 3.14 와 같다고 볼 수 있다 (유의수준 0.05)
+      # H1 : 'virginica'의 'sepal_width' 모평균이 3.14 와 같다고 볼 수 없다 (유의수준 0.05)
+      #df_iris['sepal_width'].mean()
+      from scipy.stats import ttest_1samp, ttest_ind
+
+      ttest_1samp(df_iris['sepal_width'], popmean = 3.14)[1] < 0.05
+      #결과값:  True = H1 지지, H0 기각
+      ```
+ 2) 'setosa'와 'versicolor'의 sepal_length 평균이 같은지 가설을 수립하고 유의수준 0.05에서 검정하시오
+      ```python
+      from scipy.stats import ttest_1samp, ttest_ind
+      a = df_iris[(df_iris['species']=='setosa')]['sepal_length']
+      b = df_iris[(df_iris['species']=='versicolor')]['sepal_length']
+
+      ttest_ind(a,b)[1] <0.05
+      #결과값 : True = H1 지지, H0 기각
+      ```
