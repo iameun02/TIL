@@ -163,3 +163,67 @@ df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
 
       df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
    ```
+   <br><br>
+
+   ## 데이터 전처리
+
+  1) 함수 및  메서드
+   ```python
+    1.  .isna(), .isnull(), .notna(), .notnull() 
+      # null 과 NaN과 na은 동일하다고 봐도 무관
+
+        df.notna().sum(axis = 1)
+
+    2. .fillna()
+       df = df.fillna(value = {'Sepal_Width':df['Sepal_Width'].mean()}) 
+       또는
+       df['Sepal_Width'] = df['Sepal_Width'].fillna(df['Sepal_Width'].mean())
+       round(df.var(),3)
+
+    3. .select_dtypes()
+       df.select_dtypes('float64').isnull().sum().sum()
+
+
+    4. Outlier (평균+ 1.5 표준편차일때)
+       mean = df3['Sepal.Length'].mean()
+       std = df3['Sepal.Length'].std()
+       len(df[(df3['Sepal.Length'] > mean+ (1.5*std))|(df3['Sepal.Length'] < mean- (1.5*std))])
+
+    5. 조건 추출 numpy - where()함수
+       a = np.where(df['Sepal_Length'] >= 3)
+      
+    6. 변수명 바꾸기 
+       [특정 컬럼 변경 : pandas - .rename() 사용]
+       df4 = df4.rename(columns = {'is_setosa':'is_seto'})
+       Data로 접근후 파라미터에서 컬럼 지정
+
+       [데이터 전체 일괄 변경 : pandas - .columns 사용]
+       df4.columns = ['name', 'gender', 'height', 'age', 'blood_type', 'company']
+
+    7. .astype('type명')
+
+    8. .apply(lambda x : x, )
+
+    9. .str.slice(0:4)
+       문자열 슬라이싱
+
+    10. to_datetime(a)
+    
+      a= df5[df5['casual']>25]['datetime'] #필터링
+      b = pd.to_datetime(a)
+      b.dt.date.nunique()
+      bike_time = pd.to_datetime(bike['date time'][:3])
+      bike_time.dt.year
+      bike_time.dt.month
+      bike_time.dt.hour
+      bike_time.dt.date
+
+    11. 더미변수화
+      pd.get_dummies (data, columns= [''], drop_first =True) #get_dummies는 가변수 대상은 없앰
+      #drop_first를 사용하지않고 가변수를 모두 활용할 경우, 완전공선성 등 여러가지 문제 발생
+    
+    12. reset_index() : series를 데이터프레임으로 바꿔주는 역할도 함 + index 0 번부터 리셋
+    13. 최대값을 가진 행의 인덱스를 구할때 idxmax()
+      df5['datetime']=pd.to_datetime(df5['datetime'])
+      df5['hour']= df5['datetime'].dt.hour
+      df5.groupby('hour')['registered'].mean().idxmax()
