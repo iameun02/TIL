@@ -623,3 +623,45 @@ kendalltau(df_hk['age'], df_hk['salary'])
 5. 카이제곱
    -  적합도, 독립성, 동질성 검정 사전에 진행 필요
    - 검정통계량 : 카이제곱 ∑ ((관측도수 - 기대도수)² / 기대도수)
+
+
+```[독립성 검정]``` <br>
+```python
+# 관측값 cross 제공 필요
+
+cross = pd.crosstab(df_hk['gender'], df_hk['company'])
+#margins = True : 행/열합계, normalize = True: 전체기준
+
+from scipy.stats import chi2_contingency #독립성검정
+chi2_contingency(cross)
+
+#결과값 dof =자유도
+Chi2ContingencyResult(statistic=1.674107142857143, pvalue=0.43298440342651534, dof=2, expected_freq=array([[44.8, 44.8, 22.4],
+       [55.2, 55.2, 27.6]
+
+pvalue=0.43298440342651534 > 0.05
+#H0 채택: 독립이다(상관없다)
+```
+
+> 예제
+
+1) season과 weather dtype을 문자형으로 변환하고
+두 변수가 관련있는지 적절한 검정을 하고 검정통계량과 p-value를 구하시오
+```python
+df_bike['weather']= df_bike['weather'].astype('str')
+df_bike['season']= df_bike['season'].astype('str')
+cross = pd.crosstab(df_bike['weather'], df_bike['season'])
+chi2_contingency(cross)[1] < 0.05
+#h0 기각
+```
+
+2) 자전거 총 대여수(count)가 상위 30%일때 'high', 그 미만 일때 'low' 인 파생변수(count_high)를 생성하고
+count_high와 workingday의 연관성 여부를 검정하고 검정 통계량을 구하시오 (소숫점 넷째자리 반올림하여 표기)
+```python
+import numpy as np
+df_bike['workingday']= df_bike['workingday'].astype('str')
+
+df_bike['count_high'] = np.where(df_bike['count']>= df_bike['count'].quantile(0.3), 'high','low')
+cross = pd.crosstab(df_bike['count_high'], df_bike['workingday'])
+chi2_contingency(cross)[0].round(4)
+```
