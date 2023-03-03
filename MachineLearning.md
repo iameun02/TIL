@@ -451,6 +451,12 @@ plt.show()
 #hue 인자를 사용하여 x값 세분화
 sns.scatterplot(df_hk, x= 'age', y='salary',hue='company')
 ```
+<b>[python-plot]</b> <br>
+```python
+plt.figure(figsize=(3,4))
+df_hk.plot.scatter(x= 'age' , y='salary')
+```
+
 ## #8. heatmap
 <b>[seaborn]</b> <br>
 ```python
@@ -467,7 +473,7 @@ sns.heatmap(corr, annot = True)
 
 ## 가설검정
 
-1. t_test_1sample
+1.  t_test_1sample
 
 
 * t-test를 할 data의 mean 근처의 값으로 t-test후 t통계량과 p_value 관찰 #모집단 평균을 알고 있음
@@ -479,10 +485,9 @@ ttest_1samp(df_hk['age'], popmean = 39.24)[1] < 0.05
 1.0 < 0.05
 # 결과 : False, 결과 해석: 95% 신뢰수준으로 100% 일치
 ```
-<b> popmean: 모집단의 추정모수  즉, 𝒎₁
-</b>
+<b> popmean: 모집단의 추정모수  즉, 𝒎₁</b>
 
-1. Two sample t-test
+2. Two sample t-test
 ```python
 from scipy.stats import ttest_ind
 ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')].salary)
@@ -494,7 +499,7 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
 
 
 
-   2-1.  sample t-test (A>=B) #less_ A(𝒎₀)보다 B(𝒎₁)가 작다 (하단측검정)
+2-1.  sample t-test (A>=B) #less_ A(𝒎₀)보다 B(𝒎₁)가 작다 (하단측검정)
    ```python
    ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')].salary,
          alternative='less')
@@ -502,7 +507,7 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
    #결과값: Ttest_indResult(statistic=5.941362455469809, pvalue=0.9999999937338386)
    ```
 
-  2-2. sample t-test (A<=B) #greater_ A(𝒎₀)보다 B(𝒎₁) 가 크다(상단측검정)
+2-2. sample t-test (A<=B) #greater_ A(𝒎₀)보다 B(𝒎₁) 가 크다(상단측검정)
    ```python
    ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')].salary,
             alternative='greater')
@@ -530,3 +535,91 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
       ttest_ind(a,b)[1] <0.05
       #결과값 : True = H1 지지, H0 기각
       ```
+<br>
+
+3. ANOVA 검정
+> 수치가 통계적으로 동질적인지 이질적인지 검증하기 위해 현업에서 많이 사용됨 (80점과 81점이 같은 수준인지 등)
+
+<b>[scipy]</b> <br>
+```python
+# ANOVA scipy.stats 사용
+from scipy.stats import f_oneway
+
+##sample test 준비필요
+a= df_hk[df_hk['company'] =='A'].salary
+b= df_hk[df_hk['company'] =='B'].salary
+c= df_hk[df_hk['company'] =='C'].salary
+
+f_oneway(a,b,c)[1] < 0.05 #H0기각
+```
+<b>[statsmodels]</b> <br>
+#분산분석표 제공
+```python
+# ANOVA statsmodels 사용
+from statsmodels.formula.api import ols
+from statsmodels.stats.anova import anova_lm
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+model = ols(formula = 'salary~ company', data= df_hk).fit() #formula: 종속변수~독립변수 
+
+anova_lm(model)
+```
+
+3-1. 사후검정 #tukey
+```python
+#endog : y label
+#alpha : 유의 수준 0.05
+
+
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+posthoc = pairwise_tukeyhsd(df_hk['salary'], df_hk['company'], alpha =0.05 ) #종속,독립 순
+
+print(posthoc) #변수에 할당해서 프린트 필요
+```
+결과해석 : reject 가 True면 다르다. False면 같다. <br>
+T-test 경우는 결과 값이 False로 나오는게 다르다는 것이다.
+
+
+4. 상관분석
+  - 검정 통계량 : t
+
+
+
+<b>[corr()]</b> <br>
+```python
+(1) # pearsonr, spearmanr, kendalltau
+df_hk.corr() #default method = pearson
+df_hk.corr(method='pearson')
+df_hk.corr(method='kendall')
+df_hk.corr(method='spearman')
+```
+<b>[scipy]</b> <br>
+```python
+# pearsonr
+from scipy.stats import pearsonr
+pearsonr(df_hk['age'], df_hk['salary'])
+
+# spearmanr
+from scipy.stats import spearmanr
+spearmanr(df_hk['age'], df_hk['salary'])
+
+# kendalltau
+from scipy.stats import kendalltau
+kendalltau(df_hk['age'], df_hk['salary'])
+```
+
+
+> 예제 
+ <br>
+
+   temp, atemp, humidity, registered의 상관 계수중 가장 높은것은 ?
+         ```
+         df_bike[['temp','atemp','humidity','registered']].corr()
+         ```
+
+<br>
+
+5. 카이제곱
+   -  적합도, 독립성, 동질성 검정 사전에 진행 필요
+   - 검정통계량 : 카이제곱 ∑ ((관측도수 - 기대도수)² / 기대도수)
