@@ -197,9 +197,9 @@ df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
    ```
    <br><br>
 
-   ## 데이터 전처리
+## 데이터 전처리
 
-  1) 함수 및  메서드
+   <b>함수 및  메서드</b>
    ```python
     1.  .isna(), .isnull(), .notna(), .notnull() 
       # null 과 NaN과 na은 동일하다고 봐도 무관
@@ -254,15 +254,69 @@ df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
       pd.get_dummies (data, columns= [''], drop_first =True) #get_dummies는 가변수 대상은 없앰
       #drop_first를 사용하지않고 가변수를 모두 활용할 경우, 완전공선성 등 여러가지 문제 발생
     
-    12. reset_index() : series를 데이터프레임으로 바꿔주는 역할도 함 + index 0 번부터 리셋
-    13. 최대값을 가진 행의 인덱스를 구할때 idxmax()
+    12. reset_index(drop = True) : 기존의 인덱스를 초기화 하는 메서드 + 동시에 series를 데이터프레임으로 바꿔주는 역할도 함 
+    (drop = True : 기존 인덱스 제거)
+
+    13. .set_index('컬럼명') : 특정변수를 인덱스로 지정할 경우 사용하는 메서드, 데이터 병합 또는 시계열 분해에서 연산을 위해 활용
+
+    14. 최대값을 가진 행의 인덱스를 구할때 idxmax()
+
+      [예제1]
       df5['datetime']=pd.to_datetime(df5['datetime'])
       df5['hour']= df5['datetime'].dt.hour
       df5.groupby('hour')['registered'].mean().idxmax()
-  ```
+
+      [예제2]
+      a= bike[(bike['season']==2)].groupby(bike['datetime'].dt.hour)['registered'].mean()
+      b= bike[(bike['season']==4)].groupby(bike['datetime'].dt.hour)['registered'].mean()
+      abs(a-b).idxmax()
+
+    15. Binding연산 (행 또는 열 연산가능) : pandas- concat() 
+
+      pd.concat([bike1, bike2.reset_index(drop = True)], axis = 1).reset_index(drop=True)
+
+    16. Join연산 : pandas- merge()
+
+      pd.merge(left = df_a, right = df_b , left_on = 'member', right_on = 'name',
+            how = 'inner')
+    17. crosstab() : wide form >> clustering(군집화) 알고리즘에 사용됨
+
+      pd.crosstab(dia['cut'],dia['clarity'], normalize =True).round(2)
+      
+      # normalize =True : 바로 조건부 확률로 확인이 가능
+      # normalize 는 True/ False 외에 1,0도 있다
+      # normalize = 1: 열기준으로 정규화 / 0 : 행기준
+
+      #cut과 clarity 별로 가격의 평균
+      pd.crosstab(dia['cut'],dia['clarity'], values =dia['price'], aggfunc = pd.Series.mean)
+      
+      #위의 내용의 long form 버젼 (결과값은 동일)
+      dia.groupby(['cut', 'clarity'])['price'].mean().reset_index()
+  
+  18. melt()
+   wide form 데이터프레임을 Long Form으로 자료구조를 변환하는 메서드, id_vars 인자에 기준이 되는 변수를 지정하여 처리 <br>
+   
+   크로스탭에서 melt 사용 시에는 기존 인덱스화 되어있는 열을 reset_index()를 통해 열 먼저 되돌려 주고 melt 함수 사용
+
+   elec_melt = elec.melt(id_vars= ['YEAR','MONTH','DAY'])
+   elec_melt
+
+ 19. pivot()
+   Long form 데이터 프레임을 wide form으로 자료구조를 변환하는 메서드
+   Index / columns/ values 인자에 각각 대상변수를 지정하여 출력데이터 구조를 결정 <br>
+   crosstab의 value + aggregate function와 기능이 동일하지만, 피벗이 더 많이 쓰임 <br>
+   또한 군집분석 실시 전 데이터 전처리에 주로 활용됨
+   (pivot()은 pv 실행만, pivot_table()은 요약 연산까지)
+
+   ```
+
+ 
+     
+
+  
    <br><br>
 
-   ## 데이터 시각화
+ ## 데이터 시각화
 
  ```import matplotlib.pyplot as plt``` <br>
  ```import seaborn as sns ```<br><br>
