@@ -356,10 +356,14 @@ df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
    # 2. drop(row index 사용)으로 삭제
      df_hk.drop(index = df_hk[(df_hk['expenditure'] < min) | (df_hk['expenditure'] > max)].index
   
-   # 2-1(참고). drop 대신 반대조건으로 필터링 가능
+   # 2-1(중요!!). drop 대신 반대조건으로 필터링 가능 
      df_hk[(df_hk['expenditure'] >= min) & (df_hk['expenditure'] <= max)]
-   
+     
+     [참고] (행추출시 'NOT'은 ~ 로 사용 가능)
+     df_ds = df_ds[(~df_ds['last_new_job'].isin(['>4', 'never']))]
+
    # 3. 그외 columns 사용하여 삭제 가능
+
    ```
 
  
@@ -590,8 +594,10 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
 <br>
 
 3. ANOVA 검정
-> 수치가 통계적으로 동질적인지 이질적인지 검증하기 위해 현업에서 많이 사용됨 (80점과 81점이 같은 수준인지 등) <br>
-> 그룹이 2개 이상 일때 사용하며, 2개인 경우는 t-test의 결과값과 동일하게 나온다.
+> 수치가 통계적으로 동질적인지 이질적인지 검증하기 위해 현업에서 많이 사용됨 <br>
+> (금,토,일이 같은 '주말'인지 or 80점과 81점이 동일한 수준인지 등) <br>
+> 그룹이 2개 이상 일때 사용하며, 2개인 경우는 t-test의 결과값과 동일하게 나온다. <br>
+> 일원분산분석이 아니라 다중분산분석일 경우 반복문 사용필요 <br>
 
 <b>[scipy]</b> <br>
 ```python
@@ -619,11 +625,10 @@ anova_lm(model)
 ```
 
 3-1. 사후검정 #tukey
+
 ```python
 #endog : y label
 #alpha : 유의 수준 0.05
-
-
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
 
 posthoc = pairwise_tukeyhsd(df_hk['salary'], df_hk['company'], alpha =0.05 ) #종속,독립 순
@@ -631,12 +636,25 @@ posthoc = pairwise_tukeyhsd(df_hk['salary'], df_hk['company'], alpha =0.05 ) #�
 print(posthoc) #변수에 할당해서 프린트 필요
 ```
 결과해석 : reject 가 True면 다르다. False면 같다. <br>
-T-test 경우는 결과 값이 False로 나오는게 다르다는 것이다.
->  일원분산분석이 아니라 다중분산분석일 경우 반복문 사용필요 <br>
+T-test 경우는 결과 값이 False로 나오는게 다르다는 것이다.<br>
 
 <br>
 
-4. 상관분석
+> 예제
+
+bike 데이터(bike.cvs)를 사용하여, 요일별 registered 평균이 같은지 가설을 수립하고 유의수준 0.05에서 검정하니,
+
+평균이 같지 않을때, 평균이 유의수준 0.05에서 차이나지 않는 조합(False)은 몇 개인가 ?
+```python
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+post_hoc = pairwise_tukeyhsd(df_bike['registered'], df_bike['date'], alpha = 0.05)
+print(post_hoc)
+```
+
+<br>
+
+1. 상관분석
   - 검정 통계량 : t
 
 
