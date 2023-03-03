@@ -175,7 +175,7 @@
     - 첫표본을 무작위로 추출하고 표집간격 k만큼 떨어진 곳에서 데이터 추출
 4. 군집추출
 
-[code]
+```Basic Code_ Random Sampling``` 
   > 샘플 추출은 단순임의 추출이 기본이지만, groupby 를 사용하면 층화 표본추출 기능을 구현할 수 있다. ]
 Sklearn - train_test_split
 df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
@@ -196,6 +196,37 @@ df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
       df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
    ```
    <br><br>
+
+
+```표본 추출 방법별 코드```
+
+* ###   Random sampling
+   ```python
+   from sklearn.model_selection import train_test_split
+   x_train, x_test = train_test_split(df_hk, test_size =0.3, random_state=42)
+   x_train[:5]
+   ```
+
+* ### Sytematic sampling
+  ```python
+   df_idx = df_hk.reset_index()
+
+   x_train = df_idx[(df_idx['index'] % 5 != 0)]
+   x_test = df_idx[(df_idx['index'] % 5 == 0)]
+   ```
+
+* ### Cluster sampling
+   ```python
+   df_cluster = df_hk[df_hk['company'] =='A']
+   df_cluster
+   ```
+* ### Stratified Random Sampling
+   ```python
+   df_hk['company'].value_counts()
+
+   pd.crosstab(df_hk['company'], df_hk['gender'])
+   ```
+<br><br>
 
 ## 데이터 전처리
 
@@ -307,7 +338,23 @@ df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
    crosstab의 value + aggregate function와 기능이 동일하지만, 피벗이 더 많이 쓰임 <br>
    또한 군집분석 실시 전 데이터 전처리에 주로 활용됨
    (pivot()은 pv 실행만, pivot_table()은 요약 연산까지)
+ 20. between(2005,2007) : 2005~2007 까지 
+ 
+ 21. nlargest(5) 큰순서대로 상쉬 5개 추출 
 
+ 22. drop()
+   
+   # drop 은 데이터 단위로 접근 
+   # 1. dropna은 subset 이용
+     df_hk_na= df_hk_na.dropna(subset ='age')
+
+   # 2. drop(row index 사용)으로 삭제
+     df_hk.drop(index = df_hk[(df_hk['expenditure'] < min) | (df_hk['expenditure'] > max)].index
+  
+   # 2-1(참고). drop 대신 반대조건으로 필터링 가능
+     df_hk[(df_hk['expenditure'] >= min) & (df_hk['expenditure'] <= max)]
+   
+   # 3. 그외 columns 사용하여 삭제 가능
    ```
 
  
@@ -612,15 +659,24 @@ kendalltau(df_hk['age'], df_hk['salary'])
 
 > 예제 
  <br>
-
+1.
    temp, atemp, humidity, registered의 상관 계수중 가장 높은것은 ?
-         ```
-         df_bike[['temp','atemp','humidity','registered']].corr()
-         ```
+   ```python
+   df_bike[['temp','atemp','humidity','registered']].corr()
+   ``` 
+<br>
+
+1. 날씨가 맑은날(weather = 1) 과 그렇지 않은날 온도(temp)와 자전거 대여 숫자(casual)의 상관계수의 절대값은 얼마인가 ?
+      ```python
+      df_bike[(df_bike['weather'] == 1)][['temp','casual']].corr()
+      ```
+```!! corr는 DF로 추출해야함 [[]] !!```
+
+
 
 <br>
 
-5. 카이제곱
+1. 카이제곱
    -  적합도, 독립성, 동질성 검정 사전에 진행 필요
    - 검정통계량 : 카이제곱 ∑ ((관측도수 - 기대도수)² / 기대도수)
 
@@ -647,21 +703,86 @@ pvalue=0.43298440342651534 > 0.05
 
 1) season과 weather dtype을 문자형으로 변환하고
 두 변수가 관련있는지 적절한 검정을 하고 검정통계량과 p-value를 구하시오
-```python
-df_bike['weather']= df_bike['weather'].astype('str')
-df_bike['season']= df_bike['season'].astype('str')
-cross = pd.crosstab(df_bike['weather'], df_bike['season'])
-chi2_contingency(cross)[1] < 0.05
-#h0 기각
-```
+   ```python
+   df_bike['weather']= df_bike['weather'].astype('str')
+   df_bike['season']= df_bike['season'].astype('str')
+   cross = pd.crosstab(df_bike['weather'], df_bike['season'])
+   chi2_contingency(cross)[1] < 0.05
+   #h0 기각
+   ```
 
 2) 자전거 총 대여수(count)가 상위 30%일때 'high', 그 미만 일때 'low' 인 파생변수(count_high)를 생성하고
 count_high와 workingday의 연관성 여부를 검정하고 검정 통계량을 구하시오 (소숫점 넷째자리 반올림하여 표기)
-```python
-import numpy as np
-df_bike['workingday']= df_bike['workingday'].astype('str')
+   ```python
+   import numpy as np
+   df_bike['workingday']= df_bike['workingday'].astype('str')
 
-df_bike['count_high'] = np.where(df_bike['count']>= df_bike['count'].quantile(0.3), 'high','low')
-cross = pd.crosstab(df_bike['count_high'], df_bike['workingday'])
-chi2_contingency(cross)[0].round(4)
+   df_bike['count_high'] = np.where(df_bike['count']>= df_bike['count'].quantile(0.3), 'high','low')
+   cross = pd.crosstab(df_bike['count_high'], df_bike['workingday'])
+   chi2_contingency(cross)[0].round(4)
+   ```
+
+
+<br><br>
+
+## Scaling
+
+ - 스케일링 전후 비교를 위해 histogram 2가지
+
+   ```python
+   df_hk.hist()
+
+   sns.histplot(df_hk[['height','age', 'salary' , 'expenditure']])
+   ```
+
+
+
+ -  min_max scaling (최소-최대 변환) (범위:0~1) <br>
+      ```python
+      from sklearn.preprocessing import MinMaxScaler, StandardScaler
+      m_scaler = MinMaxScaler()
+
+      model = m_scaler.fit(df_hk[['height','age', 'salary' , 'expenditure']])
+      x_train_scaled = model.transform(df_hk[['height','age', 'salary' , 'expenditure']])
+      df_hk_minmax = pd.DataFrame(x_train_scaled, columns= ['height','age', 'salary' , 'expenditure'])
+      df_hk_minmax 
+      ```
+
+ -  standard scaling (Z-score 변환) (범위 : 0 중심, -∞ ~ +∞)
+      ```python
+      from sklearn.preprocessing import MinMaxScaler, StandardScaler
+      s_scaler = StandardScaler()
+
+      model = s_scaler.fit(df_hk[['height','age', 'salary' , 'expenditure']])
+      x_train_scaled = model.transform(df_hk[['height','age', 'salary' , 'expenditure']])
+      df_hk_stand = pd.DataFrame(x_train_scaled, columns= ['height','age', 'salary' , 'expenditure'])
+      df_hk_stand 
+      ```
+
+
+
+
+
+<b>실기 문제풀이</b>
+```python
+import pandas as pd
+import numpy as np
+df = pd.read_csv('./data/DS_Sample_3.csv',encoding ='utf-8')
+
+movie3 = df.copy()
+movie3['AirDate'] = pd.to_datetime(movie3['AirDate'])
+
+movie3['group'] = np.where(movie3['AirDate'].dt.year.isin([2005,2006,2007]),'A',
+         np.where(movie3['AirDate'].dt.year.isin([2008,2009,2010]),'B','C'))
+#between(2005,2007)도 됨
+
+movie3['success'] = movie3['Rating'] * movie3['Num_Votes'] 
+
+movie3.groupby('DirectedBy')['success'].mean().max().astype(int)
+
+from statsmodels.stats.anova import anova_lm 
+from statsmodels.formula.api import ols
+
+model = ols(formula = 'Num_Votes~ group', data= movie3).fit()
+anova_lm(model)['F'][0] + anova_lm(model)['df'][0]
 ```
