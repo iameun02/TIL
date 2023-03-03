@@ -254,6 +254,11 @@ df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
 
     5. 조건 추출 numpy - where()함수
        a = np.where(df['Sepal_Length'] >= 3)
+
+       np.where(df_hk['age'] < 30,'30미만',
+            np.where(df_hk['age']<=40, '40대','50대이상'))[:10]
+
+       #조건으로 범주 나눌때 npwhere, 조건으로 추출시 loc 
       
     6. 변수명 바꾸기 
        [특정 컬럼 변경 : pandas - .rename() 사용]
@@ -585,7 +590,8 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
 <br>
 
 3. ANOVA 검정
-> 수치가 통계적으로 동질적인지 이질적인지 검증하기 위해 현업에서 많이 사용됨 (80점과 81점이 같은 수준인지 등)
+> 수치가 통계적으로 동질적인지 이질적인지 검증하기 위해 현업에서 많이 사용됨 (80점과 81점이 같은 수준인지 등) <br>
+> 그룹이 2개 이상 일때 사용하며, 2개인 경우는 t-test의 결과값과 동일하게 나온다.
 
 <b>[scipy]</b> <br>
 ```python
@@ -597,7 +603,7 @@ a= df_hk[df_hk['company'] =='A'].salary
 b= df_hk[df_hk['company'] =='B'].salary
 c= df_hk[df_hk['company'] =='C'].salary
 
-f_oneway(a,b,c)[1] < 0.05 #H0기각
+f_oneway(a,b,c)[1] < 0.05 #H0기각 :회사와 연봉은 연관이 있다.
 ```
 <b>[statsmodels]</b> <br>
 #분산분석표 제공
@@ -626,7 +632,9 @@ print(posthoc) #변수에 할당해서 프린트 필요
 ```
 결과해석 : reject 가 True면 다르다. False면 같다. <br>
 T-test 경우는 결과 값이 False로 나오는게 다르다는 것이다.
+>  일원분산분석이 아니라 다중분산분석일 경우 반복문 사용필요 <br>
 
+<br>
 
 4. 상관분석
   - 검정 통계량 : t
