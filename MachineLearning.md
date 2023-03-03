@@ -478,10 +478,11 @@ ttest_1samp(df_hk['age'], popmean = 39.24)[1] < 0.05
 # 결과값 : TtestResult(statistic=0.0, pvalue=1.0, df=249)
 1.0 < 0.05
 # 결과 : False, 결과 해석: 95% 신뢰수준으로 100% 일치
-# popmean: 모집단의 평균
 ```
+<b> popmean: 모집단의 추정모수  즉, 𝒎₁
+</b>
 
-2. Two sample t-test
+1. Two sample t-test
 ```python
 from scipy.stats import ttest_ind
 ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')].salary)
@@ -493,7 +494,7 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
 
 
 
-   2-1.  sample t-test (A>=B) #less_귀무가설(B)보다 작다(하단측검정)
+   2-1.  sample t-test (A>=B) #less_ A(𝒎₀)보다 B(𝒎₁)가 작다 (하단측검정)
    ```python
    ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')].salary,
          alternative='less')
@@ -501,7 +502,7 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
    #결과값: Ttest_indResult(statistic=5.941362455469809, pvalue=0.9999999937338386)
    ```
 
-  2-2. sample t-test (A<=B) #greater_귀무가설(B)보다 크다(상단측검정)
+  2-2. sample t-test (A<=B) #greater_ A(𝒎₀)보다 B(𝒎₁) 가 크다(상단측검정)
    ```python
    ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')].salary,
             alternative='greater')
