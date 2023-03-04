@@ -861,8 +861,57 @@ count_high와 workingday의 연관성 여부를 검정하고 검정 통계량을
       ```
 
 
+## 등분산 검정
+* 두 집단 또는 그이상의 집단간 분산이 같은지 여부 검정
+* 귀무가설 : 집단간 분산은 서로 같음
+
+  1. f_test : 두집단대상 / 정규분포를 따를 때 사용 
+     (Anova 정규분포를 따름)
+      
+      <b>python에는 f검정 함수가 없기 때문에
+      Scipy - f.cdf() (누적분포관련 함수)에
+      f 검정통계량 (분산비), 첫번째 데이터의 자유도, 두번째 데이터의 자유도를 직접 계산하여 p-value를 구한다.</b>
+  2. Bartlett's test : 두집단 이상 대상 / 정규분포를 따를 때 사용
+  3. Lavene's test : 두집단 이상 대상 / 정규분포를 따를 필요가 없음
+
+> 예제
+
+1) 남성과 여성의 1회 평균 송금액의 분산을 비교검정하고, 그 결과의 검정통계량은 얼마인가?
+(2집단이니까 분산비를 구해서 F검정도 가능)
 
 
+
+   ```python
+   from scipy.stats import f
+   from scipy.stats import bartlett
+   from scipy.stats import levene
+
+   #공통전처리
+   df['trans_mean'] = df['Total_trans_amt'] / df['Total_trans_cnt']
+   M_a =df[(df['Gender']== 'M')]['trans_mean']
+   F_a =df[(df['Gender']== 'F')]['trans_mean']
+
+   #---F검정---
+
+   #F통계량
+   F = M_a.var() / F_a.var()
+   print(F)
+
+   #f검정_cdf
+   result = f.cdf(F, dfd = len(M_a)-1, dfn = len(F_a)) 
+   print(result)
+
+   #p-value
+   p = (1-result) * 2
+
+
+   #---bartlett 검정---
+   bartlett(M_a, F_a)
+
+
+   #---levene 검정---
+   levene(M_a, F_a)
+   ```
 
 <b>실기 문제풀이</b>
 ```python
