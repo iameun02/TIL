@@ -364,6 +364,9 @@ df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
 
    # 3. 그외 columns 사용하여 삭제 가능
 
+   23. .pow(2) : 지수연산 (2일때는 제곱)
+        ** 와 동일 (**0.5 는 루트가 된다)
+
    ```
 
  
@@ -529,10 +532,19 @@ sns.heatmap(corr, annot = True)
 
 ## 가설검정
 
-1.  t_test_1sample
+### <b>T-TEST 검정</b>
+> 두 집단간의 평균비교
 
+<br><br>
+
+<b>1.  t_test_1sample</b>
 
 * t-test를 할 data의 mean 근처의 값으로 t-test후 t통계량과 p_value 관찰 #모집단 평균을 알고 있음
+* <b> popmean: 모집단의 추정모수  즉, 𝒎₁</b> <br>
+*  모평균과 가까워질수록 통계량은 낮아지고 p-value가 올라간다. <br>
+*  Scipy -ttest_1samp() 사용 <br>
+```활용: 객단가 평균이 00라고 알려져있다. 사실인가?```
+  
 ```python 
 from scipy.stats import ttest_1samp
 ttest_1samp(df_hk['age'], popmean = 39.24)[1] < 0.05  
@@ -541,9 +553,17 @@ ttest_1samp(df_hk['age'], popmean = 39.24)[1] < 0.05
 1.0 < 0.05
 # 결과 : False, 결과 해석: 95% 신뢰수준으로 100% 일치
 ```
-<b> popmean: 모집단의 추정모수  즉, 𝒎₁</b>
 
-2. Two sample t-test
+<br><br>
+<b>2. Two sample t-test</b>
+
+* 다른환경 (주말/주중) 즉, 독립된 모집단에서 추출된 각 두 집단간 평균이 같은지 검정
+* 등분산 여부에따라 검정통계량 계산식이 달라서 등분산 검정을 해줘야한다.
+* 정규성을 만족하지 못하는 경우 wilcoxon rank sum test (순위합검정) 사용
+* 등분산 가정을 만족하는 경우, equal_var 인자에 True를 할당
+* ttest_ind() 사용 <br>
+```활용: 주중 객단가와 주말 객단가가 같은가?```
+
 ```python
 from scipy.stats import ttest_ind
 ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')].salary)
@@ -551,8 +571,6 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
 #결과 : Ttest_indResult(statistic=5.941362455469809, pvalue=1.2532322871358408e-08)
 
 ```
-
-
 
 
 2-1.  sample t-test (A>=B) #less_ A(𝒎₀)보다 B(𝒎₁)가 작다 (하단측검정)
@@ -592,12 +610,35 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
       #결과값 : True = H1 지지, H0 기각
       ```
 <br>
+<b>3. Paired sample t-test</b>
 
-3. ANOVA 검정
-> 수치가 통계적으로 동질적인지 이질적인지 검증하기 위해 현업에서 많이 사용됨 <br>
-> (금,토,일이 같은 '주말'인지 or 80점과 81점이 동일한 수준인지 등) <br>
-> 그룹이 2개 이상 일때 사용하며, 2개인 경우는 t-test의 결과값과 동일하게 나온다. <br>
-> 일원분산분석이 아니라 다중분산분석일 경우 반복문 사용필요 <br>
+ * 동시간대 등 환경을 동일하게 맞춰준 동일한 모집단에서부터 추출된  두 집단간 차이가 있는지 검정
+ * 표본이 정규성을 만족하지 못하는 경우 wilcoxon rank sum test (순위합검정) 사용
+ * Scipy -ttest_rel() 사용
+ * ```활용: 동년, 동월, 동시간대 이용객 대상으로 비회원의 대여량과 회원의 자전거 대여량의 평균차이 검정```
+
+
+
+<br><br><br>
+
+### <b>ANOVA 검정</b> 
+
+* 수치가 통계적으로 동질적인지 이질적인지 검증하기 위해 현업에서 많이 사용됨 <br>
+* 그룹이 2개 이상 일때 사용하며, 2개인 경우는 t-test의 결과값과 동일하게 나온다. <br>
+
+<b> 1. 일원분산분석 (One way Anova)</b>
+* 세집단 이상 간의 평균차이
+* 수치형 종속변수(평균)와 명목형 독립변수가 각각1하나씩일때 실시
+* (명목형 독립변수 예시: company 같은 집단)
+* 명목형 독립변수가 문자형인경우에는 상관없지만, 
+  1,2,3,4 처럼 구분되어있는 경우 숫자형으로 인식하게하지 않기 위해, 일반적으로 독립변수 앞에 C로 감싸준다.
+   ```python
+   model= ols(formula = 'price ~ C(color)', data = df).fit()
+   anova_lm(model)
+   ```
+  ```활용: 금,토,일이 같은 '주말'인지 or 80점과 81점이 동일한 수준인지 등```
+
+<br>
 
 <b>[scipy]</b> <br>
 ```python
@@ -611,8 +652,7 @@ c= df_hk[df_hk['company'] =='C'].salary
 
 f_oneway(a,b,c)[1] < 0.05 #H0기각 :회사와 연봉은 연관이 있다.
 ```
-<b>[statsmodels]</b> <br>
-#분산분석표 제공
+<b>[statsmodels]</b> #분산분석표 제공
 ```python
 # ANOVA statsmodels 사용
 from statsmodels.formula.api import ols
@@ -623,9 +663,44 @@ model = ols(formula = 'salary~ company', data= df_hk).fit() #formula: 종속변�
 
 anova_lm(model)
 ```
+<br><br>
+<b>2. 이원분산분석(Two way Anova)</b>
+* 수치형 종속변수 1개, 명목형 독립변수가 2개일때 실시
+* 주요효과 + 교효효과 (독립변수같의 영향성) 함께 분석
+* 주요효과 귀무가설 : 평균이 같음
+* 교호작용효과 귀무가설:  요인간 교호작용이 없음 
+* : 를 이용 (주요효과 뒤 +로 연결)
 
-3-1. 사후검정 #tukey
+```python
+from statsmodels.formula.api import ols
+from statsmodels.stats.anova import anova_lm
+model = ols(formula = 'price ~ cut + color + cut:color', data=df).fit()
+anova_lm(model)
 
+#결과해석: 다이아몬드의 cut별 또는 color별간에 price 평균이 같으며(차이 없음), cut-color간 교호작용도 없다.
+```
+```python
+from statsmodels.formula.api import ols
+from statsmodels.stats.anova import anova_lm
+
+model = ols('registered ~ C(season)+C(holiday) + C(season):C(holiday)',
+           data= df_bike).fit()
+anova_lm(model).round(5)
+```
+
+
+
+
+
+
+
+
+### <b>사후검정_tukey</b> # 독립2표본 t-검정과 유사
+
+* reject : 유의수준 안에서 '귀무가설' 기각 여부 
+  (False : 기각 불가 /  True : reject (기각))
+* True : 귀무가설 기각이니까 두 집단은 다르다는 것.
+  
 ```python
 #endog : y label
 #alpha : 유의 수준 0.05
@@ -635,8 +710,7 @@ posthoc = pairwise_tukeyhsd(df_hk['salary'], df_hk['company'], alpha =0.05 ) #�
 
 print(posthoc) #변수에 할당해서 프린트 필요
 ```
-결과해석 : reject 가 True면 다르다. False면 같다. <br>
-T-test 경우는 결과 값이 False로 나오는게 다르다는 것이다.<br>
+
 
 <br>
 
@@ -654,7 +728,8 @@ print(post_hoc)
 
 <br>
 
-1. 상관분석
+### <b>상관분석</b>
+
   - 검정 통계량 : t
 
 
@@ -699,10 +774,10 @@ kendalltau(df_hk['age'], df_hk['salary'])
 ```!! corr는 DF로 추출해야함 [[]] !!```
 
 
-
 <br>
 
-1. 카이제곱
+### <b>카이제곱검정</b>
+
    -  적합도, 독립성, 동질성 검정 사전에 진행 필요
    - 검정통계량 : 카이제곱 ∑ ((관측도수 - 기대도수)² / 기대도수)
 
