@@ -952,11 +952,12 @@ result.plot()
 #result.resid 
 ```
 
-
-
+```
 <br><br>
 
-## Scaling
+# Machine Learning
+
+## <b>Scaling</b>
 
  - 스케일링 전후 비교를 위해 histogram 2가지
 
@@ -989,7 +990,64 @@ result.plot()
       df_hk_stand = pd.DataFrame(x_train_scaled, columns= ['height','age', 'salary' , 'expenditure'])
       df_hk_stand 
       ```
+<br><br>
 
+## <b>계층적 군집분석</b>
+- 데이터변동에 민감
+- 거리기반(유사도)로 묶기
+- 데이터개수가 많은경우 연산에 많은 시간이 소요 (5천개~만개를 넘기는데이터에는 비권장)
+- 계층도(Dendrogram): 데이터간 거리를 기반으로 도식화한 도표
+- [메서드] 
+  - sklearn-AgglomerativeClustering() <br>
+      - n_clusters = 분래 군집개수 설정 <br>
+      - Affinity = 데이터 간 거리계산방법 <br>
+      - Linkage = 군집간 유사도 방법 설정 <br>
+
+
+  - Spicy - dendrogram() 
+  - Spicy - Linkage() =  데이터 간 거리 계산 및 군집 형성
+- 유클리디안 거리 공식 : 두 거리 diff를 제곱하고 더하여 마지막에 루트를 씌워줌
+```python
+import pandas as pd
+from sklearn.cluster import AgglomerativeClustering
+from scipy.cluster.hierarchy import dendrogram, linkage
+from matplotlib import pyplot as plt
+
+df = pd.read_csv('./data/iris.csv')
+df_x = df[['Sepal.Length','Sepal.Width','Petal.Length','Petal.Width']]
+model = AgglomerativeClustering(n_clusters = 3).fit(df_x) 
+# y label이 없는 비지도학습 > 독립변수만 fit 시킴
+# (default) method = ward 
+df['cluster'] = model.labels_
+pd.crosstab(df['Species'], df['cluster'])
+
+df.groupby('cluster').mean().reset_index()
+# 군집별 centroid구하기
+
+
+# 그래프 그리기
+link = linkage(df_x, method = 'ward') 
+#(default) method = single 위 모델과 일치 시켜줌 > ward로 변경
+dendrogram(link)
+plt.show()
+```
+
+## <b>비계층적 군집분석</b>
+- 임의의 k점을 기반으로 가까운 거리의 데이터를 묶음
+- k를 확정하기 위해 여러번의 시행착오 필요
+- 결과를 고정하기 위해 seed설정 필요
+```python
+import pandas as pd
+df = pd.read_csv('./data/iris.csv')
+from sklearn.cluster import KMeans
+
+model = KMeans(n_clusters = 3, random_state = 123).fit(df.iloc[:,:-1])
+
+df['cluster'] = model.labels_
+df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해당 코드는 컬럼이 없어 별도 df작업을 해줘야하기 때문에, groupby를 직접 해주는 것이 더 편리
+```
+<br><br><br><br><br>
+---------
 
 <b>실기 문제풀이</b>
 ```python
