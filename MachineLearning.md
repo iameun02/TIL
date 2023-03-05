@@ -952,7 +952,7 @@ result.plot()
 #result.resid 
 ```
 
-```
+
 <br><br>
 
 # Machine Learning
