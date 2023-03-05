@@ -1451,6 +1451,49 @@ def bfs(S):
 bfs(1)
 
 ```
+```python
+#b2178_미로찾기
+import sys
+sys.stdin = open('b2178.txt')
+T = int(input())
+from collections import deque
+
+for tc in range(1, T+1):
+    n,m = map(int,input().split())
+    graph = [list(map(int,input())) for _ in range(n)]
+    #상하좌우 (행열좌표)
+    dx = [-1,1,0,0]
+    dy = [0,0,-1,1]
+
+
+    #현재위치에서 인접한 상하좌우 가보기 (bfs) > 갈수있는곳 to_visits > bfs
+    def bfs(x,y):
+        #visited = [[0 for _ in range(M)] for _ in range(N)]
+
+        to_visits = deque()
+        to_visits.append((x,y))
+        while to_visits:
+            x,y = to_visits.popleft()
+            #visited[x,y] = True
+            for i in range(4): #4방향
+                nx = x + dx[i]
+                ny = y + dy[i]
+
+                #미로 찾기 공간 내 이동 불가
+                if nx < 0 or ny < 0 or nx >= n or ny >= m:
+                    continue
+                #0인경우 이동불가
+                if graph[nx][ny] ==0:
+                    continue
+                #해당노드를 처음 방문하는 경우에만 최단거리 기록
+                if graph[nx][ny] ==1:
+                    graph[nx][ny] = graph[x][y] +1
+                    to_visits.append((nx,ny))
+
+        return graph[n-1][m-1]
+
+    print(bfs(0,0))
+```
 ---
 <br>
 
