@@ -530,9 +530,9 @@ sns.heatmap(corr, annot = True)
 ```
 <br><br>
 
-## 가설검정
+# 가설검정
 
-### <b>T-TEST 검정</b>
+## <b>T-TEST 검정</b>
 > 두 집단간의 평균비교
 
 <br><br>
@@ -621,7 +621,7 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
 
 <br><br><br>
 
-### <b>ANOVA 검정</b> 
+## <b>ANOVA 검정</b> 
 
 * 수치가 통계적으로 동질적인지 이질적인지 검증하기 위해 현업에서 많이 사용됨 <br>
 * 그룹이 2개 이상 일때 사용하며, 2개인 경우는 t-test의 결과값과 동일하게 나온다. <br>
@@ -695,8 +695,8 @@ anova_lm(model).round(5)
 
 
 
-### <b>사후검정_tukey</b> # 독립2표본 t-검정과 유사
-
+## <b>사후검정_tukey</b> 
+* 독립2표본 t-검정과 유사
 * reject : 유의수준 안에서 '귀무가설' 기각 여부 
   (False : 기각 불가 /  True : reject (기각))
 * True : 귀무가설 기각이니까 두 집단은 다르다는 것.
@@ -728,19 +728,30 @@ print(post_hoc)
 
 <br>
 
-### <b>상관분석</b>
-
-  - 검정 통계량 : t
+## <b>상관분석</b>
+- 상관계수를 통해 선형관계 여부를 분석
+- Pandas-corr()메서드 : 상관계수만 제공
+- Scipy 함수 : 상관계수와 p-value 확인 가능 <br>
+    (검정통계량을 내부적으로 가지고 있지만 보여지는 숫자는 검정통계량이 아닌 상관계수와 PV)
+- 검정 통계량 : t
+- 거의 pearson이 주로 사용되며, spearnam,kendall의 순서형 상관분석은 대표적으로 설문조사 (나쁨/ 좋음 /매우좋음 등)에 사용됨
+  
 
 
 
 <b>[corr()]</b> <br>
 ```python
-(1) # pearsonr, spearmanr, kendalltau
+# pearsonr, spearmanr, kendalltau
 df_hk.corr() #default method = pearson
 df_hk.corr(method='pearson')
 df_hk.corr(method='kendall')
 df_hk.corr(method='spearman')
+
+#groupby를 활용한 상관분석
+df2= df.groupby('weather')[['temp','casual']].corr()
+df2 = df2.reset_index()
+df2[(df2['atemp'])<1]
+
 ```
 <b>[scipy]</b> <br>
 ```python
