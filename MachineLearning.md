@@ -776,13 +776,16 @@ kendalltau(df_hk['age'], df_hk['salary'])
 
 <br>
 
-### <b>카이제곱검정</b>
+## <b>독립성(연관성) 검정</b> ```[카이제곱검정]```
 
-   -  적합도, 독립성, 동질성 검정 사전에 진행 필요
+   - 적합도, 독립성, 동질성 검정 사전에 진행 필요
    - 검정통계량 : 카이제곱 ∑ ((관측도수 - 기대도수)² / 기대도수)
+   - crosstab (빈도표) 자료 활용 필요
+   - 두 명목형 자료 검정 <br>
+     (수치형일 경우는 구간화/범주화를 통해서 명목형으로 변환후 사용)
+   - correction = False 는 연속성 수정을 적용하지 않음을 의미함 ```chi2_contingency(crosstab2 , correction = False)```
+ <br>
 
-
-```[독립성 검정]``` <br>
 ```python
 # 관측값 cross 제공 필요
 
@@ -825,41 +828,6 @@ count_high와 workingday의 연관성 여부를 검정하고 검정 통계량을
 
 
 <br><br>
-
-## Scaling
-
- - 스케일링 전후 비교를 위해 histogram 2가지
-
-   ```python
-   df_hk.hist()
-
-   sns.histplot(df_hk[['height','age', 'salary' , 'expenditure']])
-   ```
-
-
-
- -  min_max scaling (최소-최대 변환) (범위:0~1) <br>
-      ```python
-      from sklearn.preprocessing import MinMaxScaler, StandardScaler
-      m_scaler = MinMaxScaler()
-
-      model = m_scaler.fit(df_hk[['height','age', 'salary' , 'expenditure']])
-      x_train_scaled = model.transform(df_hk[['height','age', 'salary' , 'expenditure']])
-      df_hk_minmax = pd.DataFrame(x_train_scaled, columns= ['height','age', 'salary' , 'expenditure'])
-      df_hk_minmax 
-      ```
-
- -  standard scaling (Z-score 변환) (범위 : 0 중심, -∞ ~ +∞)
-      ```python
-      from sklearn.preprocessing import MinMaxScaler, StandardScaler
-      s_scaler = StandardScaler()
-
-      model = s_scaler.fit(df_hk[['height','age', 'salary' , 'expenditure']])
-      x_train_scaled = model.transform(df_hk[['height','age', 'salary' , 'expenditure']])
-      df_hk_stand = pd.DataFrame(x_train_scaled, columns= ['height','age', 'salary' , 'expenditure'])
-      df_hk_stand 
-      ```
-
 
 ## 등분산 검정
 * 두 집단 또는 그이상의 집단간 분산이 같은지 여부 검정
@@ -912,6 +880,105 @@ count_high와 workingday의 연관성 여부를 검정하고 검정 통계량을
    #---levene 검정---
    levene(M_a, F_a)
    ```
+
+<br><br>
+
+## 시계열분석
+### <b>평활화</b>
+ - 이동평균법 
+   -  단순이동평균법 (Simple Moving Average)
+  
+      메서드 : Pandas =rolling() <br>
+      window에는 이동평균대상이 되는 데이터 개수 n 를 지정 <br>
+      n일부터 평균치 계산됨으로 최초데이터 n-1개 만큼 결측치 존재 <br>
+      center에 True를 입력할 경우 중심 이동 평균실시 가능 <br>
+
+      ```python
+      import pandas as pd
+      df = pd.read_csv('./data/seoul_subway.csv')
+
+      df_sub["mean5"] =df_sub['승차총승객수'].rolling(window=5).mean()
+      df_sub[:10]
+      ```
+
+
+   -  가중이동평균법 (Weighted Moving Average)
+  <br><br>
+
+ - 지수평활법 
+   -  단순지수평활법(EWMA)  
+      메서드 : Pandas-ewm() <br> 
+      Alpha = 지수평활계수 입력
+      ```python
+      df_sub["EWMA"] =df_sub['승차총승객수'].ewm(alpha = 0.9).mean()
+      df_sub[:10]
+      ```
+
+
+   -  이중지수평활법(Winters) 
+   -  삼중지수평활법(HoltWinters)
+
+
+### <b>시계열분해</b>
+
+
+- 메서드 : statsmodels - seasonal_decompose()
+- Model 인자에 'multiplicative'를 입력하면 승법모형 적용(기본 = 가법모형
+- :star: 시계열 데이터 컬럼을 인덱스화 해줘야한다.
+
+```python
+from statsmodels.tsa.seasonal import seasonal_decompose
+#tsa : time series analysis
+
+df['사용일자'] = pd.to_datetime(df['사용일자'], format = '%Y%m%d')
+df_sub = df[(df['노선명'] =='1호선')&(df['역명'] =='종로3가')]
+df_sub = df_sub.set_index('사용일자') #시계열 데이터 인덱스화 : 데이터레벨로 접근
+
+result = seasonal_decompose(df_sub['승차총승객수'][:200])
+result.plot()
+#result.seasonal
+#result.trend 
+#result.resid 
+```
+
+
+
+<br><br>
+
+## Scaling
+
+ - 스케일링 전후 비교를 위해 histogram 2가지
+
+   ```python
+   df_hk.hist()
+
+   sns.histplot(df_hk[['height','age', 'salary' , 'expenditure']])
+   ```
+
+
+
+ -  min_max scaling (최소-최대 변환) (범위:0~1) <br>
+      ```python
+      from sklearn.preprocessing import MinMaxScaler, StandardScaler
+      m_scaler = MinMaxScaler()
+
+      model = m_scaler.fit(df_hk[['height','age', 'salary' , 'expenditure']])
+      x_train_scaled = model.transform(df_hk[['height','age', 'salary' , 'expenditure']])
+      df_hk_minmax = pd.DataFrame(x_train_scaled, columns= ['height','age', 'salary' , 'expenditure'])
+      df_hk_minmax 
+      ```
+
+ -  standard scaling (Z-score 변환) (범위 : 0 중심, -∞ ~ +∞)
+      ```python
+      from sklearn.preprocessing import MinMaxScaler, StandardScaler
+      s_scaler = StandardScaler()
+
+      model = s_scaler.fit(df_hk[['height','age', 'salary' , 'expenditure']])
+      x_train_scaled = model.transform(df_hk[['height','age', 'salary' , 'expenditure']])
+      df_hk_stand = pd.DataFrame(x_train_scaled, columns= ['height','age', 'salary' , 'expenditure'])
+      df_hk_stand 
+      ```
+
 
 <b>실기 문제풀이</b>
 ```python
