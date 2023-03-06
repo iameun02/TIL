@@ -1046,6 +1046,130 @@ model = KMeans(n_clusters = 3, random_state = 123).fit(df.iloc[:,:-1])
 df['cluster'] = model.labels_
 df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해당 코드는 컬럼이 없어 별도 df작업을 해줘야하기 때문에, groupby를 직접 해주는 것이 더 편리
 ```
+<br><br>
+
+## <b>단순선형회귀</b>
+ - statsmodels vs sklearn 비교 
+ - statsmodels는 통계기반 관점  (summary 표 등 통계자료 보기 편함) 
+ - sklearn는 머신러닝 관점
+ - 입력값의 차이(statemodels ols의 경우 formula 문법이 있음 / sklearn는 fit() 활용) 
+
+<br>
+
+### <b> 선형회귀 가정 4가지 선형성, 정규성, 등분산, 독립성</b>
+### <b>1. 선형성</b>
+- F 검정의 pvalue로 확인
+   ```python
+   # 선형회귀 그래프, regplot: scatter plot, regression line, confidence band를 한 번에 그리는 기능
+   sns.regplot(x='salary', y='expenditure', data=df)
+   sns.regplot(x=df['salary'], y=predict_ols)
+
+   # F 검정의 pvalue로 확인
+   model_ols.f_pvalue 
+   model_ols.f_pvalue < 0.05
+   # 결과 : True (h1 지지 : 선형성이 있다고 판단)
+   ```
+### <b>2. 잔차의 정규성</b>
+- 잔차 그래프로 확인
+- shapiro 의 경우 p값이 0.05 이상이면 정규성 만족한다 
+
+   ```python
+   # 잔차 계산
+   residual = df['expenditure']-predict_ols
+
+   # 잔차 그래프 1
+   plt.scatter(df['salary'], residual)
+   plt.show()
+   # 잔차 그래프 2
+   sns.distplot(residual)
+   plt.show()
+
+   # shapiro 정규성 검정, Ho: 정규성을 가진다 (p-value > 0.05)
+   from scipy.stats import shapiro
+   shapiro(residual)[1] < 0.05
+   # 결과해석: TRUE , 0.05 보다 작으므로 귀무가설 기각(= 정규성을 만족 못함)
+   # residual이 그룹화 되어 있어 shapiro test에서 정규성이 안 나옴
+
+   # 시각화
+   import scipy.stats as stats
+   stats.probplot(residual, plot=plt)
+   plt.show()
+   ```
+
+### <b>3. 잔차의 등분산</b>
+- 예측값과 잔차의 산점도로 파악
+   ```python
+   # 잔차그래프로 확인, X가 커질때 잔차의 간격이 변하면 안됨, 간격이 일정하면 등분산성 만족
+   sns.regplot(x=predict_ols, y=residual)
+   ```
+### <b>4. 잔차의 독립성</b>
+- 잔차가 독립인지(자기상관성이 있는지) 검정
+   ```python
+   #perform Durbin-Watson test
+
+   from statsmodels.stats.stattools import durbin_watson
+   durbin_watson(model_ols.resid)
+
+   # 더빈 왓슨 통계량은 0 ~ 4사이의 값을 갖을 수 있음
+   # 0에 가까울수록 → 양의 상관관계
+   # 4에 가까울수록 → 음의 상관관계
+   # 2에 가까울수록 → 오차항의 자기상관이 없음
+   ```
+<br><br>
+### <b> 선형회귀</b>
+### <b>statsmodels</b>
+```python
+from statsmodels.formula.api import ols
+model_ols = ols(formula = 'expenditure ~ salary', data= df).fit()
+
+model_ols.summary()
+
+model_ols.params #절편, 회귀계수
+model_ols.resid #잔차
+
+# 회귀식 만들어보기
+def linear_ols(x):
+    return (model_ols.params[1]* x + model_ols.params[0])
+linear_ols(4720)
+
+# predict로 예측값 확인
+predict_ols = model_ols.predict(df['salary'])
+
+# 시각화 
+fig, ax = plt.subplots( nrows= 1 , ncols=2, figsize=(14, 5))
+sns.scatterplot(x=df['salary'], y=df['expenditure'], palette='Set1', ax= ax[0] )
+sns.scatterplot(x=df['salary'], y=predict_ols, palette='Set2', ax=ax[1] )
+
+ax[0].set_title('expenditure ')
+ax[1].set_title('predict_ols')
+plt.show()
+```
+### <b>sklearn</b></b>
+```python
+# LinearRegression 호출
+from sklearn.linear_model import LinearRegression
+
+# 모델선택, 독립변수(salary), 종속변수(expenditure) 입력, fit 
+model_lm = LinearRegression()
+model_lm.fit(X = df[['salary']], y= df[['expenditure']])
+# 회귀계수 확인
+model_lm.coef_
+# intercept_ 확인
+model_lm.intercept_
+
+# 회귀식 만들어보기
+def linear_lm(x):
+    return (model_lm.coef_[0] * x) + model_lm.intercept_
+# 회귀식으로 예측
+pred_lm = model_lm.predict(df[['salary']])
+
+# 선형회귀 그래프
+sns.regplot(x=df['salary'], y=pred_lm)
+```
+
+
+
+
 <br><br><br><br><br>
 ---------
 
