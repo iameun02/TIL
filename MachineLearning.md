@@ -957,7 +957,8 @@ result.plot()
 
 # Machine Learning
 
-## <b>Scaling</b>
+## <b>Pre-processing</b>
+### <b>1. Scaling</b>
 
  - 스케일링 전후 비교를 위해 histogram 2가지
 
@@ -990,6 +991,17 @@ result.plot()
       df_hk_stand = pd.DataFrame(x_train_scaled, columns= ['height','age', 'salary' , 'expenditure'])
       df_hk_stand 
       ```
+<br>
+
+### <b>2. Get dummies</b>
+
+```python
+# 해당 column만 get_dummies
+pd.get_dummies(df[['gender', 'blood_type', 'company', 'grades']],drop_first= True)  
+
+#전체 데이터에 get_dummies
+pd.get_dummies(df, columns =['gender', 'blood_type', 'company', 'grades'], drop_first= True)  
+```
 <br><br>
 
 ## <b>계층적 군집분석</b>
@@ -1117,7 +1129,7 @@ df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해�
    ```
 <br><br>
 ### <b> 선형회귀</b>
-### <b>statsmodels</b>
+### <b>statsmodels_ols</b>
 ```python
 from statsmodels.formula.api import ols
 model_ols = ols(formula = 'expenditure ~ salary', data= df).fit()
@@ -1144,6 +1156,21 @@ ax[0].set_title('expenditure ')
 ax[1].set_title('predict_ols')
 plt.show()
 ```
+### <b>statsmodels_OLS</b>
+```python
+# statsmodels.api
+import statsmodels.api as sm
+
+model_sm = sm.OLS(df_train1['salary'], sm.add_constant(df_train1[['age']])).fit()
+model_sm
+
+#sm.add_constant 있어야 상수항이 포함됨
+model_sm.predict(sm.add_constant(df_test1[['age']]))[:5]
+
+# summary() #상수항확인가능
+model_sm.summary()
+```
+
 ### <b>sklearn</b></b>
 ```python
 # LinearRegression 호출
@@ -1166,7 +1193,6 @@ pred_lm = model_lm.predict(df[['salary']])
 # 선형회귀 그래프
 sns.regplot(x=df['salary'], y=pred_lm)
 ```
-
 
 
 
