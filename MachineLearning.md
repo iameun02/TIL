@@ -1108,7 +1108,7 @@ df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해�
 ```
 <br><br>
 
-## <b>단순선형회귀</b>
+## <b>선형회귀</b>
  - statsmodels vs sklearn 비교 
  - statsmodels는 통계기반 관점  (summary 표 등 통계자료 보기 편함) 
  - sklearn는 머신러닝 관점
@@ -1253,7 +1253,7 @@ sns.regplot(x=df['salary'], y=pred_lm)
 ```
 <br><br>
 
-## <b>다중선형회귀</b>
+### <b>다중선형회귀</b>
 ### <b>다중공선성 문제</b>
   - 분산팽창 계수(VIF)가 10이상이면 제거
   - method: patsy- dmatrices() <br>
@@ -1277,30 +1277,92 @@ df_vif
 ```
 <br><br>
 
-### <b> 로지스틱 회귀</b>
-### <b>statsmodels_ols</b>
+## <b> 로지스틱 회귀</b>
+-  베르누이 분포를 따를 경우 사용
+### <b>statsmodels</b>
 ```python
-import statsmodels.api as sm
+import pandas as pd
+import numpy as np
+from statsmodels.api import Logit
+
+df['is_setosa'] = (df['Species'] =='setosa') + 0
+model = Logit(df['is_setosa'], df.iloc[:,:2]).fit()
+model   #Logit(종속, 독립) 순서 주의
+
+pred = model.predict(df.iloc[:3,:2])
+pred_class = (pred > 0.5) +0 
+#통계모델은 결과값이 proba 확률로 산출되기 때문에, threshold값 지정하여 2진 분류 수기로 진행해줘야함. ()안의 조건에 해당되는 것이 1 
+
+
+#승산비 구하기 (회귀계수를 exp해주면 된다.)
+np.exp(model_lo2.params)
+```
+### <b>sklearn</b>
+- solver 최적화 알고리즘 설정 가능 (최적값을 산출할때 많이 사용)
+```python
+from sklearn.linear_model import LogisticRegression
+
+pred = model_lg.predict_proba(df.iloc[:,:2])
+pred = pred[:,1]
+roc_auc_score(df['is_setosa'], pred) # 실측값, 예측값순
+accuracy_score(df['is_setosa'], (pred>0.9) + 0) 
 
 ```
+
+<br><br>
+## <b>나이브 베이즈</b>
+-  사전확률 및 추가정보를 기간으로 사후확률을 추론하는 통계기법 '베이즈 추정' 기반 분류
+-  종속변수 각 범주의 등장빈도인 '사전확률' 설정이 중요
+-  각 데이터의 사전 확률을 기반으로 사후확률 계산
+    
+### <b>sklearn</b>
+```python
+import pandas as pd
+from sklearn.naive_bayes import GaussianNB
+
+df =pd.read_csv('./data/iris.csv')
+df['is_setosa'] = (df['Species']=='setosa') + 0
+
+# 사전확률(비율) 구하기
+df['is_setosa'].value_counts(normalize = True)
+
+
+model_g = GaussianNB()
+model_g.fit(df.iloc[:,:4], df['is_setosa'])
+
+# 사전확률 메서드 활용하여 구하기
+model_g.class_prior_
+
+# 계수
+model_g.theta_
+
+pred= model_g.predict_proba(df.iloc[:,:4])
+pred
+```
+
 <br><br><br><br>
 
-### <b>모델평가</b>
+
+
+
+
+
+## <b>모델평가</b>
 <b>1. 수치형</b>
 - R-square(결정계수)
 - MAE
    ```python
    from sklearn.metrics import mean_absolute_error
-   mean_absolute_error(y예측값, y실측값)
+   mean_absolute_error(y실측값, y예측값)
    ```
 - MSE
    ```python
    from sklearn.metrics import mean_squared_error
-   mean_squared_error(y예측값, y실측값)
+   mean_squared_error(y실측값, y예측값)
    ```
 - RMSE
    ```python
-   mean_squared_error(y예측값, y실측값) ** 0.5
+   mean_squared_error(y실측값, y예측값) ** 0.5
    ```
 
 <b>2. 범주형</b>
@@ -1309,6 +1371,29 @@ import statsmodels.api as sm
 (작은 값 쪽에 Advantage를 주어 평균선이 더 가까워짐) <br>
 f1은 어느시점까지 상승했다가 하강하는 특징을 가지고 있어, 점수가 가장 높은 지점이 recall과 precision의 적정하게 조화로운 값이다.<br>
 공식 : 2* ( (Recall * Precision )/ Recall + Precision)
+   ```python
+   from sklearn.metrics import f1_score
+   ```
+- 정확도
+   ```python
+   from sklearn.metrics import accuracy_score
+   ```
+- 정밀도
+  ```python
+  from sklearn.metrics import precision_score
+  ```
+- 재현율
+  ```python
+  from sklearn.metrics import recall_score
+  ```
+- AUC 
+  ```python
+  from sklearn.metrics import roc_auc_score
+  ```
+
+
+
+
 
 <br><br><br><br><br>
 ---------
