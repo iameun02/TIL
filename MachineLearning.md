@@ -1279,6 +1279,7 @@ df_vif
 
 ## <b> 로지스틱 회귀</b>
 -  베르누이 분포를 따를 경우 사용
+-  (pred>0.9) + 0) #기본값 0.5 외 threshold 설정시 유용
 ### <b>statsmodels</b>
 ```python
 import pandas as pd
