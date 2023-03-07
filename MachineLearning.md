@@ -1064,7 +1064,13 @@ df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해�
  - statsmodels vs sklearn 비교 
  - statsmodels는 통계기반 관점  (summary 표 등 통계자료 보기 편함) 
  - sklearn는 머신러닝 관점
- - 입력값의 차이(statemodels ols의 경우 formula 문법이 있음 / sklearn는 fit() 활용) 
+ - 입력값의 차이(statemodels ols의 경우 formula 문법이 있음 / sklearn는 fit() 활용)
+-  ols model 과 sklearn 모델 두가지로 접근 가능
+-  회귀 ols는  연속형 종속변수, 연속형 독립변수
+   ANOVA ols 는 연속형 종속변수, 명목형 독립변수
+-  ols.summary()에서 fpvalue로 선형성 검증
+-  ols는 학습한 데이터만 별도로 모델에 적합시키지 않아도 알아서 걸러서 적합함
+- 반면 sklearn은 intercept로 절편 적합 여부 설정이 가능하여 강력한 최적화 강점을 가지고 있다
 
 <br>
 
@@ -1128,7 +1134,8 @@ df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해�
    # 2에 가까울수록 → 오차항의 자기상관이 없음
    ```
 <br><br>
-### <b> 선형회귀</b>
+
+### <b> 단순선형회귀</b>
 ### <b>statsmodels_ols</b>
 ```python
 from statsmodels.formula.api import ols
@@ -1193,9 +1200,48 @@ pred_lm = model_lm.predict(df[['salary']])
 # 선형회귀 그래프
 sns.regplot(x=df['salary'], y=pred_lm)
 ```
+<br><br>
 
+## <b>다중선형회귀</b>
+### <b>다중공선성 문제</b>
+  - 분산팽창 계수(VIF)가 10이상이면 제거
+  - method: patsy- dmatrices() <br>
+return_type인자에 dataframe으로 설정시 후처리 용이
+- statsmodele-variance_inflation_factor() <br>
+분산팽창 계수를 연산을 위해 반복문 또는 list comprehension 사용
 
+```python
+from patsy import dmatrices
+df_sub = df.loc[:,'season':'casual']
+formula ='casual ~ '+ '+'.join(df_sub.columns[:-1])
+y, X = dmatrices(formula , data = df_sub, return_type = 'dataframe')
 
+#반복문 돌리면서 변수별 하나씩 매칭하여 상관계수 구함
+from statsmodels.stats.outliers_influence import variance_inflation_factor as via
+df_vif = pd.DataFrame()
+df_vif['colname'] = X.columns
+df_vif['VIF'] = [vif(X.values, i) for i in range(X.shape[1])]
+df_vif
+#결과값에서 intercept는 절편항이니까 신경안써도됨
+```
+
+<br><br><br><br>
+### <b>모델평가</b>
+- R-square(결정계수)
+- MAE
+   ```python
+   from sklearn.metrics import mean_absolute_error
+   mean_absolute_error(y예측값, y실측값)
+   ```
+- MSE
+   ```python
+   from sklearn.metrics import mean_squared_error
+   mean_squared_error(y예측값, y실측값)
+   ```
+- RMSE
+   ```python
+   mean_squared_error(y예측값, y실측값) ** 0.5
+   ```
 <br><br><br><br><br>
 ---------
 
