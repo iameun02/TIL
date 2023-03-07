@@ -957,7 +957,7 @@ result.plot()
 
 # Machine Learning
 
-## <b>Pre-processing</b>
+## <b>1. Pre-processing</b>
 ### <b>1. Scaling</b>
 
  - 스케일링 전후 비교를 위해 histogram 2가지
@@ -1030,8 +1030,28 @@ pd.get_dummies(df[['gender', 'blood_type', 'company', 'grades']],drop_first= Tru
 #전체 데이터에 get_dummies
 pd.get_dummies(df, columns =['gender', 'blood_type', 'company', 'grades'], drop_first= True)  
 ```
+
 <br><br>
 
+## <b>2. Feature Engineering</b>
+
+
+1) filter (기준을 만족하는 변수 추출)
+- 예시) 독립변수 수치형 변수중 회귀계수가 높은 2개 선정 (feature selection) 하시오
+독립변수 수치형 변수중 t검정 통계량의 p-value가 0.05이하인것을 선정하시오
+   ```python
+   # p-value 값 0.05 미만 / coef 절대값 0.5이상인 변수를 선택
+   model_ols.params.index[(model_ols.pvalues < 0.05)& (model_ols.params.abs() >= 0.5)]
+   ```
+2) wrapper
+ - 전진선택법, 후진제거법, 단계선택법
+
+3) embedded
+
+
+<br><br>
+
+## <b>3. Model</b>
 ## <b>계층적 군집분석</b>
 - 데이터변동에 민감
 - 거리기반(유사도)로 묶기
@@ -1105,6 +1125,7 @@ df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해�
 ### <b> 선형회귀 가정 4가지 선형성, 정규성, 등분산, 독립성</b>
 ### <b>1. 선형성</b>
 - F 검정의 pvalue로 확인
+- summary()의 t 검정 값도 '선형의 유효성'을 확인하는것이지만, 이것은 두집단 간 검증지표며, x가 많은 다중회귀에서는 f-pvalue로 확인 가능하다.
    ```python
    # 선형회귀 그래프, regplot: scatter plot, regression line, confidence band를 한 번에 그리는 기능
    sns.regplot(x='salary', y='expenditure', data=df)
@@ -1254,9 +1275,18 @@ df_vif['VIF'] = [vif(X.values, i) for i in range(X.shape[1])]
 df_vif
 #결과값에서 intercept는 절편항이니까 신경안써도됨
 ```
+<br><br>
 
+### <b> 로지스틱 회귀</b>
+### <b>statsmodels_ols</b>
+```python
+import statsmodels.api as sm
+
+```
 <br><br><br><br>
+
 ### <b>모델평가</b>
+<b>1. 수치형</b>
 - R-square(결정계수)
 - MAE
    ```python
@@ -1272,6 +1302,14 @@ df_vif
    ```python
    mean_squared_error(y예측값, y실측값) ** 0.5
    ```
+
+<b>2. 범주형</b>
+
+- f1-score (조화평균)<br>
+(작은 값 쪽에 Advantage를 주어 평균선이 더 가까워짐) <br>
+f1은 어느시점까지 상승했다가 하강하는 특징을 가지고 있어, 점수가 가장 높은 지점이 recall과 precision의 적정하게 조화로운 값이다.<br>
+공식 : 2* ( (Recall * Precision )/ Recall + Precision)
+
 <br><br><br><br><br>
 ---------
 
