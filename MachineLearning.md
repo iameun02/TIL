@@ -971,25 +971,53 @@ result.plot()
 
 
  -  min_max scaling (최소-최대 변환) (범위:0~1) <br>
+    -  표준화 : min-max 단위를 고르게 하기 위하여 모든 값을 0~1사이로 바꾸는 것 
       ```python
-      from sklearn.preprocessing import MinMaxScaler, StandardScaler
-      m_scaler = MinMaxScaler()
+      # 대상변수 선택 (수치형) 'height', 'age', 'salary', 'expenditure'
 
-      model = m_scaler.fit(df_hk[['height','age', 'salary' , 'expenditure']])
-      x_train_scaled = model.transform(df_hk[['height','age', 'salary' , 'expenditure']])
-      df_hk_minmax = pd.DataFrame(x_train_scaled, columns= ['height','age', 'salary' , 'expenditure'])
-      df_hk_minmax 
+      df_num = df.select_dtypes(include=['float64','int64'])
+      df_cat = df.select_dtypes(include=['object'])
+
+
+      from sklearn.preprocessing import MinMaxScaler
+      scaler = MinMaxScaler()
+      scaler.fit(df_num)
+      df_scaled = scaler.transform(df_num)
+      pd.DataFrame(df_scaled, columns = df_num.columns)
+
+      # 시각화 
+
+      fig, ax = plt.subplots( nrows= 1 , ncols=2, figsize=(14, 5))
+
+      ax[0].set_title('original ')
+      ax[1].set_title('minmax')
+
+
+      df_num.plot.hist(ax= ax[0] )
+      df_mm.plot.hist(ax= ax[1] )
+      plt.show()
+
       ```
 
- -  standard scaling (Z-score 변환) (범위 : 0 중심, -∞ ~ +∞)
+ -  standard scaling (Z-score 변환) (범위 : 0 중심, -∞ ~ +∞) <br>
+     - 정규화: StandardScaler 모든 변수의 값을 평균이 0이고 분산이 1인 정규 분포로 변환 
       ```python
-      from sklearn.preprocessing import MinMaxScaler, StandardScaler
-      s_scaler = StandardScaler()
+      from sklearn.preprocessing import StandardScaler
+      scaler_ss = StandardScaler()
+      df_scaled_ss = scaler_ss.fit_transform(df_num)
+      df_ss = pd.DataFrame(df_scaled_ss, columns= df_num.columns)
+      df_ss
+      #시각화 
+      fig, ax = plt.subplots( nrows= 1 , ncols=3, figsize=(14, 5))
 
-      model = s_scaler.fit(df_hk[['height','age', 'salary' , 'expenditure']])
-      x_train_scaled = model.transform(df_hk[['height','age', 'salary' , 'expenditure']])
-      df_hk_stand = pd.DataFrame(x_train_scaled, columns= ['height','age', 'salary' , 'expenditure'])
-      df_hk_stand 
+      sns.histplot(x='salary', data=df_num, ax= ax[0])
+      sns.histplot(x='salary', data=df_mm, ax= ax[1], color='green')
+      sns.histplot(x='salary', data=df_ss, ax= ax[2], color='orange')
+
+      ax[0].set_title('df salary histplot')
+      ax[1].set_title('df_minmax salary histplot')
+      ax[2].set_title('df_stan salary histplot')
+      plt.show()
       ```
 <br>
 
@@ -1185,7 +1213,9 @@ from sklearn.linear_model import LinearRegression
 
 # 모델선택, 독립변수(salary), 종속변수(expenditure) 입력, fit 
 model_lm = LinearRegression()
-model_lm.fit(X = df[['salary']], y= df[['expenditure']])
+model_lm.fit(X = df[['salary']], y= df[['expenditure']]) 
+#x변수는 df형태가[[]] 필수지만, y변수에는 []도 가능 & []로 처리해야 결과값도 []로 리턴되어 후처리시 편리
+결과값 가공에 용이
 # 회귀계수 확인
 model_lm.coef_
 # intercept_ 확인
