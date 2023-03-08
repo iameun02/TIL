@@ -955,7 +955,7 @@ result.plot()
 
 <br><br>
 
-# Machine Learning
+# <b>Machine Learning </b>
 
 ## <b>1. Pre-processing</b>
 ### <b>1. Scaling</b>
@@ -1052,21 +1052,37 @@ pd.get_dummies(df, columns =['gender', 'blood_type', 'company', 'grades'], drop_
 <br><br>
 
 ## <b>3. Model</b>
+> ## <b> Unsupervised Learning </b>
+>  '예측'보다는 없었던 y를 찾는 것에 주안점
+
+
+<br>
+
 ## <b>계층적 군집분석</b>
-- 데이터변동에 민감
+- :star: 이상치 및 데이터변동에 민감
+- N개의 데이터가 있을때 N개의 군집으로 시작~ 하나의 군집이 남을 때까지 거리가 가장 가까운 두 요소를 군집화 를 반복
+- 사전에 K를 할당할 필요가 없음
 - 거리기반(유사도)로 묶기
-- 데이터개수가 많은경우 연산에 많은 시간이 소요 (5천개~만개를 넘기는데이터에는 비권장)
-- 계층도(Dendrogram): 데이터간 거리를 기반으로 도식화한 도표
+   - 최단연결법
+   - 최장연결법
+   - 평균연결법
+   - 중심연결법
+   - 와드연결법 
+  <br>
+
+- :star: 데이터개수가 많은 경우 연산에 많은 시간이 소요 <br>
+  (5천개~만개를 넘기는 데이터에는 비권장)
+- :star: 계층도(Dendrogram) 확인 가능: 데이터간 거리를 기반으로 도식화한 도표
+  
 - [메서드] 
   - sklearn-AgglomerativeClustering() <br>
       - n_clusters = 분래 군집개수 설정 <br>
       - Affinity = 데이터 간 거리계산방법 <br>
       - Linkage = 군집간 유사도 방법 설정 <br>
-
-
   - Spicy - dendrogram() 
   - Spicy - Linkage() =  데이터 간 거리 계산 및 군집 형성
 - 유클리디안 거리 공식 : 두 거리 diff를 제곱하고 더하여 마지막에 루트를 씌워줌
+  
 ```python
 import pandas as pd
 from sklearn.cluster import AgglomerativeClustering
@@ -1106,7 +1122,9 @@ model = KMeans(n_clusters = 3, random_state = 123).fit(df.iloc[:,:-1])
 df['cluster'] = model.labels_
 df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해당 코드는 컬럼이 없어 별도 df작업을 해줘야하기 때문에, groupby를 직접 해주는 것이 더 편리
 ```
-<br><br>
+<br><br><br>
+> <b> Supervised Learning </b>
+<br>
 
 ## <b>선형회귀</b>
  - statsmodels vs sklearn 비교 
@@ -1420,16 +1438,25 @@ a = plot_tree(model_dt,
               fontsize=14)
 ```
 
+<br>
+
+## <b>KNN</b>
+- 비모수 방식
+- 분류/회귀 모두 가능
+- 동점을 막기 위해 k값은 보통 홀수로 정함
+- '거리'개념을 사용하는 알고리즘으로, 표준화/정규화 사용 필수
+- 거리기준은 일반적으로 맨허턴거리 혹은 유클리안 거리 사용
+```python
+from sklearn.neighbors import KNeighborsClassifier,KNeighborsRegressor
+
+#for문을 활용하여 K 파라미터값을 여러개 줘보고, f1score가 높은 값을 찾는다. 또는 random_search / grid_search 활용
+```  
 
 
 
 
 
 <br><br><br><br>
-
-
-
-
 
 
 ## <b>모델평가</b>
