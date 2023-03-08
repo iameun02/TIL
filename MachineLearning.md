@@ -1280,7 +1280,7 @@ df_vif
 ## <b> 로지스틱 회귀</b>
 -  베르누이 분포를 따를 경우 사용
 -  (pred>0.9) + 0) #기본값 0.5 외 threshold 설정시 유용
-### <b>statsmodels</b>
+### <b>statsmodels_logit</b>
 ```python
 import pandas as pd
 import numpy as np
@@ -1298,16 +1298,43 @@ pred_class = (pred > 0.5) +0
 #승산비 구하기 (회귀계수를 exp해주면 된다.)
 np.exp(model_lo2.params)
 ```
+### <b>statsmodels_formula_logit</b>
+```python
+from statsmodels.formula.api import logit
+
+# formula 생성
+form = 'car_type ~ ' + ' + '.join(df_hk_0.drop('car_type',axis =1).columns)
+form
+
+model_logit = logit(form, data = df_hk1_0).fit()
+model_logit.summary()
+```
+
+### <b>statsmodels</b>
+
+```python
+import statsmodels.api as sm
+
+model_smLogit = sm.Logit(endog = df_hk1_0['car_type'], exog = sm.add_constant(df_hk1_0.drop('car_type', axis=1))).fit()
+# sm.add_constant intercept으로 상수항 포함시키기
+
+model_smLogit.summary()
+```
+
 ### <b>sklearn</b>
 - solver 최적화 알고리즘 설정 가능 (최적값을 산출할때 많이 사용)
 ```python
 from sklearn.linear_model import LogisticRegression
 
+model_lg = LogisticRegression(C=100000 ,solver='newton-cg')
+# C=100000: 정규화(L1, L2규제) 강도의 역수; 양의 실수, 값이 작을수록 더 강력한 정규화 지정
+
+model_lg.fit(df.iloc[:,:2],df['is_setosa'])
+
 pred = model_lg.predict_proba(df.iloc[:,:2])
 pred = pred[:,1]
 roc_auc_score(df['is_setosa'], pred) # 실측값, 예측값순
 accuracy_score(df['is_setosa'], (pred>0.9) + 0) 
-
 ```
 
 <br><br>
