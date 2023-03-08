@@ -1369,6 +1369,21 @@ pred= model_g.predict_proba(df.iloc[:,:4])
 pred
 ```
 
+<br><br>
+## <b>Decision Tree</b>
+- 비모수적 기법
+- 전제 가정(정규성, 독립성 등)이 없어도됨
+- 수치형, 범주형 데이터 모두 적용 가능
+- 단, 전역 최적화를 얻지 못할 수 있음
+- 과적합이 쉽게 발생
+- 자료 가공이 거의 필요 없음
+
+
+
+
+
+
+
 <br><br><br><br>
 
 
@@ -1419,7 +1434,11 @@ f1은 어느시점까지 상승했다가 하강하는 특징을 가지고 있어
   ```python
   from sklearn.metrics import roc_auc_score
   ```
-
+- 총
+  ```python
+  from sklearn.metrics import classification_report
+  #print()로 출력
+  ```
 
 
 
