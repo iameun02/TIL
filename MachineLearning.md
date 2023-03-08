@@ -1060,7 +1060,8 @@ pd.get_dummies(df, columns =['gender', 'blood_type', 'company', 'grades'], drop_
 
 ## <b>계층적 군집분석</b>
 - :star: 이상치 및 데이터변동에 민감
-- N개의 데이터가 있을때 N개의 군집으로 시작~ 하나의 군집이 남을 때까지 거리가 가장 가까운 두 요소를 군집화 를 반복
+- N개의 데이터가 있을때 N개의 군집으로 시작~ 최대 하나의 군집이 남을 때까지 거리가 가장 가까운 두 요소를 군집화 를 반복
+- n_cluster 설정시 n 개수가 될 때까지 군집화
 - 사전에 K를 할당할 필요가 없음
 - 거리기반(유사도)로 묶기
    - 최단연결법
@@ -1122,6 +1123,18 @@ model = KMeans(n_clusters = 3, random_state = 123).fit(df.iloc[:,:-1])
 df['cluster'] = model.labels_
 df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해당 코드는 컬럼이 없어 별도 df작업을 해줘야하기 때문에, groupby를 직접 해주는 것이 더 편리
 ```
+
+## <b>모델평가</b>
+- Silhouette score
+   ```python
+   from sklearn.metrics import silhouette_score
+   silhouette_score(y실측값, y예측값)
+   ```
+
+
+
+
+
 <br><br><br>
 > <b> Supervised Learning </b>
 <br>
