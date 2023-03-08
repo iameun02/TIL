@@ -1288,7 +1288,7 @@ from statsmodels.api import Logit
 
 df['is_setosa'] = (df['Species'] =='setosa') + 0
 model = Logit(df['is_setosa'], df.iloc[:,:2]).fit()
-model   #Logit(종속, 독립) 순서 주의
+model   #통계모델 : (종속, 독립) 순서 주의
 
 pred = model.predict(df.iloc[:3,:2])
 pred_class = (pred > 0.5) +0 
@@ -1304,7 +1304,7 @@ from statsmodels.formula.api import logit
 
 # formula 생성
 form = 'car_type ~ ' + ' + '.join(df_hk_0.drop('car_type',axis =1).columns)
-form
+form  #통계모델 : (종속, 독립) 순서 주의
 
 model_logit = logit(form, data = df_hk1_0).fit()
 model_logit.summary()
@@ -1316,6 +1316,7 @@ model_logit.summary()
 import statsmodels.api as sm
 
 model_smLogit = sm.Logit(endog = df_hk1_0['car_type'], exog = sm.add_constant(df_hk1_0.drop('car_type', axis=1))).fit()
+# 통계모델 : (종속, 독립) 순서 주의
 # sm.add_constant intercept으로 상수항 포함시키기
 
 model_smLogit.summary()
