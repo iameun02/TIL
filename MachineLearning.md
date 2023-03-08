@@ -1343,6 +1343,9 @@ accuracy_score(df['is_setosa'], (pred>0.9) + 0)
 -  사전확률 및 추가정보를 기간으로 사후확률을 추론하는 통계기법 '베이즈 추정' 기반 분류
 -  종속변수 각 범주의 등장빈도인 '사전확률' 설정이 중요
 -  각 데이터의 사전 확률을 기반으로 사후확률 계산
+-  종속변수가 연속형 변수일 때, Gaussian Naive Bayes (가우시안 나이브 베이즈)
+-  종속변수가 범주형 변수일 때, Multinomial Naive Bayes (다항 나이브 베이즈) 
+  
     
 ### <b>sklearn</b>
 ```python
@@ -1377,7 +1380,45 @@ pred
 - 단, 전역 최적화를 얻지 못할 수 있음
 - 과적합이 쉽게 발생
 - 자료 가공이 거의 필요 없음
+- max_depth : 트리의 최대 깊이 (default = None
+→ 완벽하게 클래스 값이 결정될 때 까지 분할 <br>
+또는 데이터 개수가 min_samples_split보다 작아질 때까지 분할)
+→ depth를 높힐수록 피팅 (구간) 개수가 늘어남 <br> 
+(피팅은 일정 구간마다 평균값으로 하게 되어있다) <br>
+(시각화시 계단형으로 표현됨)<br>
+  
+- min_samples_split : 노드를 분할하기 위한 최소한의 샘플 데이터수 → 과적합을 제어하는데 사용
+(default = 2 → 작게 설정할 수록 분할 노드가 많아져 과적합 가능성 증가)
 
+```python
+# DecisionTreeClassifier 호출
+from sklearn.tree import DecisionTreeClassifier
+
+model_dt = DecisionTreeClassifier(max_depth = 6, min_samples_split= 5, random_state =1234)
+
+model_dt.fit(train_df_hk_3.drop('car_type',axis=1),
+             train_df_hk_3['car_type'])
+
+# feature_importances_  종속변수(car_type에 영향을 미치는 정도) -> feature_importances_로 분기 한다
+model_imp = pd.DataFrame()
+model_imp['feature']= model_dt.feature_names_in_
+model_imp['feature_importance']= model_dt.feature_importances_
+model_imp.sort_values(by ='feature_importance',ascending=False)
+
+# plot_tree 시각화
+from sklearn.tree import plot_tree
+plt.figure(figsize=(35,10))
+a = plot_tree(model_dt, 
+              feature_names= model_dt.feature_names_in_,          
+              # feature_names display
+              class_names =  train_df_hk_3['car_type'].unique(), 
+              # class_names display
+              filled=True,                                       
+              # color
+              rounded=True,
+              max_depth=4,                                      # display max_depth= 4
+              fontsize=14)
+```
 
 
 
