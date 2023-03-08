@@ -1456,13 +1456,39 @@ a = plot_tree(model_dt,
 ## <b>KNN</b>
 - 비모수 방식
 - 분류/회귀 모두 가능
-- 동점을 막기 위해 k값은 보통 홀수로 정함
+- 동률을 막기 위해 k값은 보통 홀수로 정함 (1에 가까울 수록 과적합)
 - '거리'개념을 사용하는 알고리즘으로, 표준화/정규화 사용 필수
 - 거리기준은 일반적으로 맨허턴거리 혹은 유클리안 거리 사용
 ```python
 from sklearn.neighbors import KNeighborsClassifier,KNeighborsRegressor
 
-#for문을 활용하여 K 파라미터값을 여러개 줘보고, f1score가 높은 값을 찾는다. 또는 random_search / grid_search 활용
+#Classifier
+df2 = pd.read_csv('./data/diabetes.csv')
+df2['is_preg'] = (df2['Pregnancies'] > 0) + 0
+
+X = df2[['Pregnancies', 'Glucose', 'BloodPressure','Insulin','BMI']]
+Y = df2[['is_preg']]
+
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(X, Y, random_state = 123, test_size = 0.2)
+
+k = [3,5,10,20]
+score = []
+
+for i in k:
+    model_kc = KNeighborsClassifier(n_neighbors = i)
+    model_kc.fit(x_train, y_train)
+    pred_g = model_kc.predict(x_test)
+    score.append(accuracy_score(y_test,pred_g))
+    print('k가',i,'일때 :',accuracy_score(y_test,pred_g))
+
+result= pd.DataFrame()
+result['k'] = k
+result['score'] = score
+
+result
+
+#for문을 활용하여 K 파라미터값을 여러개 줘보고, f1score, accuracy_score 등 점수가 높은 값을 찾는다. 또는 random_search / grid_search 활용
 ```  
 
 
