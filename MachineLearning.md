@@ -1052,8 +1052,10 @@ pd.get_dummies(df, columns =['gender', 'blood_type', 'company', 'grades'], drop_
 <br><br>
 
 ## <b>3. Model</b>
+
 > ## <b> Unsupervised Learning </b>
->  '예측'보다는 없었던 y를 찾는 것에 주안점
+>  '예측'보다는 없었던 y를 찾는 것에 주안점 <br>
+>  모델에 fit 시킬때 y가 None
 
 
 <br>
@@ -1073,7 +1075,7 @@ pd.get_dummies(df, columns =['gender', 'blood_type', 'company', 'grades'], drop_
 
 - :star: 데이터개수가 많은 경우 연산에 많은 시간이 소요 <br>
   (5천개~만개를 넘기는 데이터에는 비권장)
-- :star: 계층도(Dendrogram) 확인 가능: 데이터간 거리를 기반으로 도식화한 도표
+- :star: 계층도(Dendrogram) 확인 가능: 데이터간 거리를 기반으로 도식화한 도표 (model사용하지않고 scipy에서 자료로 스스로 연산)
   
 - [메서드] 
   - sklearn-AgglomerativeClustering() <br>
@@ -1104,31 +1106,104 @@ df.groupby('cluster').mean().reset_index()
 
 # 그래프 그리기
 link = linkage(df_x, method = 'ward') 
+# link : cluster링 결과, 처음 두 개는 행 번호, 거리, 클러스터에 속한 데이터 수, 묶어지면서 새로운 numbering 부여됨
 #(default) method = single 위 모델과 일치 시켜줌 > ward로 변경
 dendrogram(link)
 plt.show()
+
+# 시각화를 통해 insight 발굴 (black box 유추하기)
+# 예시 (독립,종속 그래프에 hue로 cluster 결과값 입히기)
+fig, ax = plt.subplots( nrows= 1 , ncols=2, figsize=(14, 5))
+sns.scatterplot(x='age', y='salary', data=basetable1, hue='company',  palette='Set1', ax= ax[0] )
+sns.scatterplot(x='age', y='salary', data=basetable1, hue='cluster_hier',  palette='Set2', ax=ax[1] )
+
+ax[0].set_title('category : company ')
+ax[1].set_title('category : hierarchy cluster')
 ```
 
 ## <b>비계층적 군집분석</b>
 - 임의의 k점을 기반으로 가까운 거리의 데이터를 묶음
 - k를 확정하기 위해 여러번의 시행착오 필요
-- 결과를 고정하기 위해 seed설정 필요
+- 결과를 고정하기 위해 seed설정 필요 <br>
+  ```활용 : 고객군집을 나눌때 Model로 예측하고, 가장 관심있는 종속변수, 독립변수 좌표 위에 label값을 hue를 둔 시각화를 통해 나눈 기준(black-box) 을 유추하며 insight를 가져온다 ```
+  
 ```python
 import pandas as pd
-df = pd.read_csv('./data/iris.csv')
 from sklearn.cluster import KMeans
+cluster_1_2 = KMeans( n_clusters=3, random_state=123).fit(basetable_cluster_1) 
+basetable1['cluster_kmean'] = cluster_1_2.labels_
 
-model = KMeans(n_clusters = 3, random_state = 123).fit(df.iloc[:,:-1])
+basetable1.groupby('cluster_kmean').mean() # model.cluster_centers_ attribute 와 기능동일, 단 해당 코드는 컬럼이 없어 별도 df작업을 해줘야하기 때문에, groupby를 직접 해주는 것이 더 편리
 
-df['cluster'] = model.labels_
-df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해당 코드는 컬럼이 없어 별도 df작업을 해줘야하기 때문에, groupby를 직접 해주는 것이 더 편리
+# Attribute 확인
+cluster_1_2.inertia_
+
+
+
+pd.crosstab( basetable1['cluster_hier'], basetable1['cluster_kmean']) #계층적 model과 비교
+pd.crosstab( basetable1['company'], basetable1['cluster_kmean'])
+
+#시각화
+fig, ax = plt.subplots( nrows= 1 , ncols=3, figsize=(16, 5))
+sns.scatterplot(x='age', y='salary', data=basetable1, hue='company',        palette='Set1', ax=ax[0] )
+sns.scatterplot(x='age', y='salary', data=basetable1, hue='cluster_hier',   palette='Set1', ax=ax[1] )#계층적 model과 비교
+sns.scatterplot(x='age', y='salary', data=basetable1, hue='cluster_kmean',  palette='Set1', ax=ax[2] )
+
+ax[0].set_title('category : company ')
+ax[1].set_title('category : hierarchy cluster')
+ax[2].set_title('category : kmeans cluster')
+plt.show()
+
+
 ```
 
 ## <b>모델평가</b>
+- Elbow score
+  - kmeans inertia_ (응집도)활용
+  - Inertia 값, 군집화후 각 중심점에서 군집의 데이타간 거리를 합산한것으로 응집도를 나타내는 값 = cluster 개수를 높힐 수록 inertia는 작아짐, 값이 작을 수록 응집도가 높게 군집화가 잘되었다고 평가할 수 있음
+  - k가 몇일때 응집도가 가장 dramatic 하게 감소하는지 확인
+   ```python
+   # n_clusters=k를 1부터 10까지 적용
+
+   inertias = []
+   mapping = {}
+   K = range(1, 10)
+
+   for k in K:
+      kmeanModel = KMeans(n_clusters=k).fit(basetable_cluster_1) 
+      inertias.append(kmeanModel.inertia_)
+      mapping[k] = kmeanModel.inertia_
+      print('k값 ', k , '=>', kmeanModel.inertia_)
+
+   # Elbow score 시각화
+   plt.plot(np.arange(1, 10), inertias, 'bx-')
+   plt.xlabel('Values of K')
+   plt.ylabel('Inertia')
+   plt.title('The Elbow Method using Inertia')
+   plt.show()
+   ```
 - Silhouette score
+    - silhouette_score가 1에 가까워야 Positive
+    - 각 데이터 포인트와 주위 데이터 포인트들과의 거리 계산을 통해 값을 구하며, 군집 안에 있는 데이터들은 잘 모여있는지, 군집끼리는 서로 잘 구분되는지 클러스터링을 평가하는 척도로 활용
+    - 값이 0에 가까운 경우 : 두 군집 간 거리가 거의 비슷한 경우   (잘 구분되지 않은 상태)
+    - 값이 -1에 가까운 경우는, 데이터 포인트 i가 오히려 이웃 클러스터에 더 가까운 경우를 의미 (잘못 할당된 상태) 
+  - silhouette_score(data, 라벨)
    ```python
    from sklearn.metrics import silhouette_score
-   silhouette_score(y실측값, y예측값)
+   
+
+   k_score = pd.DataFrame(columns =['k', 'score'])
+   for i in np.arange(2, 7):
+      model_clustering = KMeans( n_clusters=i, random_state=123).fit(basetable_cluster_1)
+      a = silhouette_score( basetable_cluster_1,model_clustering.labels_)
+      k = pd.DataFrame({'k':[i], 'score':[a]})
+      k_score = pd.concat([k_score, k]).reset_index(drop=True)
+      print("K값 ", i, " silhouette score: ", a.round(3) )
+   
+   #시각화
+   sns.lineplot(x='k', y='score', data=k_score)
+   plt.xticks([2, 3, 4, 5, 6])
+   plt.show()
    ```
 
 
@@ -1136,7 +1211,7 @@ df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해�
 
 
 <br><br><br>
-> <b> Supervised Learning </b>
+> ## <b> Supervised Learning </b>
 <br>
 
 ## <b>선형회귀</b>
@@ -1157,6 +1232,7 @@ df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해�
 ### <b>1. 선형성</b>
 - F 검정의 pvalue로 확인
 - summary()의 t 검정 값도 '선형의 유효성'을 확인하는것이지만, 이것은 두집단 간 검증지표며, x가 많은 다중회귀에서는 f-pvalue로 확인 가능하다.
+- :star: 귀무가설 : 선형성이 없다
    ```python
    # 선형회귀 그래프, regplot: scatter plot, regression line, confidence band를 한 번에 그리는 기능
    sns.regplot(x='salary', y='expenditure', data=df)
@@ -1169,7 +1245,8 @@ df.groupby('cluster').mean() # model.cluster_centers_ 와 기능동일, 단 해�
    ```
 ### <b>2. 잔차의 정규성</b>
 - 잔차 그래프로 확인
-- shapiro 의 경우 p값이 0.05 이상이면 정규성 만족한다 
+- shapiro 의 경우 p값이 0.05 이상이면 정규성 만족한다
+- :star: 귀무가설 : 정규성을 만족한다 
 
    ```python
    # 잔차 계산
@@ -1541,7 +1618,7 @@ f1은 어느시점까지 상승했다가 하강하는 특징을 가지고 있어
   ```python
   from sklearn.metrics import roc_auc_score
   ```
-- 총
+- 총 요약표
   ```python
   from sklearn.metrics import classification_report
   #print()로 출력
@@ -1549,6 +1626,8 @@ f1은 어느시점까지 상승했다가 하강하는 특징을 가지고 있어
 
 
 
+<b> [TIP] Sample data 만들기<b> <br>
+df.pd.DataFrame[[0],]
 
 <br><br><br><br><br>
 ---------
