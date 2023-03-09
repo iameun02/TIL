@@ -1154,8 +1154,144 @@ ax[1].set_title('category : hierarchy cluster')
 ax[2].set_title('category : kmeans cluster')
 plt.show()
 
+```
+<br><br>
+
+## <b>PCA</b>
+``` 활용 : VIF 지수가 10 초과하는 변수들이 다수 존재 할때 PCA를 통해 차원 축소```
+
+- PCA STEP
+  1. 정규화 (0으로 이동)
+  2. 공분산 행렬계산
+  3. 공분산 행렬의 고유벡터와 고유값(공분산 설명력)계산
+  4. 원본데이터와 고유벡터를 내적하여 주성분 구하기
+
+
+### <b>직접 증명해보기</b>
+
+```python
+#1. 정규화
+iris_std = StandardScaler().fit_transform(df_iris_2)
+df_iris_std = pd.DataFrame(iris_std, columns =  df_iris_2.columns)
+df_iris_std
+
+#2. 공분산행렬 확인 
+import numpy as np 
+cov_matrix = np.cov(df_iris_std.T) #wide form으로 변환필요
+#변수가 n개일때 n*n 의 공분산 생성
+
+#3. 고유값(분산설명력, explained_variance), 고유벡터 추출(사영계수, components)
+eigenvalues, eigenvectors = np.linalg.eig(cov_matrix)
+
+#고유값(분산설명력, explained_variance) =eigenvalues
+#고유벡터 추출(사영계수, components) = eigenvectors
+
+
+#4. 내적
+pca_iris = pd.DataFrame({'pca1':df_iris_std @ eigenvectors.T[0], 'pca2':df_iris_std @ eigenvectors.T[1], 
+                         'pca3':df_iris_std @ eigenvectors.T[2], 'pca4':df_iris_std @ eigenvectors.T[3]})
+
+
+#5.시각화 비교 
+fig, ax = plt.subplots( nrows= 1 , ncols=2,  figsize=(6,3))
+
+sns.scatterplot(x = 'sepal_length', y = 'sepal_width', data=df_iris_2,   ax= ax[0])
+sns.scatterplot(x = 'pca1', y = 'pca2',                data=pca_iris,    ax= ax[1])
+
+ax[0].set_title('sepal_length, sepal_width')
+ax[1].set_title('pca1, pca2')
+plt.show()
+```
+### <b>sklearn</b>
+```python
+from sklearn.decomposition import PCA
+pc = PCA()
+pc.fit(df_iris_std)
+
+#고유값(분산설명력, explained_variance)
+pc.explained_variance_
+#고유벡터 확인(사영계수, components)
+pc.components_
+#pca1 (안해도됨)
+df_iris_std @ pc.components_[0]
+
+# transform으로 PCA 계산, df_iris_std @ pc.components_[0]
+# transform, 이때 columns의 값은 pca1~4로 변경되어야 함
+pd.DataFrame(pc.transform(df_iris_std), columns = [ 'pca_'+ str(i) for i in  range(1,5)] )
+
+# 누적 분산 설명력(explained_variance_ratio_)
+print(pc.explained_variance_ratio_)
+print(pc.explained_variance_ratio_.cumsum())
+
+# 누적 분산 설명력(explained_variance_ratio_) 시각화
+sns.lineplot(x = [1,2,3,4], y=pc.explained_variance_ratio_.cumsum()) #cumsum주의
+plt.xticks([1,2,3,4])
+plt.title('explained_variance_ratio_')
+plt.show()
+```
+<br><br>
+
+## <b>Association Rules</b>
+- 확률에 근거 (조건부확률이 압도적으로 사용됨)
+  - itemsets생성
+  - if(선행) ~then(후행) 규칙 조사
+- n개의 item으로 가능한 조합의 수는 2**n 이기 때문에, <br>
+  support(많이 사는 조합) , confidence 기준으로 item 목록을 자른다.
+- Apriori : 빈발하는 itemset을 찾는 mining 기법
+- 선생과 후행은 공통원소가 없어야 하며, 각각 중복없는 항목의 집합이어야함
+- 지지도(Support) : support(x→y) x,y 가 같이 구매될 확률
+- 신뢰도(Confidence) : support(x→y) / support(x)
+- 향상도(Lift) : confidence(x→y) / support(y) <br>
+    - Lift > 1 : 양의 상관관계 <br>
+    - Lift = 1 : 독립적인 관계 <br>
+    - 0 < Lift < 1 : 대체제 / 품목간 상호 음의 상관관계
+ 
+
+```python
+#!pip install mlxtend
+
+# id별로 item 정리
+datatable3 = df_asso.groupby('id').apply( lambda x: x['item'].tolist()).reset_index().rename(columns={0:'item'})
+datatable3
+
+# import TransactionEncoder, apriori, association_rules
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import apriori, association_rules
+
+
+#itemlist 만들기 방법 1 (Encoder활용)
+te1 = TransactionEncoder() #modeling
+te1_result = te1.fit(datatable3['item'] )
+
+
+#itemlist 만들기 방법 2 (Pivot활용)
+# pivot_table 생성
+   # df_asso['cnt'] = True
+   # te1_trans = pd.pivot_table(df_asso, values='cnt', index='id', columns='item', aggfunc = 'max', fill_value= False)
+
+
+# TransactionEncoder attribute 확인
+te1.columns_mapping_
+
+# transform
+te1_trans = pd.DataFrame( te1.transform( datatable3['item']), columns =te1.columns_ )
+te1_trans
+
+# apriori
+apri1 = apriori(te1_trans, use_colnames=True,  min_support=0.1) #조건 min_support=0.1, use_colnames=True (아이템명으로 보여주기)
+apri1
+
+# association_rules
+asso1 = association_rules( apri1, metric='confidence', min_threshold=0.01)  # 조건 최소 신뢰도 0.01로 주기 
+asso1
+
+#우유를 사는 사람은 후행으로 어떤 상품을 많이 사는지 lift 내림차순으로 정렬
+#asso1['antecedents'].values[:10]
+
+asso1.loc[ asso1['antecedents'] == frozenset({'Milk'}), : ].sort_values('lift', ascending=False).head(10)
 
 ```
+<br><br>
 
 ## <b>모델평가</b>
 - Elbow score
@@ -1188,6 +1324,7 @@ plt.show()
     - 값이 0에 가까운 경우 : 두 군집 간 거리가 거의 비슷한 경우   (잘 구분되지 않은 상태)
     - 값이 -1에 가까운 경우는, 데이터 포인트 i가 오히려 이웃 클러스터에 더 가까운 경우를 의미 (잘못 할당된 상태) 
   - silhouette_score(data, 라벨)
+  
    ```python
    from sklearn.metrics import silhouette_score
    
