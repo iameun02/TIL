@@ -1158,14 +1158,18 @@ plt.show()
 <br><br>
 
 ## <b>PCA</b>
-``` 활용 : VIF 지수가 10 초과하는 변수들이 다수 존재 할때 PCA를 통해 차원 축소```
+- 주성분이 기존 변수들의 분산을 얼마나 커버하는지에 따라 주성분을 선택하게되며, 최대 기존 변수개수만큼 뽑아낼 수 있다.
+- n_componet : 산출할 주성분 개수 입력
+- .cumsum() : 시리즈객체의 누적합 계산 메서드
 
 - PCA STEP
   1. 정규화 (0으로 이동)
   2. 공분산 행렬계산
   3. 공분산 행렬의 고유벡터와 고유값(공분산 설명력)계산
   4. 원본데이터와 고유벡터를 내적하여 주성분 구하기
-
+   
+``` 활용 : VIF 지수가 10 초과하는 변수들이 다수 존재 할때 PCA를 통해 차원 축소``` <br>
+``` 또한 기존변수를 활용한 모델과, 추출한 1개이상의 주성분울 활용한 모델을 비교하여 나은 모델을 채택할수 있음```
 
 ### <b>직접 증명해보기</b>
 
@@ -1205,13 +1209,18 @@ plt.show()
 ### <b>sklearn</b>
 ```python
 from sklearn.decomposition import PCA
-pc = PCA()
+pc = PCA(n_components=3) #주성분 개수 : 최대 기존변수개수까지
 pc.fit(df_iris_std)
 
-#고유값(분산설명력, explained_variance)
+#고유값(singular_values)
+pc.singular_values
+
+#분산설명력(explained_variance)
 pc.explained_variance_
+
 #고유벡터 확인(사영계수, components)
 pc.components_
+
 #pca1 (안해도됨)
 df_iris_std @ pc.components_[0]
 
@@ -1242,15 +1251,46 @@ plt.show()
 - 지지도(Support) : support(x→y) x,y 가 같이 구매될 확률
 - 신뢰도(Confidence) : support(x→y) / support(x)
 - 향상도(Lift) : confidence(x→y) / support(y) <br>
-    - Lift > 1 : 양의 상관관계 <br>
+    - Lift > 1 : 보완재 / 양의 상관관계 <br>
     - Lift = 1 : 독립적인 관계 <br>
-    - 0 < Lift < 1 : 대체제 / 품목간 상호 음의 상관관계
- 
+    - 0 < Lift < 1 : 대체제 / 품목간 상호 음의 상관관계 <br>
+- max_len: 아이템 조합 최대값 설정 <br>
+- use_columnes= True : 아이템명 사용 <br>
+ ```활용 : 추천시스템```
 
 ```python
 #!pip install mlxtend
+### [예문1]
+import pandas as pd
+from mlxtend.frequent_patterns import apriori
+from mlxtend.frequent_patterns import association_rules
+df= pd.read_csv('./data/association_rules_mart.csv')
+
+#판매 상위 30개 품목에 한정하여 데이터셋 준비하기
+df_cnt = df['Item'].value_counts().reset_index()
+df_cnt = df_cnt.sort_values(by='Item', ascending = False)
+df_cnt = df_cnt.iloc[:30,]
+
+#원본데이터에서 판매상위품목만 필터링
+df = df[(df['Item'].isin(df_cnt['Index']))]
+
+#사전 중복 제거 
+df.drop_duplicates(subset = ['ID','Item'])
+
+#pivot으로 itemlist생성
+df['purchase'] =True
+df_pivot= df.pivot_table(index='ID', columns = "Item", 
+                         values ="purchase", aggfunc = max,
+                        fill_value = False)
+item_sets = apriori(df_pivot, min_support = 0.005, use_colnames =True, max_len = 3)
+item_freq.head(3)
+
+#연관규칙 생성
+df_rules = association_rules(item_sets, metric = 'lift', min_threshold = 1.5)
+df_rules
 
 
+### [예문2]
 # step 1) drop_duplicates 한개의 빌당 2개 이상 구매한 중복건 제거
 df_mart = df_mart.drop_duplicates(subset =['ID', 'Item'])
 
