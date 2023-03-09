@@ -1494,6 +1494,32 @@ for tc in range(1, T+1):
 
     print(bfs(0,0))
 ```
+```python
+#b1697_숨바꼭질
+def dfs(N,K):
+    visited = [False] * 1000
+    #to_visits = deque()
+    to_visits = [N]
+    cnt = 0
+    while to_visits:
+            current = to_visits.pop()
+            if not visited[current]:
+                visited[current] = True
+                print(current)
+                if current == K:
+                    print('정답',cnt)
+                    break
+
+                # 현위치에서 동생위치 +1 지점 안에서, 2배씩 최대로 이동
+                # 마지막에 한칸만 뒤로가면 되니까
+                if current*2 <= K+1:
+                    to_visits += [2*current]
+                    cnt +=1
+                else:
+                    to_visits += [current-1]
+                    cnt +=1
+dfs(5, 17)
+```
 ---
 <br>
 
