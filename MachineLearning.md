@@ -1250,45 +1250,55 @@ plt.show()
 ```python
 #!pip install mlxtend
 
-# id별로 item 정리
-datatable3 = df_asso.groupby('id').apply( lambda x: x['item'].tolist()).reset_index().rename(columns={0:'item'})
-datatable3
 
-# import TransactionEncoder, apriori, association_rules
+# step 1) drop_duplicates 한개의 빌당 2개 이상 구매한 중복건 제거
+df_mart = df_mart.drop_duplicates(subset =['ID', 'Item'])
+
+# step 2) itemlist 만들기 방법 1 (Encoder활용)
+# 2-1) id별로 item 정리 
+df_mart = df_mart.groupby('ID').apply( lambda x: x['Item'].tolist()).reset_index().rename(columns={0:'Item'})
+df_mart
+
+# 2-2) min_support=0.005, min_threshold=0.005
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import apriori, association_rules
 
-
-#itemlist 만들기 방법 1 (Encoder활용)
-te1 = TransactionEncoder() #modeling
-te1_result = te1.fit(datatable3['item'] )
+encoder = TransactionEncoder()
+encoder_result = encoder.fit(df_mart['Item'] )
 
 
-#itemlist 만들기 방법 2 (Pivot활용)
+# 2-3) transform
+trans = pd.DataFrame( encoder.transform( df_mart['Item']), columns =encoder.columns_ )
+trans
+
+
+# step 2)itemlist 만들기 방법 2 (Pivot활용)
 # pivot_table 생성
-   # df_asso['cnt'] = True
-   # te1_trans = pd.pivot_table(df_asso, values='cnt', index='id', columns='item', aggfunc = 'max', fill_value= False)
+   # df_mart['cnt'] = True
+   # trans = pd.pivot_table(df_mart, values='cnt', index='ID', columns='Item', aggfunc = 'max', fill_value= False) #중복구매건이 있을때 T/F이 생기니까 max로 해주면 T를 반환
 
 
 # TransactionEncoder attribute 확인
 te1.columns_mapping_
 
-# transform
-te1_trans = pd.DataFrame( te1.transform( datatable3['item']), columns =te1.columns_ )
-te1_trans
 
-# apriori
-apri1 = apriori(te1_trans, use_colnames=True,  min_support=0.1) #조건 min_support=0.1, use_colnames=True (아이템명으로 보여주기)
-apri1
+# step 3) apriori
+apri = apriori(trans, use_colnames=True,  min_support=0.01)
+apri #조건 최소 지지도 min_support=0.01, use_colnames=True (아이템명으로 보여주기)
 
-# association_rules
-asso1 = association_rules( apri1, metric='confidence', min_threshold=0.01)  # 조건 최소 신뢰도 0.01로 주기 
-asso1
 
-#우유를 사는 사람은 후행으로 어떤 상품을 많이 사는지 lift 내림차순으로 정렬
+# step 4) association_rules
+asso = association_rules( apri1, metric='confidence', min_threshold=0.01)  
+asso  # 조건 최소 신뢰도 0.01로 주기 
+
+
+# step 5) antecedents이 단일 Item인 건 추출
+asso[(asso['antecedents'].apply(lambda x:len(x)) == 1)]
+
+# step 6) 우유를 사는 사람은 후행으로 어떤 상품을 많이 사는지 lift 내림차순으로 정렬
+
 #asso1['antecedents'].values[:10]
-
-asso1.loc[ asso1['antecedents'] == frozenset({'Milk'}), : ].sort_values('lift', ascending=False).head(10)
+asso.loc[ asso['antecedents'] == frozenset({'Milk'}), : ].sort_values('lift', ascending=False).head(10)
 
 ```
 <br><br>
