@@ -36,3 +36,21 @@
     통계분석에서는 통계변수별로 적용가능연산이 4가지로 나뉘지만, <br> ML분석(Python)에서는 2가지로만 연산을 알면된다. <br>
     문자 : 명목형 / 숫자 : 연속형
 
+<br><br>
+
+### 2. Data Structure
+Python의 기존함수만으로는 연산이 복잡해질 수 있는데, <br> Numpy 또는 Pandas 라이브러리를 통해 쉽게 연산 할 수 있다. <br>
+예를들면, 두 리스트끼리 List + List 연산을 수행할 때 <br>
+np.array 또는 pd.DataFrame를 활용하면
+쉽게 Broadcasting 연산이 가능
+
+```python
+L1 = ['Red', 'Green', 'Blue']
+L2 = [255, 127, 63]
+
+for i in zip(L1, L2):
+  print(i)
+
+D2 = {x : y for x, y in zip(L1, L2)}
+print(D2)
+```
