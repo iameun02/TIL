@@ -531,11 +531,17 @@ sns.heatmap(corr, annot = True)
 <br><br>
 
 # 가설검정
+- X : 범주형 , Y : 범주형 ⇒ 카이스퀘어 검정
+- X : 범주형 , Y : 수치형 <br>
+      ⇒ 범주형 그룹수가 2개이하 : ttest <br>
+      ⇒ 범주형 그룹수가 3개이상 : ANOVA
+
+<br><br>
 
 ## <b>T-TEST 검정</b>
 > 두 집단간의 평균비교
 
-<br><br>
+<br>
 
 <b>1.  t_test_1sample</b>
 
@@ -545,23 +551,41 @@ sns.heatmap(corr, annot = True)
 *  Scipy -ttest_1samp() 사용 <br>
 ```활용: 객단가 평균이 00라고 알려져있다. 사실인가?```
   
-```python 
-from scipy.stats import ttest_1samp
-ttest_1samp(df_hk['age'], popmean = 39.24)[1] < 0.05  
+   ```python 
+   from scipy.stats import ttest_1samp
+   ttest_1samp(df_hk['age'], popmean = 39.24)[1] < 0.05  
 
-# 결과값 : TtestResult(statistic=0.0, pvalue=1.0, df=249)
-1.0 < 0.05
-# 결과 : False, 결과 해석: 95% 신뢰수준으로 100% 일치
-```
+   # 결과값 : TtestResult(statistic=0.0, pvalue=1.0, df=249)
+   1.0 < 0.05
+   # 결과 : False, 결과 해석: 95% 신뢰수준으로 100% 일치
+   ```
 
 <br><br>
 <b>2. Two sample t-test</b>
 
 * 다른환경 (주말/주중) 즉, 독립된 모집단에서 추출된 각 두 집단간 평균이 같은지 검정
 * 등분산 여부에따라 검정통계량 계산식이 달라서 등분산 검정을 해줘야한다.
+* 등분산 검정 (Bartlett test) 
+   - h0 : 등분산이다, h1 : 이분산이다
+   - 유의수준 0.05보다 pvalue가 작을때 귀무가설 기각
+* 등분산을 만족할 경우, equal_var = True , 이분산일때 equal_var = False
+   ```python
+   #두그룹으로 나누기
+   g_m = df[(df['gender'] =='Male')]['forehead_ratio']
+   g_f = df[(df['gender'] =='Female')]['forehead_ratio']
+
+   from scipy.stats import ttest_ind , bartlett
+
+   #등분산검정
+   bartlett(g_m, g_f) #귀무가설 기각 : 이분산
+   #t검정
+   ttest_ind(g_m, g_f,  equal_var = False) #이분산 False
+   ```
+
+
+
 * 정규성을 만족하지 못하는 경우 wilcoxon rank sum test (순위합검정) 사용
-* 등분산 가정을 만족하는 경우, equal_var 인자에 True를 할당
-* ttest_ind() 사용 <br>
+* 독립일때 ttest_ind() 사용 <br>
 ```활용: 주중 객단가와 주말 객단가가 같은가?```
 
 ```python
@@ -617,7 +641,13 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
  * Scipy -ttest_rel() 사용
  * ```활용: 동년, 동월, 동시간대 이용객 대상으로 비회원의 대여량과 회원의 자전거 대여량의 평균차이 검정```
 
-
+* Two sample t-test 중 Paired vs Independent <br>
+   - 작년 / 당년 평균판매량 비교시 :  지점별 차이를 통제해줘야하니 Paired 사용
+   - 지점별 평균판매량 비교시 : Independent 사용
+   - Paired : 같은 조건의 데이터가 한쌍, 데이터개수가 동일, 순서 동일, 결측치 안됨
+   - Independent : 그룹 내의 평균끼리 비교 , 순서관계없음, 개수 동일 필요없음 <br> ```단, 평균의 차이만으로는 두 집단이 다르다라고 단정 할 수 없다.``` <br> 
+   ```A 집단이 B집단에 포함 된 경우일 수 있음 ``` <br>
+   ```So, 분산대비 평균을 봐야함 ==> 독립 이표본 검정(분산까지 포함하여 검정하는 방식)```
 
 <br><br><br>
 
@@ -788,12 +818,34 @@ kendalltau(df_hk['age'], df_hk['salary'])
 <br>
 
 ## <b>독립성(연관성) 검정</b> ```[카이제곱검정]```
-
+   - 범주형데이터와 범주형데이터간의 영향이 있는지 독립성 검정을 수행시 사용
    - 적합도, 독립성, 동질성 검정 사전에 진행 필요
    - 검정통계량 : 카이제곱 ∑ ((관측도수 - 기대도수)² / 기대도수)
-   - crosstab (빈도표) 자료 활용 필요
+   - :star: crosstab (빈도표) 자료 활용 필요 <br>
+       - 빈도표는 각 독립변수와 종속별로 한번씩 만들어야함
+         ```python
+         #빈도테이블
+         from scipy.stats import chi2_contingency
+         result = []
+         List = ['Sex','BP','Cholesterol','Agr_gr','Na_to_K']
+         for i in List:
+            table = pd.crosstab(df[i], df['Drug'])
+            result += [[i, chi2_contingency(table)[1]]]
+            
+         pd.DataFrame(result, columns= ['var','pvalue'])
+         ```
+       - 비교변수가 여개 일때 활용코드
+         ```python
+         pd.crosstab(index = [df['BP'], df['Sex']],columns = df['Cholesterol']) 
+         ``` 
+   - 카이제곱 기대빈도표는 독립일때를 가정하여 그러짐 P(A∩B) = P(A)*P(B)
+   - 자유도는 (r개수-1) * (c개수-1)
+         
    - 두 명목형 자료 검정 <br>
      (수치형일 경우는 구간화/범주화를 통해서 명목형으로 변환후 사용)
+
+
+
    - correction = False 는 연속성 수정을 적용하지 않음을 의미함 ```chi2_contingency(crosstab2 , correction = False)```
  <br>
 
@@ -1798,6 +1850,8 @@ f1은 어느시점까지 상승했다가 하강하는 특징을 가지고 있어
 - 정밀도
   ```python
   from sklearn.metrics import precision_score
+  precision_score(y실측치, y예측치, pos_label = '컬럼명')
+  #pos_label : 어느 데이터 기준으로 볼 건지 설정 가능 
   ```
 - 재현율
   ```python
