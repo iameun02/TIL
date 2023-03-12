@@ -647,7 +647,25 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
    - Paired : 같은 조건의 데이터가 한쌍, 데이터개수가 동일, 순서 동일, 결측치 안됨
    - Independent : 그룹 내의 평균끼리 비교 , 순서관계없음, 개수 동일 필요없음 <br> ```단, 평균의 차이만으로는 두 집단이 다르다라고 단정 할 수 없다.``` <br> 
    ```A 집단이 B집단에 포함 된 경우일 수 있음 ``` <br>
-   ```So, 분산대비 평균을 봐야함 ==> 독립 이표본 검정(분산까지 포함하여 검정하는 방식)```
+   ```So, 분산대비 평균을 봐야함 ==> 독립 이표본 검정(분산까지 포함하여 검정하는 방식)``` <br>
+
+> 예제 
+ 1) 한국과 일본의 년도별 육류 소비량 평균이 비슷한 수준인지 대응검정하시오
+```python
+#1. 두 국가만 필터링하여 pv테이블을 만들어 데이터 순서를 맞춰야함
+df_kj = df[(df['LOCATION'].isin(['KOR','JPN']))]
+df_kj_pv = pd.pivot_table(data= df_kj, index= ['TIME','SUBJECT'], columns = 'LOCATION',values = 'Value',aggfunc=sum)
+df_kj_pv
+
+
+#대응ttest에서는 결측치 불가, 전체 결측치 제거수행
+df_kj_pv = df_kj_pv.dropna()
+
+#ttest 수행
+from scipy.stats import ttest_rel
+ttest_rel(df_kj_pv['KOR'],df_kj_pv['JPN'])[0].round(4)
+```
+
 
 <br><br><br>
 
@@ -797,7 +815,7 @@ spearmanr(df_hk['age'], df_hk['salary'])
 from scipy.stats import kendalltau
 kendalltau(df_hk['age'], df_hk['salary'])
 ```
-
+```!! corr는 DF로 추출해야함 [[]] !!```
 
 > 예제 
  <br>
@@ -808,12 +826,19 @@ kendalltau(df_hk['age'], df_hk['salary'])
    ``` 
 <br>
 
-1. 날씨가 맑은날(weather = 1) 과 그렇지 않은날 온도(temp)와 자전거 대여 숫자(casual)의 상관계수의 절대값은 얼마인가 ?
+2. 날씨가 맑은날(weather = 1) 과 그렇지 않은날 온도(temp)와 자전거 대여 숫자(casual)의 상관계수의 절대값은 얼마인가 ?
       ```python
       df_bike[(df_bike['weather'] == 1)][['temp','casual']].corr()
       ```
-```!! corr는 DF로 추출해야함 [[]] !!```
 
+
+3. 년도별 육류 소비량 합계를 구하여 Time 과 Value간의 상관분석하여라
+   ```python
+   #~별로 집계시 pv 활용
+   df_k_pv = pd.pivot_table(df_k, index = 'TIME', values= 'Value',aggfunc= 'sum').reset_index()
+
+   df_k_pv.corr()
+   ```
 
 <br>
 
@@ -1534,6 +1559,9 @@ asso.loc[ asso['antecedents'] == frozenset({'Milk'}), : ].sort_values('lift', as
 <br><br>
 
 ### <b> 단순선형회귀</b>
+- 데이터를 ~별로 회귀모델을 만들 경우 각각 반복문을 돌려줘야하고 (fit, pred), 
+- 이때의 결정계수를 구하기 위해선 model.score(독립변수, 종속변수)로 구한다.
+
 ### <b>statsmodels_ols</b>
 ```python
 from statsmodels.formula.api import ols
@@ -1868,9 +1896,15 @@ f1은 어느시점까지 상승했다가 하강하는 특징을 가지고 있어
   ```
 
 
-<br><br>
-<b> [TIP1] Sample data 만들기</b> <br>
-df.pd.DataFrame[[0],]
+<br><br> 
+<b> [TIP1] 유용한 코드 </b> <br>
+1. Sample data 만들기 <br>
+```df.pd.DataFrame[[0],]``` <br>
+2. 2차원 데이터로 만들기 <br>
+```[[]]``` <br>
+```.values.reshape(-1,1)```
+
+
 <br><br>
 
 
