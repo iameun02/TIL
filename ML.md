@@ -139,5 +139,30 @@ print(D2)
 
 <br><br><br>
 
+## Data Preprocessing
+1. 결측치
+   1. 확인
+      - 막대그래프
+       ```python
+       !pip install missingno
+       import missingno as msno
+       msno.bar(df, figsize = (15,7), color = (0.2,0.2,0.8))
+       ```
+      - 매트릭스
+       ```python
+       msno.matrix(df, figsize = (15,7), color = (0.2, 0.2, 0.8))
+      ```
+  2. 삭제
+     - 300개 이하 측정값(Non-Null)이 있는 열(Column) 삭제 <br> 
+      ```.dropna(thresh = 300, axis = 1)```
+
+      - 'age'행(Column) 기준으로 결측치가 있는 행(Row) 삭제 <br>
+     ```.dropna(subset = ['age'], how = 'any', axis = 0)``` <br>
+     how = 'all' : 모든 값이 결측치인 경우 삭제
+
+2. pivot_table
+3. multi index
+   
+<br><br><br>
 [참고] <br>
 [통계교육원 통계 학습 사이트](https://sti.kostat.go.kr/coresti/site/main.do)
