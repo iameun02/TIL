@@ -8,6 +8,13 @@
 !ls - l  #해당위치에서의 디렉토리 확인
 !lscpu #할당된 CPU 확인
 !nvidia-sml #할당된 GPU정보 확인
+
+!pip list  #설치된 패키지확인
+!pip list | grep numpy # 설치된 패키지들 중 특정 패키지 확인
+
+#[기존 코랩에 설치된 버젼을 변경해야하는 경우]
+!pip remove
+!pip install
 ```
 
 ## Data Analytics and Visualization
@@ -71,6 +78,7 @@ print(D2)
   - DISK에는 직접 접근이 불가
   - 기본적으로 프로그램 (파이썬 등) 은 디스크에 저장되어 있다가 (이 상태에서는 'program' 이라고 부른다.) 실행을 (execute) 시켜서 메모리에 올려 사용하고, 이 상태를 'process'라고 부른다. 
   - OS도 마찬가지로 기본적으로 SSD(디스크)에 저장되어 있지만, memory에 올려 사용되고 이 작업을 '부팅'이라고 한다.
+  - 스토리지 (디스크 +SSD + 외장 등등)
   <br>
 
 <b>1. Function, Module and Package</b>
@@ -112,11 +120,24 @@ print(D2)
 - 함수 > 모듈 > 패키지
 
 
+<br><br>
+### 4. Class
 하나의 함수를 여러가지 방식으로 활용하려면 클래스
 
+<br><br>
+### 5. Numpy and Pandas
+1. Numpy
+   1. 행렬 에서의 '차원' = 딥러닝에서 'Rank'
+   2. 앞으로 array는 배열보다는 matrix (행렬)의 개념으로 이해하기
+   3. Tensor : 다차원 행렬 (결국 array, matrix)
+   4. Scalar (무게) = 0d array = Rank0 Tensor <br>
+      Vector (무게 + 방향) = 1d array = Rank1 Tensor
+
+2. Pandas
 
 
 
+<br><br><br>
 
 [참고] <br>
 [통계교육원 통계 학습 사이트](https://sti.kostat.go.kr/coresti/site/main.do)
