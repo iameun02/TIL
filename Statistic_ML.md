@@ -15,7 +15,6 @@
 ## Numpy/ Pandas 코드
 
 ```python
-    [numpy]
  1. 함수 및 메서드
     type(): 자료형 정보 (list, array 등) 
     .dtype : 데이터 타입정보 (int, float 등)
@@ -24,6 +23,7 @@
     .reset_index : 인덱스 초기화
     .value_counts()
     .sort_values(by=[''])
+    .tolist()
 
  2. 펜시 인덱싱 (리스트로 감싸줘야함)
     df.iloc[[0,3,5,7],[3,5,7]]
@@ -106,11 +106,41 @@
       df_hk['birthday'].dt.day
       df_hk['birthday'].dt.weekday #월요일은 0
       df_hk['birthday'].dt.day_name() #day_name은 ()필요
- 17. Array 생성
-     np.array([1,2,3])
-     np.zeros((3,3))
 
- 18. .tolist()
+ 17. Array 배열생성
+     np.array([1,2,3]) #배열 생성
+     np.zeros((3,3)) # 0원소로만 구성된 3 by 3 행렬
+     np.zeros((3,3)) # 9원소로만 구성된 3 by 3 행렬
+     np.eye(3) #단위행렬(대각행렬) 생성
+     
+18.  Array 관련 함수
+     .ndim #차원확인
+     .reshape(-1,3) #차원변경
+     .size #원소개수
+
+
+19. Numpy 난수 생성
+    np.random.seed(42)
+    np.random.choice(np.arange(1,45),size = (5,6))
+    np.random.shuffle(array)
+
+20. 내적
+    M1 = np.array([2,4,6,8]).reshape(2,2)
+    M2 = np.array([3,5,7,9]).reshape(2,2)
+
+   #방법1
+   M1.dot(M2)
+
+   #방법2
+   np.dot(M1,M2)
+
+   #방법3
+   M1@M2
+
+     
+
+
+ 18. 
 ```
 <br><br>
 
