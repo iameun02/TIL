@@ -117,11 +117,13 @@
      .ndim #차원확인
      .reshape(-1,3) #차원변경
      .size #원소개수
+     .flatten() #다시 1차원으로 펼쳐줌
 
 
 19. Numpy 난수 생성
     np.random.seed(42)
-    np.random.choice(np.arange(1,45),size = (5,6))
+    np.random.choice(np.arange(1,45),size = (5,6), replace = True) #replace = True, 복원추출 
+    np.random.choice(np.arange(1,45),size = (5,6), replace = False) #replace  =False, 비복원추출
     np.random.shuffle(array)
 
 20. 내적
