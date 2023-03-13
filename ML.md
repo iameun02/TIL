@@ -3,6 +3,13 @@
 
 <br>
 
+### 리눅스 명령어
+```python
+!ls - l  #해당위치에서의 디렉토리 확인
+!lscpu #할당된 CPU 확인
+!nvidia-sml #할당된 GPU정보 확인
+```
+
 ## Data Analytics and Visualization
 ### 1. Data Type and Operations
 
