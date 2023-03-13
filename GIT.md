@@ -21,17 +21,36 @@
 ---
 > CLI (Command Line Interface, 커맨드 라인 인터페이스)는 터미널을 통해 사용자와 컴퓨터가 상호 작용하는 방식을 뜻한다.
 
-### 터미널 명령어 정리
-|명령어|설명|
-|:---:|:---:|
-|mkdir|폴더 생성|
-|touch|파일 생성|
-|ls|현재 폴더의 파일 목록 출력|
-|cd|다른 폴더로 이동|
-|rm|파일 삭제 / 폴더 삭제 (-r 옵선)
+<br>
+
+#### 터미널 명령어 
+  - pwd : 현재위치 절대경로
+   - mkdir : 폴더 만들기
+   - cd : 폴더 이동
+   - touch : 파일 만들기 
+   - open : 파일 열기
+   - start : 파일 열기 
+   - mv 
+     1) 파일명 변경 
+     2) 파일 이동 >> 이동할 경로가 존재하지 않을 경우 파일명 변경
+   - ls : 현재 디렉토리 내용의 리스트 출력
+   - rm : 파일 삭제
+   - clear : screan clean up
 
 
-### 예시
+
+
+#### 단축키
+- 위, 아래 방향키 : 과거에 작성했던 명령어 조회
+- tab : 폴더/파일 이름 자동 완성
+- ctrl + a : 커서가 맨 앞으로 이동
+- ctrl + e : 커서가 맨 뒤로 이동
+- ctrl + w : 커서가 앞 단어를 삭제
+- ctrl + l : 터미널 screen scroll up
+- ctrl + insert : 복사
+- shift + insert : 붙여넣기
+
+> 예시
 ```python
 $ mkdir test
 
@@ -47,6 +66,7 @@ $ rm a.txt
 $ rm -r test
 ```
 
+<br><br>
 
 ## Visual Studio Code
 ---
