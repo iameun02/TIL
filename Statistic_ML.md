@@ -147,8 +147,12 @@
 
      
 
+ 18. 장바구니 분석시 판매량이 제일 많은 날 찾기
+     [‘Date’].value_counts().idxmax()
 
- 18. 
+ 19. 날짜데이터에서 요일 한글로 추출하기
+      dt.day_name(locale=‘ko_kr’)
+
 ```
 <br><br>
 
@@ -671,6 +675,26 @@ ttest_ind(df_hk[(df_hk['company']=='A')].salary , df_hk[(df_hk['company']=='B')]
       ttest_ind(a,b)[1] <0.05
       #결과값 : True = H1 지지, H0 기각
       ```
+  
+3. 어떤 마트에서는 금요일/토요일의 주류 평균 판매량이 다른 요일보다 많다는 가설을 검정하려한다. 검증을 진행하시오
+   ```python
+   from scipy.stats import ttest_ind
+   df3 = pd.merge(df1, df2, how = 'left', left_on = 'itemDescription',
+            right_on = 'prod_nm')
+
+
+
+   df3['Date'] = pd.to_datetime(df3['Date'])
+   df3['day'] = df3['Date'].dt.day_name()
+   df3 = df3[df3['Date'].dt.month.isin([1,2,3])]
+
+   df3['FS'] = (df3['day'].isin(['Friday','Saturday'])) + 0 
+   #피벗테이블을 하나로 만들어서 열을 분리하여 데이터셋으로 활용
+   #이때 dropna를 통해 결측치는 제거하는 것이 중요하다.
+   df_pv= df3.pivot_table(values='alcohol',index='Date',columns = 'FS',aggfunc='sum')
+   df_pv
+   ttest_ind(df_pv[0].dropna(),df_pv[1].dropna(), equal_var=False)[1].round(2)
+   ```
 <br>
 <b>3. Paired sample t-test</b>
 
@@ -749,6 +773,14 @@ model = ols(formula = 'salary~ company', data= df_hk).fit() #formula: 종속변�
 
 anova_lm(model)
 ```
+
+>예제
+1. 가장 많이 판매된 10개상품을 주력상품으로 설정하고 특정요일에 프로모션을 진행할지 말지 결정
+일원분산분석을 통하여 요일별 주력상품의 판매개수의 평균이 유의미하게 차이가 나는지 알아보자.
+```python
+```
+
+
 <br><br>
 <b>2. 이원분산분석(Two way Anova)</b>
 * 수치형 종속변수 1개, 명목형 독립변수가 2개일때 실시
