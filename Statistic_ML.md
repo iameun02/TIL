@@ -153,6 +153,9 @@
  19. 날짜데이터에서 요일 한글로 추출하기
       dt.day_name(locale=‘ko_kr’)
 
+ 20. 데이터 프레임에서 연속된 인덱스 슬라이싱하여 제거하기
+      DF.drop(DF.index[23:53], inplace=True)
+
 ```
 <br><br>
 
