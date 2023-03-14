@@ -209,13 +209,30 @@ From import 로 특정 함수를 가져옴
      ```.dropna(subset = ['age'], how = 'any', axis = 0)``` <br>
      how = 'all' : 모든 값이 결측치인 경우 삭제
 
-2. groupby 결과 filtering 하기
-   ```python
-   grouped.filter(lambda x : len(x) >= 200).head()
-   ```
+2. groupby
+  - groupby 객체 자체를 이용하기
+      ```python
+      grouped_TWO = TD.groupby(['class', 'sex'])
+      grouped_TWO
+
+      #get_group : 그룹필 된 그룹중 class = First, sex= female인 그룹의 데이터 조회
+      grouped_TWO.get_group(('First', 'female')).head(3)
+
+      #반복문을 통해 각 그룹핑 기준 키와 데이터 확인
+      for key, group in grouped_TWO:
+         print('* key :', key)
+         print('* number :', len(group))
+         print(group.head(3))
+         print('\n')
+            
+      ```
+  -  결과 filtering 하기
+      ```python
+      grouped.filter(lambda x : len(x) >= 200).head()
+      ```
 
 
-3. multi index
+1. multi index
    
  - pv을 여러개의 index,column 으로  agg (집계)하면 Multi- index가 생성됨 (헤더가 다층) 
  - .xs( ): Cross Section을 이용하여 접근
