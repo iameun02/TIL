@@ -1701,7 +1701,32 @@ pred_lm = model_lm.predict(df[['salary']])
 # 선형회귀 그래프
 sns.regplot(x=df['salary'], y=pred_lm)
 ```
-<br><br>
+<br>
+
+> 예제
+1. 1년동안 가장 많이 판매된 10개상품을 주력상품으로 설정하고 특정 요일에 프로모션을 진행할지 말지 결정하고자한다. 먼저 요일을 선정하기 전에 일원분산 분석을 통하여 요일별 주력상품의 판매개수의 평균이 유의미하게 차이가 나는지 알아보고자 한다.
+```python
+df1['cnt'] = 1
+df1['Date'] = pd.to_datetime(df1['Date'])
+df1['day'] = df1['Date'].dt.day_name()
+df1
+
+item10 = df1['itemDescription'].value_counts().sort_values(ascending = False)[:10].index
+
+pv= pd.pivot_table(df1[df1['itemDescription'].isin(item10)], index= ['Date','day']
+                   , values = 'cnt', aggfunc= 'sum'  ).reset_index()
+pv
+
+
+from statsmodels.formula.api import ols
+from statsmodels.stats.anova import anova_lm
+
+model = ols(formula = 'cnt ~ C(day)', data= pv).fit()
+anova_lm(model)
+#model.predict(pv[['day']])
+```
+
+<br><br><br>
 
 ### <b>다중선형회귀</b>
 ### <b>다중공선성 문제</b>
@@ -1868,6 +1893,22 @@ a = plot_tree(model_dt,
               rounded=True,
               max_depth=4,                                      # display max_depth= 4
               fontsize=14)
+```
+[분기점을 확인하기 위한 시각화코드]
+```python
+from sklearn.tree import DecisionTreeClassifier, export_text, plot_tree
+
+model = DecisionTreeClassifier()
+model.fit(df[['Age','Na_to_K','Sex_cd','BP_cd','Ch_cd']],df['Drug'])
+
+#텍스트로확인
+export_text(model, feature_names= ['Age','Na_to_K','Sex_cd','BP_cd','Ch_cd'] )
+
+#시각화로 확인
+plot_tree(model, max_depth = 2,
+         feature_names= ['Age','Na_to_K','Sex_cd','BP_cd','Ch_cd'],
+         class_names= df['Drug'].unique(),
+         precision = 3) # max_depth : 시각화 깊이 지정, _names : 데이터변수명 매칭, precision : 소수점자리 지정
 ```
 
 <br>
