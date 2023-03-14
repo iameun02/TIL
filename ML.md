@@ -188,7 +188,8 @@ From import 로 특정 함수를 가져옴
 
 <br><br><br>
 
-## <b>Data Preprocessing</b>
+### <b>6. Data Preprocessing</b>
+
 1. 결측치
    1. 확인
       - 막대그래프
@@ -201,7 +202,7 @@ From import 로 특정 함수를 가져옴
        ```python
        msno.matrix(df, figsize = (15,7), color = (0.2, 0.2, 0.8))
       ```
-  2. 삭제
+  1. 삭제
      - 300개 이하 측정값(Non-Null)이 있는 ```열(Column)``` 삭제 <br> 
       ```.dropna(thresh = 300, axis = 1)```
 
@@ -270,8 +271,262 @@ From import 로 특정 함수를 가져옴
    PV.columns.set_levels(['Dead', 'Alive'], level = 2, inplace = True)
 
    ```
+<br><br><br>
+### <b>7. Visualization</b>
+
+1. Pandas
+   1. .plot의 kind로 유형 결정
+   (kind = 'line','bar','barh','hist', 'box','scatter',  'pie')
+   2. 한번에 인자를 두개 넘겨서 시각화 할수 있다. 
+      ```python
+      .plot(kind = 'line', style = '-')
+      .plot(kind = 'bar',  rot = 45) # 축명 기울림정도
+      .plot(kind = 'hist', bins = 5, #구간개수 리스트로 직접 작성도 가능하다 bins = [10,15,60]
+                   alpha = 0.5 #투명도 (겹칠때 사용)
+      )
+      .plot(kind = 'scatter', s = 50 #점의 크기
+                   )
+      value_counts().plot(kind = 'pie',autopct = '%.1f%%')
+      #파이그래프는 문자형도 사용가능하며, 단, 빈도를 추출하여 시각화 / autopct = 비율값 표시
+      ```
+2. Matplotlib <br>
+   -  한번에 한 인자씩 그릴 수 있어서, 여러 인자를 그릴 때는 각각 작성해줘야한다. 
+   1. 공통
+         ```python 
+         plt.figure(figsize =(8,4))
+         plt.title('Line Graph', size = 30)
+         plt.legend() # 범례표
+         plt.xlabel('Index', size= 20)
+         plt.ylabel('Height', size= 20)
+         plt.grid(True)
+         plt.show()
+         ```
+
+   2. plt.plot
+      ```python
+      plt.figure(figsize= (8,4))
+      plt.plot(df['Height'],
+         linewidth = 1,
+         color = 'r',
+         marker = '>',
+         linestyle = '--')
+
+
+   2. plt.bar
+      ```python
+      #2개 이상 그릴때는 각각 작성해주고 index 위치에 차이를 둬서 겹침 정도를 설정해준다.
+      #bar를 barh로 바꿔주면 가로그래프가 된다.
+      plt.bar(df.index,df['Height'],
+         color = 'g',
+         edgecolor = 'b',
+         width =0.4,
+         label = 'height')
+
+      plt.bar(df.index +0.4 ,df['Weight'],
+         color = 'orange',
+         edgecolor = 'b',
+         width =0.4,
+         label = 'weight')
+      ```
+   3. plt.hist
+      ```python
+      plt.hist(DF.Height,bins = 5, alpha = 0.5, density = False) #density = true 로 설정시 빈도 값에서 확률 (확률밀도그래프)로 바꾼다
+      ```
+   4. plt.boxplot
+      ```python
+      #박스플롯은 여러개 쓰려면 박스플롯 내 여러개의 데이터셋 지정
+      plt.boxplot([DF.loc[DF['BloodType'] == 'A', 'Height'], DF.loc[DF['BloodType'] == 'B', 'Height'], DF.loc[DF['BloodType'] == 'O', 'Height'],
+      plt.show()
+      DF.loc[DF['BloodType'] == 'AB', 'Height']],
+      labels = ['A', 'B', 'O', 'AB'], patch_artist = True, #박스에 컬러 주기
+      vert = False, #가로로 그리기
+      showmeans = True)
+      ```
+
+   5. plt.scatter
+      ```python
+      plt.scatter(DF.Height,DF.Weight, marker='*',
+      s = 100,
+      c = '#d62728')
+      ```
+   6. plt.pieplot
+      ```python
+      plt.pie(DF.BloodType.value_counts(),
+      labels = DF.BloodType.value_counts().index, autopct = '%.1f%%',
+      explode = [0.0, 0.0, 0.0, 0.05], # 조각사이의 거리
+      startangle = 90)
+      ```
+   7. sub_plot
+
+    - Figure
+       ```python
+      import matplotlib.pyplot as plt
+      plt.figure(figsize = (3, 3), facecolor = 'tan') plt.title('Figure')
+      plt.xticks([]) #tick 없애기
+      plt.yticks([]) #tick 없애기
+      plt.plot() 
+      plt.show()
+      ```
+    - Axes
+      ```python
+      ax = plt.axes(facecolor = 'g')
+      ax.figure.set_size_inches(3, 3) ax.set_title('Axes') ax.set_xticks([]) ax.set_yticks([])
+      plt.show()
+      ```
+    - 1*2 Sub plot
+      ```python
+      fig, ax = plt.subplots(nrows = 1, ncols = 2, figsize = (6, 3), facecolor = 'tan')
+
+      ax[0].plot() 
+      ax[0].set_facecolor('tomato') 
+      ax[0].set_title('Axes_1') 
+      ax[0].set_xticks([]) 
+      ax[0].set_yticks([])
+
+      ax[1].plot() 
+      ax[1].set_facecolor('royalblue') ax[1].set_title('Axes_2') 
+      ax[1].set_xticks([]) ax[1].set_yticks([])
+      plt.show()
+      ```
+    - 2*1 Sub plot
+      ```python
+      import matplotlib.pyplot as plt
+      plt.figure(figsize = (3, 3), facecolor = 'tan') 
+      plt.title('Figure')
+      plt.xticks([])
+      plt.yticks([])
+      plt.plot() plt.show()
+      ax = plt.axes(facecolor = 'g')
+      ax.figure.set_size_inches(3, 3) 
+      ax.set_title('Axes') 
+      ax.set_xticks([])
+      ax.set_yticks([])
+      plt.show()
+
+      fig, ax = plt.subplots(nrows = 1, ncols = 2, figsize = (6, 3), facecolor = 'tan')
+
+      ax[0].plot() 
+      ax[0].set_facecolor('tomato') 
+      ax[0].set_title('Axes_1') 
+      ax[0].set_xticks([]) 
+      ax[0].set_yticks([])
+
+      ax[1].plot() 
+      ax[1].set_facecolor('royalblue') 
+      ax[1].set_title('Axes_2') 
+      ax[1].set_xticks([]) ax[1].set_yticks([])
+      plt.show()
+      ```
+
+   -  2*2 Sub plot 
+      ```python
+      fig, ax = plt.subplots(nrows = 2, ncols = 2, figsize = (15, 10))
+
+      ax[0, 0].bar(DF.index, DF['Height'], width = 0.3, label = 'Height')
+      ax[0, 0].bar(DF.index + 0.3, DF['Weight'], width = 0.3, label = 'Weight')
+
+      ax[0, 1].boxplot([DF.loc[DF['BloodType'] == 'A', 'Height'],
+                        DF.loc[DF['BloodType'] == 'B', 'Height'],
+                        DF.loc[DF['BloodType'] == 'O', 'Height'],
+                        DF.loc[DF['BloodType'] == 'AB', 'Height']],
+                        labels = ['A', 'B', 'O', 'AB'], patch_artist = True, 
+                     showmeans = True)
+
+      ax[1, 0].scatter(DF.Height, DF.Weight, 
+                     marker='*', s = 100, c = '#d62728')
+
+      ax[1, 1].pie(DF.BloodType.value_counts(),
+                  labels = DF.BloodType.value_counts().index,
+                  autopct = '%.1f%%', startangle = 90,
+                  explode = [0.0, 0.0, 0.0, 0.05])
+
+      ax[0, 0].legend()
+
+      ax[0, 0].set_title('Bar Plot')
+      ax[0, 1].set_title('Box Plot')
+      ax[1, 0].set_title('Scatter Plot')
+      ax[1, 1].set_title('Pie Plot')
+
+      ax[0, 0].set_xlabel('Height & Weight')
+      ax[0, 1].set_xlabel('Blood Type')
+      ax[1, 0].set_xlabel('Height')
+      ax[1, 1].set_xlabel('')
+
+      ax[0, 0].set_ylabel('Frequency')
+      ax[0, 1].set_ylabel('Height')
+      ax[1, 0].set_ylabel('Weight')
+      ax[1, 1].set_ylabel('')
+
+      plt.show()
+      ```
+
+
+
+
+
+
+
+
+
+3. Seaborn
+- 기본 공통 decoration 요소 및 subplot 기능은 모두 plt를 사용 <br>
+ 
+  1. sns.lineplot()
+  2. sns.barplot()
+  3. sns.countplot() : 빈도분석 #별도 value_count 필요없음 #sns에서 hue 기능 사용 가능 # 가로/세로 바꿀때는 x,y 데이터만 바꿔주면 된다 (별도 그래프 변경 필요 없음)
+  4. sns.histplot()
+  5. sns.distplot()
+  6. sns.boxplot() #matplot보다 훨씬 간단
+      plt.figure(figsize = (10, 7))
+      sns.boxplot(data = DF,
+                  x = 'BloodType', 
+                  y = 'Height',
+                  order = ['A', 'B', 'O', 'AB'])
+      plt.show()
+  7. sns.scatterplot()
+  8. sns.violinplot() #박스플롯에 밀도 함수를 더한 그래프
+  9. subplots
+      ```python
+         #기본적으로 plt와 동일하지만 그래프 그릴때 plt는 축에 접근하여 그리고 sns는 sns에 접근하여 그린다는 차이점만 있다.
+      
+         fig, ax = plt.subplots(nrows = 2, ncols = 2, figsize = (15, 10))
+
+         sns.barplot(data = DF, x = 'Grade', y = 'Age',
+                     hue = 'Gender', ci = None, ax = ax[0, 0])
+
+         sns.histplot(data = DF, x = 'Weight',
+                     bins = 6, alpha = 0.3, ax = ax[0, 1])
+
+         sns.boxplot(data = DF, x = 'BloodType', y = 'Height',
+                     order = ['A', 'B', 'O', 'AB'], ax = ax[1, 0])
+
+         sns.scatterplot(data = DF, x = 'Height', y = 'Weight', 
+                        hue = 'Grade', style = 'BloodType', s = 50, ax = ax[1, 1])
+
+         ax[0, 0].legend(labels = ['Male','Female'], loc = 'upper left', title = 'Gender')
+
+         ax[0, 0].set_title('Bar Plot')
+         ax[0, 1].set_title('Histogram')
+         ax[1, 0].set_title('Box Plot')
+         ax[1, 1].set_title('Scatter Plot')
+
+         ax[0, 0].set_xlabel('Grade')
+         ax[0, 1].set_xlabel('Weight')
+         ax[1, 0].set_xlabel('Blood Type')
+         ax[1, 1].set_xlabel('Height')
+
+         ax[0, 0].set_ylabel('Age Mean')
+         ax[0, 1].set_ylabel('Frequency')
+         ax[1, 0].set_ylabel('Height')
+         ax[1, 1].set_ylabel('Weight')
+
+         plt.show()
+      ```
+
+
 
 <br><br><br>
 
 [참고] <br>
-[통계교육원 통계 학습 사이트](https://sti.kostat.go.kr/coresti/site/main.do)
+[통계교육원 통계 학습 사이트](https://sti.kostat.go.kr/coresti/site/main.do) <br>
+[시각화코드](https://www.python-graph-gallery.com/)
