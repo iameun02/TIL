@@ -3,7 +3,7 @@
 
 <br>
 
-### 리눅스 명령어
+#### 리눅스 명령어
 ```python
 !ls - l  #해당위치에서의 디렉토리 확인
 !lscpu #할당된 CPU 확인
@@ -17,8 +17,8 @@
 !pip install
 ```
 
-## Data Analytics and Visualization
-### 1. Data Type and Operations
+## <b>Data Analytics and Visualization</b>
+### <b>1. Data Type and Operations</b>
 
 1. Data Type
  - NUMERIC
@@ -52,7 +52,7 @@
 
 <br><br>
 
-### 2. Data Structure
+### <b>2. Data Structure</b>
 Python의 기존함수만으로는 연산이 복잡해질 수 있는데, <br> Numpy 또는 Pandas 라이브러리를 통해 쉽게 연산 할 수 있다. <br>
 예를들면, 두 리스트끼리 List + List 연산을 수행할 때 <br>
 np.array 또는 pd.DataFrame를 활용하면
@@ -70,18 +70,18 @@ print(D2)
 ```
 <br><br>
 
-### 3. Function and Module
+### <b>3. Function and Module</b>
 
-<b>0. Computer Architecture </b>
+0. Computer Architecture 
   - CPU  (연산담당): 프로세서 안에 여러개의 CPU 존재
   - CPU는 메모리 (RAM) 에만 접근가능 <br>
   - DISK에는 직접 접근이 불가
   - 기본적으로 프로그램 (파이썬 등) 은 디스크에 저장되어 있다가 (이 상태에서는 'program' 이라고 부른다.) 실행을 (execute) 시켜서 메모리에 올려 사용하고, 이 상태를 'process'라고 부른다. 
   - OS도 마찬가지로 기본적으로 SSD(디스크)에 저장되어 있지만, memory에 올려 사용되고 이 작업을 '부팅'이라고 한다.
   - 스토리지 (디스크 +SSD + 외장 등등)
-  <br>
+  <br><br>
 
-<b>1. Function, Module and Package</b>
+1. Function, Module and Package
    
 
  - Function : 파이썬 실행시 , 함께 메모리에 올라 와 있는 함수
@@ -121,7 +121,7 @@ print(D2)
 
 
 <br><br>
-### 4. Class and Package
+### <b>4. Class and Package</b>
 - Class : 기본적으로 독립적 메모리 공간 지정하며, 함수와 변수를 하나의 객체로 관리한다. <br>
   
    |종류|내용|
@@ -134,10 +134,11 @@ print(D2)
   
 
    - 기본적으로는 함수를 담을수도 있고 변수를 담을 수도 있다는 점에서 Module과 비슷
-   - 하지만, 모듈은 디스크에 파일 시스템 구조의 형태로 저장되어 호출하여 사용되고, 클래스는 메모리공간에 올려 바로 생성 할수도 있다는  차이점이 있다. ```클래스를 모듈로 만들수도 있고, 패키지로 만들수도 있다.```
+   - 하지만, 모듈은 디스크에 파일 시스템 구조의 형태로 저장되어 호출하여 사용되고, 클래스는 메모리공간에 올려 바로 생성 할수도 있다는  차이점이 있다. ```클래스는 모듈로 만들수도 있고, 패키지로 만들수도 있다.```
    - 클래스는 메모리에 direct로 선언 및 생성이 가능하지만, 직접적인 사용은 불가하다. 
    - 클래스를 사용하려면 Instance를 생성하여 사용하여야된다.
-
+   - 	Class로 생성된 Object(객체) 자신을 참조하는 매개변수
+self를 사용하여 Class Member에 접근 (self: 첫 번째 매개변수 self는 Class로 생성한 Instance 자체를 지정) <br>
    - <b>클래스의 장점</b>
   
       - 클래스 기반으로 새로운 메모리영역을 할당하고 독립적으로 기능을 가지고 다르게 동작시킬 수 있다 (오버라이딩) , <br> <br>하나의 클래스를 각각 인스턴스를 생성하여 여러개 동작 구현이 가능 (그렇지 않고는 함수를 각각 여러가지를 만들어야한다.) <br><br>
@@ -161,7 +162,7 @@ From import 로 특정 함수를 가져옴
      - Package_Name.Module_Name
      - from Package_Name.Module_Name import Function_Name
   <br>
-  
+
    - 코랩에서 Package 만들기
       * Colab에 디렉토리 생성
       * 'myPackage' 디렉토리 내에 생성
@@ -173,7 +174,7 @@ From import 로 특정 함수를 가져옴
 
 
 <br><br>
-### 5. Numpy and Pandas
+### <b>5. Numpy and Pandas</b>
 1. Numpy
    1. 행렬 에서의 '차원' = 딥러닝에서 'Rank'
    2. 앞으로 array는 배열보다는 matrix (행렬)의 개념으로 이해하기
@@ -187,7 +188,7 @@ From import 로 특정 함수를 가져옴
 
 <br><br><br>
 
-## Data Preprocessing
+## <b>Data Preprocessing</b>
 1. 결측치
    1. 확인
       - 막대그래프
@@ -201,14 +202,16 @@ From import 로 특정 함수를 가져옴
        msno.matrix(df, figsize = (15,7), color = (0.2, 0.2, 0.8))
       ```
   2. 삭제
-     - 300개 이하 측정값(Non-Null)이 있는 열(Column) 삭제 <br> 
+     - 300개 이하 측정값(Non-Null)이 있는 ```열(Column)``` 삭제 <br> 
       ```.dropna(thresh = 300, axis = 1)```
 
-      - 'age'행(Column) 기준으로 결측치가 있는 행(Row) 삭제 <br>
+      - 'age'행(Column) 기준으로 결측치가 있는 ```행(Row)``` 삭제 <br>
      ```.dropna(subset = ['age'], how = 'any', axis = 0)``` <br>
      how = 'all' : 모든 값이 결측치인 경우 삭제
 
 2. pivot_table
+
+
 3. multi index
    
 <br><br><br>
