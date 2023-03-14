@@ -209,11 +209,52 @@ From import 로 특정 함수를 가져옴
      ```.dropna(subset = ['age'], how = 'any', axis = 0)``` <br>
      how = 'all' : 모든 값이 결측치인 경우 삭제
 
-2. pivot_table
+2. groupby 결과 filtering 하기
+   ```python
+   grouped.filter(lambda x : len(x) >= 200).head()
+   ```
 
 
 3. multi index
    
+ - pv을 여러개의 index,column 으로  agg (집계)하면 Multi- index가 생성됨 (헤더가 다층) 
+ - .xs( ): Cross Section을 이용하여 접근
+[pv table 만들기]
+   ```python
+   #df는 타이타닉데이터
+   PV = pd.pivot_table(df,
+                        index = ['class', 'sex'],
+                        columns = 'survived',
+                        values = ['age','fare'],
+                        aggfunc = {'age' : ['mean', 'std'], 'fare' : ['min', 'max']})
+
+   ```
+   [행 멀티인덱스]
+   ```python
+   PV.index 
+
+   PV.xs('First', level = 'class', axis = 0) 
+   PV.xs('male', level = 'sex', axis = 0)
+   PV.xs(('First', 'male'), level = ['class', 'sex'], axis = 0)
+   ```
+
+   [열 멀티인덱스]
+   ```python
+   PV.columns 
+
+   PV.xs(('fare', 'min'), level = ['Header', 'Fuction'], axis = 1)
+
+   PV.xs(('age', 'mean', 'Dead'), level = ['Header', 'Fuction', 'Survived'], axis = 1)
+
+   #헤더명칭 생성
+   PV.columns.set_names(['Header', 'Fuction', 'Survived'], inplace = True)
+
+   #특정 레벨로 접근하여 컬럼명 바꾸기 (Survived 0,1을변경)
+   PV.columns.set_levels(['Dead', 'Alive'], level = 2, inplace = True)
+
+   ```
+
 <br><br><br>
+
 [참고] <br>
 [통계교육원 통계 학습 사이트](https://sti.kostat.go.kr/coresti/site/main.do)
