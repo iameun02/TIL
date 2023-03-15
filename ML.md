@@ -18,6 +18,8 @@
 ```
 
 ## <b>Data Analytics and Visualization</b>
+- Data: 과거 행동의 결과
+- Analysis : 데이터 기반으로 특징을 파악
 ### <b>1. Data Type and Operations</b>
 
 1. Data Type
@@ -522,6 +524,56 @@ From import 로 특정 함수를 가져옴
 
          plt.show()
       ```
+
+<br><br><br>
+
+
+## <b>Machine Learning</b>
+- Machine : 수학의 함수식 (y= ax+b 등)
+- Learning : 함수식의 a 와 b가 바뀌어져 가는 과정 (학습의 대상 :  기울기, 절편 즉, parameters)
+- Machine Learning : 함수의 파라미터값을 바꿔가며 학습하는 방법 <br>
+현실의 다양한 문제를 수잡업에 의한 프로그래밍으로 모두 대응하기 어렵기 때문에 지속적으로 학습하여 최적의 값을 찾아내는 것
+
+- Model : 학습이 끝난 상태
+### <b>1. Artificial Intelligence</b>
+
+
+과거 행동의 결과의 특징을 분석하여 (사람보다 더 좋은)
+의사결정을 하는 과정을 자동화 하는 것
+
+
+지능은 지식이 아닌 학습 
+과거에는 지능을 직접 만들어서 학습 시키는 방식으로 접근했다면(지식계층은 파레토법칙에 의하여 20:80 (형식지, 암묵지) 비율로 암묵지 영역이 지배적이어서 한계가 존재), 
+현재는 데이터를 입력시켜 지능이 생성되게끔 유도 <br>
+
+그렇다면 어떠한 지능을 만들어 낼 것인가? <br><br>
+
+<b>Reference</b>
+1. [사물 인식](https://www.youtube.com/watch?v=4eIBisqx9_g)
+
+2. [사물 인식 및 이미지 보정](https://www.youtube.com/watch?v=igTtOA1jcik) 
+
+3. [시각장애인 주변환경 설명](https://www.youtube.com/watch?v=R2mC-NUAmMk)
+
+4. [AI Reconstructs Photos](https://www.youtube.com/watch?v=gg0F5JjKmhA)
+
+5. [Deep Fake](https://youtu.be/BFu19jLrQXc?t=35) 
+
+6. [OpenAI Solving Rubik’s Cube](https://www.youtube.com/watch?v=x4O8pojMF0w)
+7. [Amazon Go](https://www.youtube.com/watch?v=1qr6B5PeaD4) 
+
+8. [ZOZOSUIT](https://www.youtube.com/watch?v=uoR2Do5JW7Y)
+
+9. [Jins](https://www.youtube.com/watch?v=uNY1NcGEBDs)
+
+10. [Autodraw](www.autodraw.com)
+
+11. [Amazon Alexa](https://news.kbs.co.kr/news/view.do?ncd=3411746)
+
+<br><br>
+
+### <b>2. Machine Learning</b>
+
 
 
 
