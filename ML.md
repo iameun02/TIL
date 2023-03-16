@@ -90,6 +90,7 @@ print(D2)
     - 내장함수 :  파이썬이 실행될 때 기본적으로 함께 메모리에 올라와 있는 내용
     - 사용자 정의 함수 : def 명령어를 통해 메모리 특정공간에 바로 파이썬에 함수를 할당한 다음 cpu가 접근해서 연산 (디스크에 저장 X) <br>
   <br>
+ 
  -  Module : 파이썬이 실행되었지만, 메모리에 올라와 있지 않은 함수 
      - Module : 사용자 정의 함수를 포함하고 있는 파이썬 스크립트(*.py) 의 파일형태로 되어있다. 
      - Module을 메모리에 올려 사용하기 위해서는 import 한다.
@@ -177,6 +178,7 @@ From import 로 특정 함수를 가져옴
 
 <br><br>
 ### <b>5. Numpy and Pandas</b>
+
 1. Numpy
    1. 행렬 에서의 '차원' = 딥러닝에서 'Rank'
    2. 앞으로 array는 배열보다는 matrix (행렬)의 개념으로 이해하기
@@ -204,7 +206,7 @@ From import 로 특정 함수를 가져옴
        ```python
        msno.matrix(df, figsize = (15,7), color = (0.2, 0.2, 0.8))
       ```
-  1. 삭제
+   2. 삭제
      - 300개 이하 측정값(Non-Null)이 있는 ```열(Column)``` 삭제 <br> 
       ```.dropna(thresh = 300, axis = 1)```
 
@@ -213,7 +215,7 @@ From import 로 특정 함수를 가져옴
      how = 'all' : 모든 값이 결측치인 경우 삭제
 
 2. groupby
-  - groupby 객체 자체를 이용하기
+      - groupby 객체 자체를 이용하기
       ```python
       grouped_TWO = TD.groupby(['class', 'sex'])
       grouped_TWO
@@ -229,13 +231,13 @@ From import 로 특정 함수를 가져옴
          print('\n')
             
       ```
-  -  결과 filtering 하기
-      ```python
-      grouped.filter(lambda x : len(x) >= 200).head()
-      ```
+     -  결과 filtering 하기
+         ```python
+         grouped.filter(lambda x : len(x) >= 200).head()
+         ```
 
 
-1. multi index
+3. multi index
    
  - pv을 여러개의 index,column 으로  agg (집계)하면 Multi- index가 생성됨 (헤더가 다층) 
  - .xs( ): Cross Section을 이용하여 접근
@@ -274,6 +276,7 @@ From import 로 특정 함수를 가져옴
 
    ```
 <br><br><br>
+
 ### <b>7. Visualization</b>
 
 1. Pandas
@@ -293,6 +296,7 @@ From import 로 특정 함수를 가져옴
       ```
 2. Matplotlib <br>
    -  한번에 한 인자씩 그릴 수 있어서, 여러 인자를 그릴 때는 각각 작성해줘야한다. 
+  
    1. 공통
          ```python 
          plt.figure(figsize =(8,4))
