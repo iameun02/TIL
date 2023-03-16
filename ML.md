@@ -280,9 +280,9 @@ From import 로 특정 함수를 가져옴
 ### <b>7. Visualization</b>
 
 1. Pandas
-   1. .plot의 kind로 유형 결정
+   - .plot의 kind로 유형 결정
    (kind = 'line','bar','barh','hist', 'box','scatter',  'pie')
-   2. 한번에 인자를 두개 넘겨서 시각화 할수 있다. 
+   - 한번에 인자를 두개 넘겨서 시각화 할수 있다. 
       ```python
       .plot(kind = 'line', style = '-')
       .plot(kind = 'bar',  rot = 45) # 축명 기울림정도
@@ -475,59 +475,59 @@ From import 로 특정 함수를 가져옴
 
 
 3. Seaborn
-- 기본 공통 decoration 요소 및 subplot 기능은 모두 plt를 사용 <br>
+   - 기본 공통 decoration 요소 및 subplot 기능은 모두 plt를 사용 <br>
  
-  1. sns.lineplot()
-  2. sns.barplot()
-  3. sns.countplot() : 빈도분석 #별도 value_count 필요없음 #sns에서 hue 기능 사용 가능 # 가로/세로 바꿀때는 x,y 데이터만 바꿔주면 된다 (별도 그래프 변경 필요 없음)
-  4. sns.histplot()
-  5. sns.distplot()
-  6. sns.boxplot() #matplot보다 훨씬 간단
-      plt.figure(figsize = (10, 7))
-      sns.boxplot(data = DF,
-                  x = 'BloodType', 
-                  y = 'Height',
-                  order = ['A', 'B', 'O', 'AB'])
-      plt.show()
-  7. sns.scatterplot()
-  8. sns.violinplot() #박스플롯에 밀도 함수를 더한 그래프
-  9. subplots
-      ```python
-         #기본적으로 plt와 동일하지만 그래프 그릴때 plt는 축에 접근하여 그리고 sns는 sns에 접근하여 그린다는 차이점만 있다.
-      
-         fig, ax = plt.subplots(nrows = 2, ncols = 2, figsize = (15, 10))
-
-         sns.barplot(data = DF, x = 'Grade', y = 'Age',
-                     hue = 'Gender', ci = None, ax = ax[0, 0])
-
-         sns.histplot(data = DF, x = 'Weight',
-                     bins = 6, alpha = 0.3, ax = ax[0, 1])
-
-         sns.boxplot(data = DF, x = 'BloodType', y = 'Height',
-                     order = ['A', 'B', 'O', 'AB'], ax = ax[1, 0])
-
-         sns.scatterplot(data = DF, x = 'Height', y = 'Weight', 
-                        hue = 'Grade', style = 'BloodType', s = 50, ax = ax[1, 1])
-
-         ax[0, 0].legend(labels = ['Male','Female'], loc = 'upper left', title = 'Gender')
-
-         ax[0, 0].set_title('Bar Plot')
-         ax[0, 1].set_title('Histogram')
-         ax[1, 0].set_title('Box Plot')
-         ax[1, 1].set_title('Scatter Plot')
-
-         ax[0, 0].set_xlabel('Grade')
-         ax[0, 1].set_xlabel('Weight')
-         ax[1, 0].set_xlabel('Blood Type')
-         ax[1, 1].set_xlabel('Height')
-
-         ax[0, 0].set_ylabel('Age Mean')
-         ax[0, 1].set_ylabel('Frequency')
-         ax[1, 0].set_ylabel('Height')
-         ax[1, 1].set_ylabel('Weight')
-
+     1. sns.lineplot()
+     2. sns.barplot()
+     3. sns.countplot() : 빈도분석 #별도 value_count 필요없음 #sns에서 hue 기능 사용 가능 # 가로/세로 바꿀때는 x,y 데이터만 바꿔주면 된다 (별도 그래프 변경 필요 없음)
+     4. sns.histplot()
+     5. sns.distplot()
+     6. sns.boxplot() #matplot보다 훨씬 간단
+         plt.figure(figsize = (10, 7))
+         sns.boxplot(data = DF,
+                     x = 'BloodType', 
+                     y = 'Height',
+                     order = ['A', 'B', 'O', 'AB'])
          plt.show()
-      ```
+     7. sns.scatterplot()
+     8. sns.violinplot() #박스플롯에 밀도 함수를 더한 그래프
+     9. subplots
+         ```python
+            #기본적으로 plt와 동일하지만 그래프 그릴때 plt는 축에 접근하여 그리고 sns는 sns에 접근하여 그린다는 차이점만 있다.
+         
+            fig, ax = plt.subplots(nrows = 2, ncols = 2, figsize = (15, 10))
+
+            sns.barplot(data = DF, x = 'Grade', y = 'Age',
+                        hue = 'Gender', ci = None, ax = ax[0, 0])
+
+            sns.histplot(data = DF, x = 'Weight',
+                        bins = 6, alpha = 0.3, ax = ax[0, 1])
+
+            sns.boxplot(data = DF, x = 'BloodType', y = 'Height',
+                        order = ['A', 'B', 'O', 'AB'], ax = ax[1, 0])
+
+            sns.scatterplot(data = DF, x = 'Height', y = 'Weight', 
+                           hue = 'Grade', style = 'BloodType', s = 50, ax = ax[1, 1])
+
+            ax[0, 0].legend(labels = ['Male','Female'], loc = 'upper left', title = 'Gender')
+
+            ax[0, 0].set_title('Bar Plot')
+            ax[0, 1].set_title('Histogram')
+            ax[1, 0].set_title('Box Plot')
+            ax[1, 1].set_title('Scatter Plot')
+
+            ax[0, 0].set_xlabel('Grade')
+            ax[0, 1].set_xlabel('Weight')
+            ax[1, 0].set_xlabel('Blood Type')
+            ax[1, 1].set_xlabel('Height')
+
+            ax[0, 0].set_ylabel('Age Mean')
+            ax[0, 1].set_ylabel('Frequency')
+            ax[1, 0].set_ylabel('Height')
+            ax[1, 1].set_ylabel('Weight')
+
+            plt.show()
+         ```
 
 <br><br><br>
 
