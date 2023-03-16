@@ -576,8 +576,8 @@ From import 로 특정 함수를 가져옴
 
 <br><br>
 
-## <b>Machine Learning</b>
-### <b>1. Gradient Decent</b>
+
+### <b>2. Gradient Decent</b>
 
  - Gradient Descent : Mean squared Error의 최소값을 찾아주는 방법
     - Gradient : 경사(미분값) :  접선의 기울기 / 순간 변화량
