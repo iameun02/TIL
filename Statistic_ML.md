@@ -190,8 +190,8 @@
     ```
 
 
- 2. [조건부확률]은 crosstab을 활용하여 푼다.
-    pd.crosstab(df['a'], df['b'])
+ 2. [조건부확률]은 crosstab을 활용하여 푼다.<br> (범주형 자료의 빈도표, 수치형 자료의 경우 상관관계 crosstab이용) <br>
+    ```pd.crosstab(df['a'], df['b'])```
 
  3. [중심극한 정리 증명]
    ```python
@@ -201,13 +201,13 @@
 
 
    avg_values = []
-   for i in range (1,10000): # 횟수를 증가시키면 정규분포로 변화
-   random_sample = random.sample(range(1, 1000),100)
-   x = np.mean(random_sample)
-   avg_values.append(x)
+   for _ in range (1,10000): # 횟수를 증가시키면 정규분포로 변화 (10000번 반복)
+      random_sample = random.sample(range(1, 1000),100) #1~1000까지 숫자를 100개 뽑아서
+      x = np.mean(random_sample) #평균 산출
+      avg_values.append(x) #평균값 저장
 
-   plt.hist(avg_values, bins = 100)
-   plt.show()
+      plt.hist(avg_values, bins = 100) #10000개의 평균값으로 분포그래프 확인
+      plt.show()
    ```
 
 <br><br>
@@ -221,7 +221,7 @@
 4. 군집추출
 
 ```Basic Code_ Random Sampling``` 
-  > 샘플 추출은 단순임의 추출이 기본이지만, groupby 를 사용하면 층화 표본추출 기능을 구현할 수 있다. ]
+  > 샘플 추출은 단순임의 추출이 기본이지만, groupby 를 사용하면 층화 표본추출 기능을 구현할 수 있다. <br>
 Sklearn - train_test_split
 df_train, df_test = train_test_split(df, test_size = 0.3, random_state = 42)
 
