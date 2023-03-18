@@ -194,21 +194,21 @@
     ```pd.crosstab(df['a'], df['b'])```
 
  3. [중심극한 정리 증명]
-   ```python
-   import matplotlib.pyplot as plt
-   import numpy as np
-   import random
+      ```python
+      import matplotlib.pyplot as plt
+      import numpy as np
+      import random
 
 
-   avg_values = []
-   for _ in range (1,10000): # 횟수를 증가시키면 정규분포로 변화 (10000번 반복)
-      random_sample = random.sample(range(1, 1000),100) #1~1000까지 숫자를 100개 뽑아서
-      x = np.mean(random_sample) #평균 산출
-      avg_values.append(x) #평균값 저장
+      avg_values = []
+      for _ in range (1,10000): # 횟수를 증가시키면 정규분포로 변화 (10000번 반복)
+         random_sample = random.sample(range(1, 1000),100) #1~1000까지 숫자를 100개 뽑아서
+         x = np.mean(random_sample) #평균 산출
+         avg_values.append(x) #평균값 저장
 
-      plt.hist(avg_values, bins = 100) #10000개의 평균값으로 분포그래프 확인
-      plt.show()
-   ```
+         plt.hist(avg_values, bins = 100) #10000개의 평균값으로 분포그래프 확인
+         plt.show()
+      ```
 
 <br><br>
 
