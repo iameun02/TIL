@@ -258,7 +258,10 @@ print(count)
 
 
   * <h3>정렬</h3>
-  > 선택정렬 : 가장 작은 데이터를 앞으로 보내는 과정을 N-1번 반복하며 정렬
+  > 선택정렬 : 가장 작은 데이터를 앞으로 보내는 과정을 N-1번 반복하며 정렬 <br>
+  >선택정렬의 시간복잡도는O(N²)로 가장 비효율적 알고리즘 <br>
+  > 최좌측부터 인덱스 하나를 찍고, 그 다음 인덱스부터 최소값을 찾아 스와이프
+
 ```python
 #예제 6-1_선택 정렬 
 
@@ -271,6 +274,22 @@ for i in range(len(array)):
         if array[min_idx] > array[j]:
             min_idx = j
     array[i], array[min_idx] = array[min_idx], array[i]
+
+print(array)
+```
+> 삽입정렬 : 삽입정렬은 기본적으로 최대 O(N²)의 시간복잡도를 갖지만,정렬이 잘되있는 상태에서는 O(N)으로 가장 효율적인 알고리즘이 될수도 있다. <br>
+> 최좌측 인덱스 +1 부터 (삽입정렬은 1부터 시작 : 0은 정렬된 상태로 인식하기 때문) 하나를 찍고,<br> 좌측에 있는 데이터를 가까운 순서부터 순회하며 해당 값 보다 큰 값이 있을 때까지 스와이프 
+```python
+# 예제 6-3_삽입정렬
+
+array = [7,5,9,0,3,1,6,2,4,8]
+
+for i in range(1, len(array)): 
+    for j in range( i, 0, -1):
+        if array[j] < array[j-1]:
+            array[j],  array[j-1] = array[j-1] ,  array[j]
+        else:
+            break
 
 print(array)
 ```
