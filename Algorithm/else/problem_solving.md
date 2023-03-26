@@ -293,6 +293,43 @@ for i in range(1, len(array)):
 
 print(array)
 ```
+> 퀵정렬 : 퀵정렬은 O(NlogN) 시간복잡도를 가진다. 정렬이 되어있을때 빠르게 동작하는 삽입정렬과는 반대로, <br>
+> 퀵정렬은 무작위로 입력되는 경우 빠르게 동작하지만 그렇지 않은 경우 최악 시간복잡도 O(N²)를 가진다. <br>
+   - 라이브러리를 이용해서 O(NlogN) 시간복잡도를 보장시켜줘야함<br>
+> 피벗을 중심으로 반으로나눠 크면 오른쪽 작으면 왼쪽으로 이동시키는 식으로 정렬한다.<br>
+> 0번 인덱스를 피벗, index+1을 left len(array)를 right로 각각 설정 후 
+> 반복문을 통해 이동시킬 데이터 즉, left는 피벗보다 큰수를, right는 피벗보다 작은 수를 찾아 서로 스와이프 시켜준다.<br>
+> 재귀함수를 통해 왼쪽, 오른쪽에서 각각 동일한 로직으로 정렬
+```python
+#예제 6-4_퀵 정렬
+array = [5,7,9,0,3,1,6,2,4,8]
+
+def quick_sort(array, start, end):
+    if start >= end :
+        return
+    pivot = start
+    left = start +1
+    right= end
+
+    while left <= right:
+        while left <= end and array[left] <= array[pivot]:
+            #pivot보다 작으면 +1를 반복하며 array 이동(pass), 크면 break
+            left += 1
+        while right > start and array[right] >= array[pivot]:
+            #pivot보다 크면 -1를 반복하며 array 이동(pass),작으면 break
+            right -=1
+        if left > right :
+            array[right], array[pivot] = array[pivot], array[right]
+        else:
+            array[left], array[right] = array[right], array[left]
+
+    quick_sort(array, start, right -1)
+    quick_sort(array, right + 1, end)
+
+
+quick_sort(array, 0 , len(array) - 1)
+print(array)
+```
 
 <br><br>
 
