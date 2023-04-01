@@ -1,7 +1,7 @@
 # Django
 > Python을 활용한 Web Framework
 
-<br>
+<br>  
 
 ### Django Process
 
@@ -62,10 +62,10 @@ def index(request):
     앱 level과 동일한 레벨에서 templates 디렉토리 생성후 > <br>프로젝트명으로 된 폴더 생성후 > html 문서 작성
  
 [예시]
-```
-	<body>
-	    <h1>hello, {{name}}</h1>
-	</body>
+```python
+<body>
+	 <h1>hello, {{name}}</h1>
+</body>
 ```
 
 ##5. 확인 <br>
