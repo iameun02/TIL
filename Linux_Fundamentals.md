@@ -9,30 +9,31 @@ OS를 여러개 올릴 수 있게 해주는 하이퍼 바이저 프로그램을 
 그위에 여러 가상 머신을 만들어 사용한다. 가상머신도 머신이기 때문에 하드웨어 리소스가 필요하다.
 
 pkg            |  pkg
-python3.9      |  python 3.8                                ==> 가상환경 별로 다른 장비처럼 활용가능
-*base          |  myEnv (사용자 가상환경)                           (virtual env) 
-
-+++++++++++++++++++++++++++
-┌──────────┐
-│    APP   │    아나콘다(Jupyter Notebook IDE) , 파이참, chrome
-└──────────┘
-┌──────────┐
-│    OS    │    [Linux] h/w제어를 위해 VM위에 ubuntu os 설치 &  ssh (putty를 통한 access가능)
-└──────────┘ 
-┌──────────┐
-│    VM    │     vm (vcpu, vmemory, vdisk, vlan)
-└──────────┘
-┌──────────┐
-│Hyperviser│   
-└──────────┘
-┌──────────┐
-│  OS      │    [window/ mac] 하드웨어 제 __logical / app 이 동작하기 위해 os가 하드웨어 리소스를 할당
-└──────────┘
-┌──────────┐
-│ HardWare │    h/w (cpu__'processor', memory___'ram', disk___'ssd') __physical
-└──────────┘
-
+python3.9      |  python 3.8                                ==> 가상환경 별로 다른 장비처럼 활용가능 <br>
+*base          |  myEnv (사용자 가상환경)                           (virtual env)  <br>
+<br>
++++++++++++++++++++++++++++ <br>
+┌──────────┐<br>
+│    APP   │    아나콘다(Jupyter Notebook IDE) , 파이참, chrome <br>
+└──────────┘<br>
+┌──────────┐<br>
+│    OS    │    [Linux] h/w제어를 위해 VM위에 ubuntu os 설치 &  ssh (putty를 통한 access가능) <br>
+└──────────┘ <br>
+┌──────────┐<br>
+│    VM    │     vm (vcpu, vmemory, vdisk, vlan)<br>
+└──────────┘<br>
+┌──────────┐<br>
+│Hyperviser│   <br>
+└──────────┘<br>
+┌──────────┐<br>
+│  OS      │    [window/ mac] 하드웨어 제 __logical / app 이 동작하기 위해 os가 하드웨어 리소스를 할당<br>
+└──────────┘<br>
+┌──────────┐<br>
+│ HardWare │    h/w (cpu__'processor', memory___'ram', disk___'ssd') __physical<br>
+└──────────┘<br>
+<br>
 * VM, OS, APP = OVA file
+<br><br>
 
 윈도우에서 vm(ubuntu) ip로는 직접적 접근이 불가하여
 hypervisor 내에서 port forwarding 역할을 담당하는 
