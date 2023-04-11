@@ -14,7 +14,7 @@ python3.9      |  python 3.8                                ==> 가상환경 별
 <br>
 +++++++++++++++++++++++++++ <br>
 ┌──────────┐<br>
-│&#160&#160&#160&#160 APP &nbsp   │    아나콘다(Jupyter Notebook IDE) , 파이참, chrome <br>
+│&#160&#160&#160&#160 APP &nbsp;   │    아나콘다(Jupyter Notebook IDE) , 파이참, chrome <br>
 └──────────┘<br>
 ┌──────────┐<br>
 │    OS    │    [Linux] h/w제어를 위해 VM위에 ubuntu os 설치 &  ssh (putty를 통한 access가능) <br>
