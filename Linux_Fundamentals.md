@@ -14,7 +14,7 @@ python3.9      |  python 3.8                                ==> 가상환경 별
 <br>
 +++++++++++++++++++++++++++ <br>
 ┌──────────┐<br>
-&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; APP &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;│    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;아나콘다(Jupyter Notebook IDE) , 파이참, chrome <br>
+&nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; APP &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; │    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;아나콘다(Jupyter Notebook IDE) , 파이참, chrome <br>
 └──────────┘<br>
 ┌──────────┐<br>
 &nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    OS&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  [Linux] h/w제어를 위해 VM위에 ubuntu os 설치 &  ssh (putty를 통한 access가능) <br>
@@ -26,7 +26,7 @@ python3.9      |  python 3.8                                ==> 가상환경 별
 &nbsp;│&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Hyperviser&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│   <br>
 └──────────┘<br>
 ┌──────────┐<br>
-&nbsp;│ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OS    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  │   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [window/ mac] 하드웨어 제 __logical / app 이 동작하기 위해 os가 하드웨어 리소스를 할당<br>
+&nbsp;│ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OS    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; │   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [window/ mac] 하드웨어 제 __logical / app 이 동작하기 위해 os가 하드웨어 리소스를 할당<br>
 └──────────┘<br>
 ┌──────────┐<br>
 &nbsp;│ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HardWare &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;│  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; h/w (cpu__'processor', memory___'ram', disk___'ssd') __physical<br>
@@ -139,41 +139,41 @@ Window는 각각 알파벳 directory별로 저장 장치마다 개별 트리구�
 esc → : 
 
 
-   1. 그냥 끝내기 (변경사항이 없을 때) <br>
+1. 그냥 끝내기 (변경사항이 없을 때) <br>
      esc → : → q
 
-   2. 저장안하고 강제로 끝내기( 변경사항이 있을 때) <br>
+2. 저장안하고 강제로 끝내기( 변경사항이 있을 때) <br>
     esc → : → q!
 
-   3. 저장하고 종료안함 <br>
+3. 저장하고 종료안함 <br>
     esc → : → w
    
-   4. 저장하고 종료 <br>
+4. 저장하고 종료 <br>
     esc → : → wq
 
 - <b>Command Mode</b><br>
  vi file경로
-  1. 커서이동 (hjkl) {또는 화살표키)
-  2. file open
-       - file명이 없으면 생성 , file명이 있으면 오픈 <br>
+1. 커서이동 (hjkl) {또는 화살표키)
+2. file open
+     - file명이 없으면 생성 , file명이 있으면 오픈 <br>
 
-  3. ^ : 커서가 위치한 라인의 시작
-  4. $ : 라인의 끝
-  5. x  : delete key 
-  6. X : backspace key
-  7. dd : line delete 
-  8. [n]G : 문서의 마지막 라인으로 이동
-  9. ctrl+g : 몇번째 라인인지 확인
-  10. dG : 전체 삭제
-  11. D: 현재위치다음부터 해당 라인전체 삭제
-  12. cw : 한단어변경 후 escape key로 나오기
-  13. c$ : 문장의 끝까지 변경 후  escape key로 나오기
-  14. 복사 (단어) yw (라인) yy
-  15. 붙여넣기 p (커서뒤) P(커서앞)
-  16. u : 실행취소 1번만 가능
-  17. U : line의 최초상태 원복
-  18. ? : 검색  + n (next_backward) | N (foreward)
-  19. / : 검색  + n (next_backward) | N (foreward)
+3. ^ : 커서가 위치한 라인의 시작
+4. $ : 라인의 끝
+5. x  : delete key 
+6. X : backspace key
+7. dd : line delete 
+8. [n]G : 문서의 마지막 라인으로 이동
+9. ctrl+g : 몇번째 라인인지 확인
+10. dG : 전체 삭제
+11. D: 현재위치다음부터 해당 라인전체 삭제
+12. cw : 한단어변경 후 escape key로 나오기
+13. c$ : 문장의 끝까지 변경 후  escape key로 나오기
+14. 복사 (단어) yw (라인) yy
+15. 붙여넣기 p (커서뒤) P(커서앞)
+16. u : 실행취소 1번만 가능
+17. U : line의 최초상태 원복
+18. ? : 검색  + n (next_backward) | N (foreward)
+19. / : 검색  + n (next_backward) | N (foreward)
 
 
 
@@ -186,13 +186,13 @@ esc → :
 
 - <b>Insert Mode</b><br>
 키보드를 통해 문자를 입력하는 모드<br>
-  1. i : 커서가 현재 있는 위치에서 입력모드
-  2. a :커서가 한칸 앞으로간다
-  3. o :밑에 줄로
+1. i : 커서가 현재 있는 위치에서 입력모드
+2. a :커서가 한칸 앞으로간다
+3. o :밑에 줄로
 
-  4. I : 커서 라인 앞에 문자 입력
-  5. A : 커서 라인끝에 문자 입력
-  6. O :윗줄에 삽입
+4. I : 커서 라인 앞에 문자 입력
+5. A : 커서 라인끝에 문자 입력
+6. O :윗줄에 삽입
 
 
   <-> esc <br>
