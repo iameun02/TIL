@@ -8,9 +8,9 @@
 OS를 여러개 올릴 수 있게 해주는 하이퍼 바이저 프로그램을 통해 
 그위에 여러 가상 머신을 만들어 사용한다. 가상머신도 머신이기 때문에 하드웨어 리소스가 필요하다.
 
-pkg            |  pkg
-python3.9      |  python 3.8                                ==> 가상환경 별로 다른 장비처럼 활용가능 <br>
-*base          |  myEnv (사용자 가상환경)                           (virtual env)  <br>
+pkg&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  |  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pkg <br> 
+python3.9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      | &nbsp;&nbsp;&nbsp;&nbsp;python 3.8   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  ==> 가상환경 별로 다른 장비처럼 활용가능 <br>
+*base &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myEnv (사용자 가상환경)             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;              (virtual env)  <br>
 <br>
 +++++++++++++++++++++++++++ <br>
 ┌──────────┐<br>
@@ -135,8 +135,8 @@ Window는 각각 알파벳 directory별로 저장 장치마다 개별 트리구�
 ## vi 편집기
 <br>
 
-- <b>Last Line mode</b> <br>
-esc → : 
+### <b>Last Line mode</b> <br>
+> esc → : 
 
 
 1. 그냥 끝내기 (변경사항이 없을 때) <br>
@@ -151,8 +151,8 @@ esc → :
 4. 저장하고 종료 <br>
     esc → : → wq
 
-- <b>Command Mode</b><br>
- vi file경로
+### <b>Command Mode</b><br>
+> vi file경로
 1. 커서이동 (hjkl) {또는 화살표키)
 2. file open
      - file명이 없으면 생성 , file명이 있으면 오픈 <br>
@@ -184,8 +184,8 @@ esc → :
 
 <br>
 
-- <b>Insert Mode</b><br>
-키보드를 통해 문자를 입력하는 모드<br>
+### <b>Insert Mode</b><br>
+> 키보드를 통해 문자를 입력하는 모드<br>
 1. i : 커서가 현재 있는 위치에서 입력모드
 2. a :커서가 한칸 앞으로간다
 3. o :밑에 줄로
