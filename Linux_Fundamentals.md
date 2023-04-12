@@ -463,7 +463,7 @@ kill -9  PID    #killed
 1. bash  - default
 2. csh
 3. tcsh
-
+등등 많으며 install 가능하다
 
 [명령어] --shell에 의해 실행됨
 ```
