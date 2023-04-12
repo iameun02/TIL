@@ -39,6 +39,8 @@ python3.9&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;      | &nbsp;&nbsp;&nbsp;&nbsp;python 3.
 hypervisor 내에서 port forwarding 역할을 담당하는 
 NatNetwork (Nat : Network Address translation) 을 활용한 네트워크 환경구성 필요
 
+윈도우에서 → 하이퍼바이저까진 접근 가능 →
+하이퍼바이저가 포트포워딩으로 우분투로 보내줌
 
 - installation : 외부에 있는 프로그램을 디스크에 위치시키는것
 - booting : os가 메모리에 올리는 것 (부트로더가 해줌)
@@ -258,10 +260,11 @@ Linux에서는 ```mkfs``` 또는 ```newfs```라고 부른다.<br>
 <br>
 
 <b>소유권 (inode정보)</b> <br>
- - 소유자
- - 소유그룹
- - other
-
+ - u : 소유자
+ - g : 소유그룹
+ - o : other
+ - a : u+g+o
+  
 <b>허가권</b> <br>
  - r (read) 
  - w (write)
@@ -277,6 +280,7 @@ Linux에서는 ```mkfs``` 또는 ```newfs```라고 부른다.<br>
 sudo useradd testusr <br>
 sudo passwd testusr <br>
 chown testusr text.txt <br>
+chown testusr:testusr testfile   ```소유주와 소유그룹을 한번에 변경 가능```
 
 <br><br>
 <b>명령어</b> <br>
@@ -290,4 +294,272 @@ ls -ld ```디렉토리 권한 확인``` <br>
 ls-d /tmp ```tmp 파일에는 others에도 rwx권한이 모두 있어 보통 이 공간에서 작업하면된다```) <br>
 
 
+
+<br>
+
+### Default Permission
+
+1) file (666) - umask(002) = 664 <br>
+  (기본)               rw-rw-rw-    <br> 
+  (After Umask)       rw-rw-r--     <br> 
+
+1) Directory (777) - umask(002) = 775 <br> 
+  (기본)               rwxrwxrwx  <br> 
+  (After Umask)       rwxrwxr-x  <br> 
+directory는 대부분 rwx중 x가 있다.<br> 
+x가 없으면 cd가 안되기 때문<br> 
+
+> umask <br> 
+보안을 위해 마스킹 처리하는 부분 <br> 
+0002  (원래 비트는 4비트로 구성되어있음, 첫번째 비트는 논외로..!)<br> 
+002 = w , 마지막 Others에 write권한 제거를 의미<br> 
+
+<br> <br> 
+
+### 8진수 변환법
+
+r w x    r w x    r w x  <br> 
+4 2 1    4 2 1    4 2 1  <br> 
+
+chmod 777 aaa
+          ugo
+
+### chmod 활용예시
+```
+chmod u-x, g+w, o-rwx aaa
+chmod 744 test.sh
+#보통은 8진수 변환법을 사용한다.
+```
+<br> <br> 
+
+### Directory Permission
+- 파일의 소유주가 파일에 대한 허가권이 없는데도, <br> 
+파일을 삭제할 수 있는데<br> 
+그 이유는 파일을 만들거나 지우거나 이동하는 권한이<br> 
+파일이 생성될(된) 디렉토리의 권한에 있기 때문이다.<br> 
+<br> 
+(but 관리자는 이와 상관없이 모두 가능하다.)<br> 
+rm -f 명령어는 허가권없이, 확인절차도 없이 삭제하는 명령어 (위험)<br> 
+
+-----------------------------------------------------------------
+## Shell Programming
+
+*참고 linux는 확장자 개념이 없다
+
+```실습
+vi test.sh
+
+pwd
+sleep5
+id
+sleep 5
+date
+
+./test.sh
+chmod 744 test.sh
+ll
+./test.sh
+```
+shell programming은 호출하는게 함수가 아닌 명령어를 순차적으로 호출하는 것 뿐이다. <br>
+기본적으로 executive permission (실행권한) 이 요구되지만, <br>
+```bash ./test.sh``` <br>
+위 명령어와 같이 쉘을 실행시키면서 동시에 쉘스크립트를 실행시키면 <br>
+강제로 실행시킬 수도 있다. <br>
+
+-----------------------------------------------------------------
+## Shell 입출력
+```ls -l /dev/pts/0 ``` <br> 
+→ 내가 할당받은 터미널 0  <br> 
+
+기본적으로 키보드로 인풋을 받고, 터미널로 아웃풋을 받게됨<br> 
+
+#0. stdin (표준입력) <br>
+#1. stdout (표준출력) <br>
+#2. stderr (표준에러출력) <br>
+
+
+### <b>redirection (입출력의 방향을 바꿔줌)</b>
+|>|2>| < | &>
+|:---:|:---:|:---:|:---:|             
+|#1|#2|#0|#1, #2|
+
+
+[정상출력] <br> 
+date > /dev/pts/1 ```date출력을 dev/pts/1 터미널로 리다이렉트시킴``` <br> 
+date > date.out ```date출력을  date.out파일로 생성시킴``` <br> 
+date >> date.out  ```파일에 내용을 누적시킴```<br> 
+
+[비정상출력-에러 :2] <br> 
+koo 2>> koo.err ```koo 입력시 발생하는 에러를 koo.err파일로 누적저장 ```<br> 
+cat koo.err<br> 
+
+
+### pipeline (|) :명령어의 실행결과를 다른 명령의 입력으로 사용되도록 하는 방법
+[파이프라인 명령어]
+1. ; <br>
+기본적으로 한줄에 한 명령어써야하는데<br>
+여러 명령어를 하려면 ; 로 명령어를 구분해서 입력하면됨<br>
+
+2. || <br>
+앞의 명령어가 실행되지 않아도 다음 명령어 실행<br>
+
+3. && <br>
+앞의 명령어가 실행되면 다음 명령어 실행<br>
+
+4. grep <br>
+특정파일이나 명령어 수행결과로 부터 특정 문자열을 검색 <br>
+해당 문자열이 포함된 라인만 화면에 출력<br>
+```cat /etc/passwd|grep ubuntu``` <br>
+
+5. wc <br>
+-c : 문자의수 <br>
+-w : 단어수  <br>
+-l : 문장의수 <br>
+*디폴트는 문장수의, 단어의수, 문자의 수  <br>
+
+활용예시
+```
+cat /etc/passwd | head -3
+cat /etc/passwd | wc
+*wc :word count
+
+cat /etc/passwd | sort
+cat /etc/passwd | cut -f1,6 -d: 
+*-d: (deliminator를 :로 지정 )
+*f1,6 (1번째와 6번째)
+```
+
+
+
+
+
+-----------------------------------------------------------------
+## 프로세스 관리
+```
+ps                 #나와 관련된 프로세스만 출력
+ps -e | wc -l      #모든 프로세스 출력
+ps -ef             #누가 뭘 실행하고 있는지
+pstree
+top : 프로세스별 CPU 등 리소스사용량 확인 (I :IDLE 작업안하고 있음)
+kill : 프로세스에 신호를 전달
+ [Signal]
+ -sigterm(15) #default signal
+ -sighup(0)
+ -sigkill(9)
+
+kill PID        #terminated
+kill -9  PID    #killed
+```
+전면에서 돌고 있는 프로세스는 정리하고 싶을때 ctrl +C 로 취소 시키면 되지만,<br>
+백그라운드에서 실행되고 있을 시 kill로 프로세스를 죽일수 있다. 
+
+-----------------------------------------------------------------
+## shell
+
+<br>
+
+리눅스(커널)과 사용자의 인터페이스 역할 (명령어 인터프리터) <br>
+종류
+1. bash  - default
+2. csh
+3. tcsh
+
+
+[명령어] --shell에 의해 실행됨
+```
+ps
+sh
+vi
+ls
+```
+<br><br>
+
+### <b> Shell Process Life Cycle </b>
+
+(ps -f) 명령어 입력시 
+
+fork() 라는 system call 발생 (fork() : 똑같이 생긴 쉘을 복사, pid도 동일함) <br>
+exec() 라는 시스템 콜이 발생하면서 포크된 쉘의 code가 명령어로 변경됨 <br>
+exit()시스템 콜이 발생 <br>
+본 shell은 그동안 sleep 상태에 있다가 exit콜이 발생시 전면에 다시 나타남<br>
+즉, 본 shell에서 포크가 되면서 각 프로세스들이 만들어 지는 것<br>
+프로세스가 백그라운드에서 돌면 ps로 확인 가능하다 <br>
+```
+sleep 6000 & 
+# & 은 background process로 실행시키는 명령어
+```
+
+* PID : user가 실행시키고 있는 프로세스 아이디 <br>
+* PPID : 부모 프로세스 아이디 (본 shell) <br> 
+* UID : user 아이디 <br>
+
+
+<br><br>
+
+### <b> Shell 구성 </b>
+
+1) local memory (로컬) 영역 : 새로운 프로세스 영역까지는 상속되지 않음 <br>
+2) env memory (환경변수) 영역 : 새로운 프로세스 영역까지 상속<br>
+
+<br><br>
+
+### <b>System Calls</b>
+
+```applications('putty') →  shell →  system calls(aka 'API') [open, read, write, close] →  kernel ('OS') →   H/W```
+
+<br>
+user는 기본적으로 os를 통해서 디바이스를 제어 해야한다.<br>
+만약 하드디스크 내에 저장된 파일을 오픈하려면 <br>
+open() 콜이 발생 해야하고 <br>
+권한이 확인되면, read() call이 발생 해야한다. <br>
+그다음 write() , close() 등의 호출이 필요한데  <br>
+이 모두가 system calls 라 불린다. <br><br><br>
+
+
+### <b>변수선언</b>
+쉘에서도 변수 선언이 가능하다.
+```python
+koo = 9
+echo $koo
+
+# local영역은 app까지 상속이 안되기 때문에 변수도 상속안됨
+# 그래서 끝까지 상속되는 성격을 가진 환경변수로 변수를 export시켜야함
+
+var = 8
+echo $var #local 변수
+
+sh #>> fork가 exec 된 shell로 변경
+echo $var
+exit
+echo $var
+export var #환경변수로 만들어줌
+echo $var
+
+#app은 본쉘에서 포크 - execute되서 생성되기때문에
+#모두 환경변수를 만들어야 app이 생성될때 변수가 상속된다.
+
+env #환경변수확인
+set #지역변수확인 +환경변수 확인
+```
+
+<br><br><br>
+
+### <b>환경설정</b>
+
+쉘은 로그인 할 때마다 히든파일 .bashrc 을 다시 읽기 때문에 <br>
+만약 해당 파일에 path를 작성해 놓았다면 <br>
+path를 임의 변경 후 로그아웃 및 재로그인해도 path가 다시 원복 된 것을 확인 할 수 있다. <br>
+<br> 이처럼 사용자 개인의 쉘옵션을 영구적으로 적용 하려면  ~/.bashrc 에 작성 해줘야 한다.
+<br>/etc/profile 파일은 시스템 전역 쉘 변수들을 초기화 하는거라 안 건들이는 것이 좋음
+```python
+alias c=clear
+#memory에만 설정되어있음
+
+vi .bashrc
+alias c=clear
+
+source ~/.bashrc #를 실행해줘야 바로 적용됨
+#또는 source 대신 아래 명령어도 가능
+. /.bashrc
+```
 
