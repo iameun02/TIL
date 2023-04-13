@@ -563,4 +563,56 @@ source ~/.bashrc #를 실행해줘야 바로 적용됨
 #또는 source 대신 아래 명령어도 가능
 . /.bashrc
 ```
+<br><br><br>
 
+## Clouding Computing
+
+
+### 1. Local Computing  
+네트워크 없이도 자체 동작되는 기능들
+
+```[박스]``` <br>
+```CPU(연산담당)-MEMORY(IO담당)-디스크(저장담당)```
+
+<br>
+
+### 2. Server Based Computing (원격)
+
+
+```[박스]``` + 랜카드(NIC) : 네트워크를 통해 데이터를 주고받는 역할 담당
+
+
+
+local computing 에서는 app이 os에 요청을 하면 시스템콜 발생 > 하드웨어 제어 > 리턴 하는 방식이지만, 대부분은 내 하드웨어에 필요한 내용이 없기 때문에 <br>
+시스템 콜이 네트워크를 통해서 넘어가야 함 <br> 
+(Remote Procedure Call ==> 'api'라고 불름) <br>
+<br>
+우리가 요청을 하면 <br>
+네트워크를 통해 요청을 받은 서버에서 실제 컴퓨팅이 발생 하는 것 <br>
+굉장히 제한적인 형태로 하드웨어 리소스를 활용하는 것이다. <br>
+<br>
+<br>
+
+### 3. Utility Computing
+필요한 만큼 사용비용을 내는것<br>
+물리적으로 가져다 쓰지 않아도 네트워크를 활용하여 리소스 사용가능 <br>
+
+<br>
+
+### 4. Grid Computing
+여러대의 컴퓨터를 묶어서 용량 조절함<br>
+네트워크로 연결하여 컴퓨팅을 분산하는 개념<br>
+
+<br>
+
+### 5.  Clouding Computing(2006년)
+네트워크에 기반 <br>
+다만, 과거와 다르게 네트워크넘어 있는 기술적인 요소나 내용들을 몰라도 활용이 가능한 상태
+ 
+
+- cloud native computing (클라우드기반 환경) Infrastructure
+- cloud native application (클라우드 기반으로 설계된 앱) Docker_Container
+
+<br><br>
+참고 <br>
+쿠브플로우(Kubeflow)
