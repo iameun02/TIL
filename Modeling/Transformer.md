@@ -10,10 +10,12 @@
 
 
 트랜스포머 모델의 타임라인 <br>
-                                             RoBERTa   XLM-R        DeBERTa     <br>
-      transformer    ULMFIT  GPT  BERT    GPT-2   DistilBERT    GPT-3   T5    GPT-Neo  GPT-J <br>
-           ▼            ▼     ▼    ▼        ▼     ▼  ▼ ▼          ▼   ▼ ▼        ▼      ▼ <br>
-2017---------------2018---------------2019---------------2020---------------2021--------------- <br>
+```python
+                                             RoBERTa   XLM-R        DeBERTa     
+      transformer    ULMFIT  GPT  BERT    GPT-2   DistilBERT    GPT-3   T5    GPT-Neo  GPT-J 
+           ▼            ▼     ▼    ▼        ▼     ▼  ▼ ▼          ▼   ▼ ▼        ▼      ▼ 
+2017---------------2018---------------2019---------------2020---------------2021---------------
+```
 
 
 #### <b>Transformer Architechure</b>
