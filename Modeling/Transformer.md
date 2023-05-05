@@ -9,11 +9,11 @@
 - 트랜스포머 아키텍처와 비지도학습을 결합해 작업에 특화된 모델을 밑바닥훈련의 필요성을 제거
 
 
-트랜스포머 모델의 타임라인
-                                             RoBERTa   XLM-R        DeBERTa     
-      transformer    ULMFIT  GPT  BERT    GPT-2   DistilBERT    GPT-3   T5    GPT-Neo  GPT-J
-           ▼            ▼     ▼    ▼        ▼     ▼  ▼ ▼          ▼   ▼ ▼        ▼      ▼
-2017---------------2018---------------2019---------------2020---------------2021---------------
+트랜스포머 모델의 타임라인 <br>
+                                             RoBERTa   XLM-R        DeBERTa     <br>
+      transformer    ULMFIT  GPT  BERT    GPT-2   DistilBERT    GPT-3   T5    GPT-Neo  GPT-J <br>
+           ▼            ▼     ▼    ▼        ▼     ▼  ▼ ▼          ▼   ▼ ▼        ▼      ▼ <br>
+2017---------------2018---------------2019---------------2020---------------2021--------------- <br>
 
 
 #### <b>Transformer Architechure</b>
