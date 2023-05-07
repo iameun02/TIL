@@ -52,3 +52,12 @@
 
 1. Hub : 사전 훈련된 모델 가중치, 데이터셋, 평가지표를 위한 스크립트 등 제공
 2. Library : 코드제공
+
+<br><br>
+#### <b>Summarization</b> 
+T5 <br>
+https://github.com/AIRC-KETI/ke-t5
+https://github.com/AIRC-KETI/ke-t5-downstreams
+<br><br>
+
+BART
