@@ -60,4 +60,5 @@ https://github.com/AIRC-KETI/ke-t5 <br>
 https://github.com/AIRC-KETI/ke-t5-downstreams
 <br><br>
 
-BART
+BART <br>
+https://github.com/SKT-AI/KoBART
