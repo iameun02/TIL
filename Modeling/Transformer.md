@@ -55,6 +55,8 @@
 
 <br><br>
 #### <b>Summarization</b> 
+1. model <br>
+
 T5 <br>
 https://github.com/AIRC-KETI/ke-t5 <br>
 https://github.com/AIRC-KETI/ke-t5-downstreams
@@ -62,3 +64,9 @@ https://github.com/AIRC-KETI/ke-t5-downstreams
 
 BART <br>
 https://github.com/SKT-AI/KoBART
+
+2. Performance metric
+   
+ROUGE<br>
+BLEU<br>
+RDASS<br>
