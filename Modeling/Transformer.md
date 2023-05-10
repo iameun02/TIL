@@ -64,11 +64,12 @@ https://github.com/AIRC-KETI/ke-t5-downstreams
 
 BART <br>
 https://github.com/SKT-AI/KoBART
+<br><br>
 
-<b>Performance metric</b> 
+<b>2. Performance metric</b> 
    
    ROUGE<br>
       - Rouge1, Rouge2, Rouge-l <br>
    BLEU<br>
-      - ngram
+      - ngram <br>
    RDASS<br>
