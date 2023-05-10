@@ -54,8 +54,8 @@
 2. Library : 코드제공
 
 <br><br>
-#### <b>Summarization</b> 
-1. model <br>
+#### <b>Summarization</b> <br> 
+<b>1. model</b> <br>
 
 T5 <br>
 https://github.com/AIRC-KETI/ke-t5 <br>
@@ -65,10 +65,10 @@ https://github.com/AIRC-KETI/ke-t5-downstreams
 BART <br>
 https://github.com/SKT-AI/KoBART
 
-2. Performance metric
+<b>Performance metric</b> 
    
-ROUGE<br>
-- Rouge1, Rouge2, Rouge-l
-BLEU<br>
-- ngram
-RDASS<br>
+   ROUGE<br>
+      - Rouge1, Rouge2, Rouge-l <br>
+   BLEU<br>
+      - ngram
+   RDASS<br>
