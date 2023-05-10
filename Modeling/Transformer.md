@@ -68,5 +68,7 @@ https://github.com/SKT-AI/KoBART
 2. Performance metric
    
 ROUGE<br>
+- Rouge1, Rouge2, Rouge-l
 BLEU<br>
+- ngram
 RDASS<br>
