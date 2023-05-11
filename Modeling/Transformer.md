@@ -73,3 +73,8 @@ https://github.com/SKT-AI/KoBART
    BLEU<br>
       - ngram <br>
    RDASS<br>
+
+
+
+<b>3. Fine Tuning</b> 
+   
