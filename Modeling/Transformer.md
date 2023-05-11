@@ -1,7 +1,7 @@
 # Transformer
 
 
-#### <b>Transformer Introduction</b>
+### <b>Transformer Introduction</b>
 - 2017년 구글에서 시퀀스 모델링을 위한 새로운 신경망 아키텍처 '트랜스모퍼' 개발
 - 기계 번역 작업의 품질과 훈련 비용 면에서 RNN(순환 신경망)을 능가
 - 전이학습 방법인 ULMFiT가 매우크고 다양한 말뭉치에서 LSTM 신경망을 훈련해 <br>
@@ -11,7 +11,7 @@
 
 <br>
 
-##### <b>Transformer Timeline</b> <br>
+#### <b>Transformer Timeline</b> <br>
 ```python
                                              RoBERTa   XLM-R        DeBERTa     
       transformer    ULMFIT  GPT  BERT    GPT-2   DistilBERT    GPT-3   T5    GPT-Neo  GPT-J 
@@ -21,7 +21,7 @@
 
 <br><br>
 
-#### <b>Transformer Architechure</b>
+### <b>Transformer Architechure</b>
 1. Encoder
    - BERT - DistilBERT
    - RoBERta
@@ -45,36 +45,38 @@
    - BART
    - M2M-100
    - BigBird
+   - 
+<br><br>
 
-
-#### <b>Hugging Face</b>
+### <b>Hugging Face</b>
 매우 다양한 트랜스포머 모델에 표준화된 인터페이스를 제공하여 전이학습시 사용용이
 
 1. Hub : 사전 훈련된 모델 가중치, 데이터셋, 평가지표를 위한 스크립트 등 제공
 2. Library : 코드제공
 
 <br><br>
-#### <b>Summarization</b> <br> 
-<b>1. model</b> <br>
+### <b>Transformer_Summarization</b> <br> 
+<b>1. Representative Model</b> <br>
 
-T5 <br>
-https://github.com/AIRC-KETI/ke-t5 <br>
-https://github.com/AIRC-KETI/ke-t5-downstreams
-<br><br>
+   - T5 <br>
+   https://github.com/AIRC-KETI/ke-t5 <br>
+   https://github.com/AIRC-KETI/ke-t5-downstreams
+   <br><br>
 
-BART <br>
-https://github.com/SKT-AI/KoBART
-<br><br>
+   - BART <br>
+   https://github.com/SKT-AI/KoBART
+   
+   <br><br>
 
 <b>2. Performance metric</b> 
    
-   ROUGE<br>
+   - ROUGE<br>
       - Rouge1, Rouge2, Rouge-l <br>
-   BLEU<br>
+   - BLEU<br>
       - ngram <br>
-   RDASS<br>
+   - RDASS<br>
 
-
+<br><br>
 
 <b>3. Fine Tuning</b> 
    
