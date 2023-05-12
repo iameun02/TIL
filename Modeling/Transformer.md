@@ -45,7 +45,7 @@
    - BART
    - M2M-100
    - BigBird
-   - 
+  
 <br><br>
 
 ### <b>Hugging Face</b>
