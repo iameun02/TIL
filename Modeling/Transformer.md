@@ -69,11 +69,16 @@
    <br><br>
 
 <b>2. Performance metric</b> 
+
    
    - ROUGE<br>
+      - Recall-Oriented Understudy for Gisting Evaluation
       - Rouge1, Rouge2, Rouge-l <br>
+      -  https://velog.io/@jochedda/Rouge-Score-Text-Summarization%EC%9D%98-%ED%8F%89%EA%B0%80%EC%A7%80%ED%91%9C
    - BLEU<br>
       - ngram <br>
+      - https://ko.linux-console.net/?p=6105#gsc.tab=0
+      - http://incredible.ai/nlp/2020/02/29/BLEU/
    - RDASS<br>
 
 <br><br>
