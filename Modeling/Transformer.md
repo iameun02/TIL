@@ -86,3 +86,30 @@
 <b>3. Fine Tuning</b> <br>
 
    - https://colab.research.google.com/drive/1IHMJHPwoOvAKH7NvyzPjm9cZRSVbLeYR?usp=sharing
+
+1. Trainable Layer 확인
+
+   ```python
+
+   for name, param in model.named_parameters():
+      if param.requires_grad:
+         print(name, "is trainable")
+      else:
+         print(name, "is not trainable")
+
+   ```
+
+
+   requires_grad 속성은 파라미터가 gradient 계산에 사용되는지 여부를 나타냅니다. 만약 requires_grad가 True인 경우에는 해당 파라미터가 trainable하다는 것을 의미합니다. <br><br>
+
+2. Model Summary 확인
+- Hugging Face Transformers 라이브러리의 summary 함수
+   
+   ```python
+   from transformers import pipeline
+
+   # 모델의 요약(summary)을 확인
+   summary = pipeline('summarization', model=model, tokenizer=model.tokenizer)
+   result = summary("This is a test sentence that we want to summarize.")
+   print(result[0]['summary_text'])
+   ```
