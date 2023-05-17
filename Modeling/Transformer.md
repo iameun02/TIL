@@ -127,8 +127,11 @@
    9. 학습: DataLoader에서 배치 단위로 데이터를 가져와 모델에 입력하고, 손실 함수와 옵티마이저를 이용해 학습을 진행합니다. 
    10. 모델 저장: 학습이 끝난 모델을 저장합니다.
    ```
+4. 추가 학습 데이터셋 (기사 50개)<br>
+   https://github.com/theeluwin/sci-news-sum-kr-50
 
 <br><br>
+
 ### <b>Memo to study</b> <br> 
 
 1. torch.no_grad() <br>
@@ -136,3 +139,55 @@ PyTorch에서 제공하는 문맥 관리자(context manager)입니다. 이 문�
 with torch.no_grad(): 블록 안에서 수행되는 연산은 기울기가 계산되거나 저장되지 않습니다. 이는 모델의 평가 또는 추론 과정에서 유용하며, 계산된 기울기에 기초하여 모델의 매개변수를 업데이트할 필요가 없을 때 사용됩니다.
 코드 조각에서 제공된 내용과 관련하여, with torch.no_grad():는 각 훈련 에폭(training epoch) 이후에 평가 단계에서 사용됩니다. 이를 통해 평가 과정에서 기울기가 계산되거나 저장되지 않으며, 일반적으로 기울기는 매개변수 업데이트를 위해 훈련 단계에서만 필요합니다.
 with torch.no_grad():를 사용함으로써 기울기가 필요하지 않은 경우 불필요한 연산과 메모리 사용을 줄일 수 있습니다.
+<br><br>
+
+1. RuntimeError: CUDA error: device-side assert triggered
+CUDA kernel errors might be asynchronously reported at some other API call,so the stacktrace below might be incorrect.
+For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
+해결 방법
+
+   ```python
+   1. 문자길이 제한
+   max_length = 512  # 최대 토큰 수
+
+   # 입력 문장 길이 제한
+   if len(input_ids) > max_length:
+      input_ids = input_ids[:max_length]
+
+
+   2. 문장 압축
+   import re
+
+   # 불필요한 공백 및 구두점 제거
+   text = re.sub(r'\s+', ' ', text)  # 공백 제거
+   text = re.sub(r'[^\w\s]', '', text)  # 구두점 제거
+
+   # 단어 축약
+   # 예: "can't"를 "cannot"으로 변경
+   text = re.sub(r"can't", "cannot", text)
+
+
+   3. 문장 요약
+   from transformers import pipeline
+
+   # 문장 요약 모델 초기화
+   summarizer = pipeline("summarization")
+
+   # 입력 문장 요약
+   summary = summarizer(text, max_length=100, min_length=30, num_beams=4)
+
+
+   4. 데이터 필터링
+   min_length = 10  # 최소 문장 길이
+
+   # 데이터 필터링
+   filtered_data = [data for data in dataset if len(data) >= min_length]
+
+   5. 데이터 샘플링
+   import random
+   sample_size = 100  # 샘플 크기
+
+   # 데이터 무작위 샘플링
+   sampled_data = random.sample(dataset, sample_size)
+   ```
+
