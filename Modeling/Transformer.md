@@ -130,6 +130,17 @@
 4. 추가 학습 데이터셋 (기사 50개)<br>
    https://github.com/theeluwin/sci-news-sum-kr-50
 
+5. Fine-Tuning (BERTSUM) <br>
+   http://ki-it.com/xml/30744/30744.pdf)
+   ```python
+   1. length_penalty=2.0은 BERTSUM에서 사용되는 길이 패널티입니다. 길이 패널티는 생성된 요약의 길이를 조절하는 데 사용되는 하이퍼파라미터입니다. 길이 패널티는 생성된 요약의 길이에 대한 보상 또는 벌점을 조절하여 원하는 요약의 길이를 제어합니다. 값이 1.0보다 크면 길이가 긴 요약이 보다 높은 점수를 받게 되어 더 긴 요약이 생성될 가능성이 높아집니다. 반대로 값이 1.0보다 작으면 길이가 짧은 요약이 선호되어 더 짧은 요약이 생성될 가능성이 높아집니다.
+   2. num_beams: Beam search에서 생성되는 후보 요약의 개수를 조정하는 파라미터입니다. 더 많은 후보 요약을 생성하면 다양성이 높아지지만 실행 시간이 늘어날 수 있습니다.
+   3. max_length: 생성된 요약의 최대 길이를 제한하는 파라미터입니다. 이를 통해 원하는 요약의 길이를 조절할 수 있습니다.
+   4. min_length: 생성된 요약의 최소 길이를 제한하는 파라미터입니다. 이를 통해 너무 짧은 요약이 생성되는 것을 방지할 수 있습니다.
+   5. temperature: Softmax 샘플링에서 사용되는 온도(Temperature) 파라미터입니다. 값이 낮을수록 보수적인 샘플링이 이루어지고, 값이 높을수록 탐색적인 샘플링이 이루어집니다.
+   6. num_return_sequences: 반환되는 요약 시퀀스의 개수를 조정하는 파라미터입니다. 여러 개의 요약 시퀀스를 생성하고 선택할 수 있습니다.
+   ```
+
 <br><br>
 
 ### <b>Memo to study</b> <br> 
@@ -141,7 +152,7 @@ with torch.no_grad(): 블록 안에서 수행되는 연산은 기울기가 계�
 with torch.no_grad():를 사용함으로써 기울기가 필요하지 않은 경우 불필요한 연산과 메모리 사용을 줄일 수 있습니다.
 <br><br>
 
-1. RuntimeError: CUDA error: device-side assert triggered
+2. RuntimeError: CUDA error: device-side assert triggered
 CUDA kernel errors might be asynchronously reported at some other API call,so the stacktrace below might be incorrect.
 For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
 해결 방법
@@ -190,4 +201,25 @@ For debugging consider passing CUDA_LAUNCH_BLOCKING=1.
    # 데이터 무작위 샘플링
    sampled_data = random.sample(dataset, sample_size)
    ```
+<br><br>
 
+3. Bert vs Bart <br>
+
+   BERT 모델의 경우, 생성된 출력을 텍스트로 디코딩하기 위해 tokenizer.decode를 사용해야 합니다. 이는 BERT 모델이 단순히 인코딩된 표현을 반환하고, 이를 텍스트로 변환하는 작업은 토크나이저의 역할입니다.
+   BART 모델과 달리, BERT 모델은 디코더 스택을 가지고 있지 않으므로, 요약 또는 텍스트 생성 작업을 수행하는 데에는 추가적인 후처리 작업이 필요합니다. model.generate를 통해 생성된 출력은 토큰 ID의 시퀀스로 표현되며, 이를 tokenizer.decode를 사용하여 사람이 읽을 수 있는 텍스트로 변환합니다.
+   따라서 BERT 모델을 사용할 때는 model.generate로 생성된 출력을 tokenizer.decode를 통해 텍스트로 디코딩해야 하며, 이는 BART 모델과는 조금 다른 점입니다.
+
+   하지만 BART에서 디코딩 과정은 모델 자체에서 처리되며, 다른 모델에서와 같이 별도로 디코더에 액세스할 필요가 없습니다.
+   BART에서는 디코더가 별도의 속성이나 구성 요소로 노출되지 않습니다. 대신, 디코더 기능은 BART 모델 자체에 통합되어 있습니다. BART는 인코더-디코더 아키텍처로 구성된 시퀀스 투 시퀀스 모델이며, 인코더와 디코더가 함께 훈련됩니다. 따라서 디코더를 따로 액세스할 필요가 없습니다. BART 모델에서 디코더 구성 요소에 직접 액세스하거나 조작하려고 할 때 'decoder' 속성이 없다는 것을 나타내는 오류가 발생됩니다. BART를 사용하여 요약 생성이나 디코딩을 수행하려면 BART 모델 자체의 generate 메서드를 사용할 수 있습니다.
+
+
+4. eos_token_id <br>
+eos_token_id=1는 BERTSUM에서 사용되는 특수 토큰인 "End of Sentence" (EOS) 토큰을 나타냅니다. EOS 토큰은 요약 또는 문장의 끝을 나타내는 역할을 합니다. BERTSUM에서는 요약 생성 시 요약의 끝을 표시하기 위해 EOS 토큰을 사용합니다.
+eos_token_id=1의 값이 1인 이유는 토크나이저가 사용하는 특정 토큰 인덱스에 해당하기 때문입니다. 각 토큰은 고유한 인덱스를 가지고 있으며, 이 코드에서는 EOS 토큰의 인덱스를 1로 설정했습니다. 실제로 사용하는 토크나이저에 따라서 EOS 토큰의 인덱스는 다를 수 있습니다.
+
+
+
+
+
+
+ 
