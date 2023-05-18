@@ -164,6 +164,47 @@
    warmup_steps 값을 설정할 때는 데이터셋의 크기, 모델의 복잡성, 학습률의 스케줄 등을 고려해야 합니다. 보통 적절한 값은 총 학습 스텝 수에 비례하여 설정됩니다. 일반적으로 전체 학습 스텝의 약 10-20% 정도를 웜업 스텝으로 설정하는 것이 일반적이지만, 최적의 값은 실험과 검증을 통해 찾아내야 합니다.
    원하는 학습 속도와 모델의 안정성을 고려하여 warmup_steps 값을 설정하면 좋습니다. 값이 너무 작으면 모델이 불안정하게 학습될 수 있고, 값이 너무 크면 웜업 단계가 길어져 모델의 학습이 더디게 진행될 수 있습니다. 실험을 통해 최적의 warmup_steps 값을 찾아내어 모델의 성능을 향상시키는 것이 좋습니다.
    ```
+6. Filtering Data based on Summarized Quaility
+   ```python
+	1.	토큰 빈도 기반 필터링: 요약에서 토큰의 빈도를 분석하고, 지나치게 반복되는 토큰을 식별합니다. 최대 허용 빈도에 대한 임계값을 설정하고, 이 임계값을 초과하는 요약을 필터링합니다. 이 접근 방식은 반복되거나 중복된 정보를 포함한 요약을 제거하는 데 도움이 될 수 있습니다.
+
+	2.	N-gram 분석: ROUGE 또는 BLEU 점수만 의존하는 대신, 요약에서 N-gram(연속된 단어의 시퀀스)을 분석합니다. 지나치게 반복되는 N-gram이나 비정상적인 패턴으로 나타나는 N-gram을 찾습니다. 이러한 패턴을 가진 데이터 포인트를 제거하여 요약의 품질을 개선할 수 있습니다.
+     
+   n = n-gram의 크기, n-gram은 주어진 텍스트 내에서 연속적인 n개의 항목(토큰)으로 이루어진 시퀀스를 말합니다. n의 값을 지정함으로써 분석하고자 하는 n-gram의 길이를 조절할 수 있습니다.
+   예를 들어, n이 2로 설정된다면, bigram(두 개의 연속적인 토큰으로 이루어진 시퀀스)을 분석하는 것을 의미합니다. n이 3으로 설정된다면, trigram(세 개의 연속적인 토큰으로 이루어진 시퀀스)을 분석하는 것을 의미하며, 이와 같은 식으로 계속됩니다.
+
+   n의 선택은 데이터의 특성과 캡처하고자 하는 세부 패턴의 수준에 따라 달라집니다. 더 높은 차수의 n-gram(예: trigram 또는 4-gram)을 분석하면 더 구체적인 패턴을 포착할 수 있지만, 희소한 데이터와 일반화의 어려움을 초래할 수도 있습니다. 적합한 n의 값은 과제에 따라 다를 수 있으므로, 실험을 통해 가장 적합한 값을 찾아야 할 수 있습니다.
+
+      # Sample Code 
+      from collections import Counter
+      from nltk.util import ngrams
+
+      def filter_repeated_ngrams(summaries, n, max_allowed_freq):
+         filtered_summaries = []
+         for summary in summaries:
+            summary_ngrams = list(ngrams(summary, n))
+            ngram_freq = Counter(summary_ngrams) # Counter : 주어진 n-gram 시퀀스(summary_ngrams)의 요소들의 빈도를 계산하는 파이썬 내장 함수
+            if max(ngram_freq.values()) <= max_allowed_freq:
+                  filtered_summaries.append(summary)
+         return filtered_summaries
+
+      
+      summaries = ['This is a good summary.', 'This is a repetitive repetitive repetitive summary.', 'This is another good summary.']
+      n = 2
+      max_allowed_freq = 2
+      filtered_summaries = filter_repeated_ngrams(summaries, n, max_allowed_freq)
+      print(filtered_summaries)
+
+
+	3.	패턴 매칭: 낮은 품질의 요약을 나타내는 특정 패턴이나 정규 표현식을 정의합니다. 예를 들어, 반복되는 구문이나 문장에 일치하는 패턴을 정의할 수 있습니다. 이러한 패턴과 일치하는 데이터 포인트를 제거합니다.
+
+	4.	수동 검사: 낮은 품질의 요약이 의심되는 요약을 수동으로 검사합니다. 반복되거나 중복된 정보, 문법 오류 또는 낮은 요약 품질을 나타내는 기타 지표를 찾습니다. 이러한 관찰을 기반으로 요약을 필터링하는 데 도움이 되는 규칙이나 지침을 작성합니다.
+
+   5. https://koreascience.kr/article/JAKO201820540191674.pdf
+   ```
+
+
+
 
 <br><br>
 
@@ -243,14 +284,13 @@ eos_token_id=1의 값이 1인 이유는 토크나이저가 사용하는 특정 �
 
 
 5. scheduler = get_linear_schedule_with_warmup(optimizer, num_warmup_steps=warmup_steps, num_training_steps=max_steps) <br>
-
-
 get_linear_schedule_with_warmup 함수는 사전에 정의된 학습률 스케줄러를 반환하는 함수입니다. 
 학습률을 직접 변경하는 것이 아니라, 이 함수를 사용하여 학습률 스케줄러를 생성하고 이를 옵티마이저와 함께 사용하여 학습률을 조정합니다.
 get_linear_schedule_with_warmup 함수는 optimizer, num_warmup_steps, num_training_steps를 인자로 받습니다. optimizer는 최적화 알고리즘으로 초기화된 모델의 옵티마이저입니다. num_warmup_steps는 워밍업 단계 수로, 학습률을 선형적으로 증가시키는 단계의 수를 나타냅니다. num_training_steps는 총 학습 단계 수를 나타내며, 이는 모델을 훈련시키는 데 필요한 전체 배치의 수를 의미합니다. <br>
-get_linear_schedule_with_warmup 함수가 반환하는 학습률 스케줄러를 사용하면, 옵티마이저의 학습률은 워밍업 단계에서 선형적으로 증가한 후, 훈련 단계에서 선형적으로 감소합니다. 따라서, 학습률을 조정하기 위해서는 num_warmup_steps와 num_training_steps를 적절하게 설정해주어야 합니다. 이를 통해 원하는 학습률 스케줄을 구현할 수 있습니다.
-<br>
+get_linear_schedule_with_warmup 함수가 반환하는 학습률 스케줄러를 사용하면, 옵티마이저의 학습률은 워밍업 단계에서 선형적으로 증가한 후, 훈련 단계에서 선형적으로 감소합니다. 따라서, 학습률을 조정하기 위해서는 num_warmup_steps와 num_training_steps를 적절하게 설정해주어야 합니다. 이를 통해 원하는 학습률 스케줄을 구현할 수 있습니다.<br>
 get_linear_schedule_with_warmup 함수에서 초기 학습률은 옵티마이저를 초기화할 때 설정한 학습률입니다. get_linear_schedule_with_warmup 함수는 지정된 워밍업 단계와 훈련 단계에 따라 자동으로 학습률을 조절합니다.
 워밍업 단계에서 학습률은 초기 학습률에서 시작하여 지정된 워밍업 단계 수만큼 선형적으로 증가합니다. 워밍업 단계 이후에는 학습률은 선형적으로 감소하며 남은 훈련 단계에 비례합니다.
 따라서, 시작 학습률은 설정한 초기 학습률이며, 워밍업 단계와 훈련 단계에 따라 조정되어 원하는 학습률 스케줄을 달성하게 됩니다.
+
+<br><br>
 
