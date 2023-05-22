@@ -89,6 +89,8 @@
       -  https://velog.io/@jochedda/Rouge-Score-Text-Summarization%EC%9D%98-%ED%8F%89%EA%B0%80%EC%A7%80%ED%91%9C
    - BLEU<br>
       - ngram <br>
+      - Individual N-Gram Scores
+        ß
       - https://ko.linux-console.net/?p=6105#gsc.tab=0
       - http://incredible.ai/nlp/2020/02/29/BLEU/
    - RDASS<br>
@@ -317,7 +319,6 @@ get_linear_schedule_with_warmup 함수에서 초기 학습률은 옵티마이저
 <br><br>
 
 
-
 6. '#' of head <br>
 
    "# of heads"라는 용어는 모델의 헤드 개수를 일반적으로 나타냅니다.
@@ -338,3 +339,5 @@ get_linear_schedule_with_warmup 함수에서 초기 학습률은 옵티마이저
    모델의 "hidden_dim"은 일반적으로 각 레이어의 표현(representation)의 차원을 나타냅니다. 이는 모델이 내부적으로 사용하는 숨겨진 상태, 임베딩, 또는 특성 벡터의 차원을 결정합니다.
    "hidden_dim"의 크기는 모델의 용량과 표현 능력을 결정하는 중요한 요소입니다. 더 큰 "hidden_dim"은 모델이 더 복잡한 패턴과 표현을 학습할 수 있는 능력을 높일 수 있습니다. 그러나 큰 "hidden_dim"은 더 많은 파라미터와 계산 비용을 필요로하므로 모델의 훈련과 실행에 더 많은 리소스가 필요합니다.
    "hidden_dim"의 선택은 모델 설계 및 문제의 복잡성에 따라 달라질 수 있습니다. 적절한 "hidden_dim"을 선택하는 것은 모델의 표현 능력과 계산 효율성 사이의 균형을 유지하는 데 중요합니다.
+
+
