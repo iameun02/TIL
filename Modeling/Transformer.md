@@ -90,7 +90,10 @@
    - BLEU<br>
       - ngram <br>
       - Individual N-Gram Scores
-        ß
+           - 1-gram BLEU : weights=(1, 0, 0, 0)
+           - 2-gram BLEU : weights=(0, 1, 0, 0)
+           - 3-gram BLEU : weights=(0, 0, 1, 0)
+           - 4-gram BLEU : weights=(0, 0, 0, 1)
       - https://ko.linux-console.net/?p=6105#gsc.tab=0
       - http://incredible.ai/nlp/2020/02/29/BLEU/
    - RDASS<br>
