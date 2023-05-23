@@ -19,7 +19,7 @@
 2017---------------2018---------------2019---------------2020---------------2021---------------
 ```
 [한국어 언어모델 timeline](https://www.letr.ai/blog/tech-20221124)
-
+[한국어 언어모델 모델크기](https://github.com/deepseasw/nlp_model_list)
 <br><br>
 
 ### <b>Transformer Architechure</b>
@@ -61,11 +61,14 @@
 
    - T5 <br>
    https://github.com/AIRC-KETI/ke-t5 <br>
-   https://github.com/AIRC-KETI/ke-t5-downstreams
+   https://github.com/AIRC-KETI/ke-t5-downstreams <br>
+   https://huggingface.co/KETI-AIR-Downstream/long-ke-t5-base-summarization (pytorch호환모델)
    <br><br>
 
    - BART <br>
    https://github.com/SKT-AI/KoBART
+   https://huggingface.co/spaces/gogamza/kobart-summarization/blob/main/app.py
+   https://github.com/seujung/KoBART-summarization
    
 
 
@@ -344,4 +347,14 @@ get_linear_schedule_with_warmup 함수에서 초기 학습률은 옵티마이저
    "hidden_dim"의 크기는 모델의 용량과 표현 능력을 결정하는 중요한 요소입니다. 더 큰 "hidden_dim"은 모델이 더 복잡한 패턴과 표현을 학습할 수 있는 능력을 높일 수 있습니다. 그러나 큰 "hidden_dim"은 더 많은 파라미터와 계산 비용을 필요로하므로 모델의 훈련과 실행에 더 많은 리소스가 필요합니다.
    "hidden_dim"의 선택은 모델 설계 및 문제의 복잡성에 따라 달라질 수 있습니다. 적절한 "hidden_dim"을 선택하는 것은 모델의 표현 능력과 계산 효율성 사이의 균형을 유지하는 데 중요합니다.
 
+<br><br>
 
+#### 기타
+
+
+추가기능 아이디어
+https://github.com/lee040118/summarization_model_serving
+
+
+파인튜닝 참고자료
+https://towardsdatascience.com/fine-tuning-the-bart-large-model-for-text-summarization-3c69e4c04582
