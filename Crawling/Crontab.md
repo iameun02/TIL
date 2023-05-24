@@ -49,3 +49,25 @@
 26 16 * * * echo -e "hello" > 세션정보
 
 26 16 * * * python3 경로/파일명.py > 세션정보
+
+
+### 참고
+
+1. 목표 경로에 패키지 설치하고 싶을떄 <br>
+    pip install beautifulsoup4 --target=/경로/ <br>
+2. 패키지 설치 위치 확인 <br> 
+   pip show beautifulsoup4 <br>
+3. python2,3 이 둘다환경에 설치되어있고, 패키지 설치시 파이썬2로 설치될 경우<br>
+   pip uninstall 패키지명으로 파이썬 2에 설치된 패키지를 다시 지우고,<br>
+   pip3으로 installation 다시설치 , 실행시에는 python3로 실행<br>
+   pip3 install beautifulsoup4<br>
+<br><br>
+
+<b>최종실행코드</b><br>
+/파이썬절대경로/python3 절대경로/파일명.py <br>
+
+
+<br><br>
+내일 확인할것
+- 1406, "Data too long for column 'writer' at row 290")
+- 데이터 삭제 코드
