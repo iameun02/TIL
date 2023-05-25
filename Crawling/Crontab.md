@@ -71,3 +71,14 @@
 내일 확인할것
 - 1406, "Data too long for column 'writer' at row 290")
 - 데이터 삭제 코드
+<br><br>
+
+4. DB 저장 _ df.to_sql 사용
+
+    df.to_sql 각 매개변수에 대한 설명
+        •	index=False: 이 매개변수는 DataFrame의 인덱스를 데이터베이스 테이블에 별도의 열로 포함하지 않도록 합니다.
+        •	name=table_name: table_name은 데이터베이스에서 테이블에 할당할 이름을 나타냅니다.
+        •	con=engine: engine 매개변수는 데이터베이스 연결 또는 엔진 객체를 지정하여 데이터베이스에 연결하는 데 사용됩니다.
+        •	if_exists='append': 이 매개변수는 테이블이 이미 데이터베이스에 존재하는 경우 어떻게 처리할지를 결정합니다. 'append'는 테이블이 이미 존재하는 경우 새 데이터를 추가하도록 지정합니다. 'replace'는 테이블을 삭제하고 새 데이터로 새로 만들고, 'fail'은 테이블이 이미 존재하는 경우 오류를 발생시킵니다.
+        method과 chunksize 매개변수는 대용량 DataFrame 작업에 대한 최적화를 위해 사용될 수 있습니다. method='multi'는 병렬로 insert 문을 실행하도록 합니다. chunksize는 각 배치에 삽입할 행의 수를 지정합니다.
+
