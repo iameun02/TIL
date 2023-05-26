@@ -69,7 +69,9 @@
    https://github.com/SKT-AI/KoBART
    https://huggingface.co/spaces/gogamza/kobart-summarization/blob/main/app.py
    https://github.com/seujung/KoBART-summarization
-   
+   https://huggingface.co/gogamza/kobart-summarization
+   https://huggingface.co/gogamza/kobart-base-v2/blob/main/config.json  - encoder, decoder 정보 config 파일로 확인
+   https://github.com/seujung/KoBART-summarization/blob/main/train.py - downstreamed model optimizer 확인
 
 
 
@@ -321,9 +323,7 @@ get_linear_schedule_with_warmup 함수는 optimizer, num_warmup_steps, num_train
 get_linear_schedule_with_warmup 함수가 반환하는 학습률 스케줄러를 사용하면, 옵티마이저의 학습률은 워밍업 단계에서 선형적으로 증가한 후, 훈련 단계에서 선형적으로 감소합니다. 따라서, 학습률을 조정하기 위해서는 num_warmup_steps와 num_training_steps를 적절하게 설정해주어야 합니다. 이를 통해 원하는 학습률 스케줄을 구현할 수 있습니다.<br>
 get_linear_schedule_with_warmup 함수에서 초기 학습률은 옵티마이저를 초기화할 때 설정한 학습률입니다. get_linear_schedule_with_warmup 함수는 지정된 워밍업 단계와 훈련 단계에 따라 자동으로 학습률을 조절합니다.
 워밍업 단계에서 학습률은 초기 학습률에서 시작하여 지정된 워밍업 단계 수만큼 선형적으로 증가합니다. 워밍업 단계 이후에는 학습률은 선형적으로 감소하며 남은 훈련 단계에 비례합니다.
-따라서, 시작 학습률은 설정한 초기 학습률이며, 워밍업 단계와 훈련 단계에 따라 조정되어 원하는 학습률 스케줄을 달성하게 됩니다.
-
-<br><br>
+따라서, 시작 학습률은 설정한 초기 학습률이며, 워밍업 단계와 훈련 단계에 따라 조정되어 원하는 학습률 스케줄을 달성하게 됩니다.<br>
 
 
 6. '#' of head <br>
@@ -365,6 +365,23 @@ get_linear_schedule_with_warmup 함수에서 초기 학습률은 옵티마이저
    <br>
    요약하면, Adam과 AdamW의 주요 차이점은 가중치 감쇠가 최적화 과정에 어떻게 통합되는지에 있습니다. AdamW는 매개변수 업데이트에 가중치 감쇠를 명시적으로 처리하여 Adam보다 더 나은 최적화 성능을 제공할 수 있습니다, 특히 적응적 학습률 방법과 함께 가중치 감쇠를 사용하는 경우에 유용합니다.
 
+10. Optimizer
+사전 훈련된 모델은 일반적으로 최적화기(optimizer)를 포함하지 않습니다. 사전 훈련된 모델은 학습된 파라미터를 포함하고 있지만, 학습 과정에서 사용된 최적화기는 모델과 함께 저장되지 않습니다.
+사전 훈련된 모델을 세부 조정하거나 특정 작업을 위해 훈련할 때, 사용자는 별도로 최적화기를 정의하고 초기화해야 합니다. 최적화기는 훈련 과정에서 계산된 그래디언트를 기반으로 모델의 파라미터를 업데이트하는 역할을 담당합니다.
+
+	1	Adam: Adam은 AdaGrad와 RMSProp과 같은 적응형 그래디언트 알고리즘의 장점을 결합한 인기 있는 최적화기입니다. Adam은 각 매개변수의 학습률을 유지하고 그래디언트의 일차 및 이차 모멘트에 기반하여 학습률을 조정합니다.
+	2	AdamW: AdamW는 최적화 과정에서 가중치 감소(weight decay)를 포함하는 Adam의 변형입니다. 가중치 감소는 모델의 가중치를 정규화하여 과적합을 방지하는 데 도움을 줍니다.
+	3	Adafactor: Adafactor는 Transformer 모델에서 자주 사용되는 다른 최적화기입니다. Adafactor는 Adam의 적응형 방법과 SGD(확률적 경사 하강법)의 메모리 효율성을 결합하여 인자화된 이차 모멘트 추정기를 사용합니다.
+
+11. torch.optim.Adam vs transformers의 Adam
+
+   torch.optim.Adam과 transformers의 Adam은 동일하지 않습니다.
+   torch.optim.Adam은 PyTorch에서 제공하는 일반적인 목적의 내장 최적화기로, 딥 러닝 모델을 훈련하는 데 사용됩니다.
+   반면에 transformers의 Adam은 특히 자연어 처리(NLP) 작업을 위해 설계된 Adam 최적화기의 사용자 지정 구현입니다. 특히 BERT, GPT 및 Hugging Face의 transformers 라이브러리에서 제공되는 기타 모델과 같은 transformer 기반 모델을 훈련하는 데 사용됩니다.
+   두 최적화기는 Adam 알고리즘의 기본 원리를 공유하지만, 구현 세부 사항과 기능은 다를 수 있습니다. transformers의 Adam 최적화기는 NLP 작업과 transformer 아키텍처에 맞게 추가 기능과 수정 사항을 포함할 수 있습니다. 이에는 그래디언트 클리핑, 가중치 감쇠(weight decay), 학습률 스케줄 등이 포함될 수 있으며, 이러한 기능은 NLP 분야에서 흔히 사용됩니다.
+   transformers 라이브러리에서 transformer 기반 모델을 사용하는 경우, NLP 작업에 특화된 transformers의 Adam 최적화기를 사용하는 것이 좋습니다. 이를 통해 더 나은 호환성과 NLP 작업을 위해 제공되는 특별한 기능을 활용할 수 있습니다. 일반적인 NLP 영역 이외의 일반적인 딥 러닝 작업에는 torch.optim.Adam을 사용할 수 있습니다.
+
+
 
 <br><br>
 
@@ -377,3 +394,12 @@ https://github.com/lee040118/summarization_model_serving
 
 파인튜닝 참고자료
 https://towardsdatascience.com/fine-tuning-the-bart-large-model-for-text-summarization-3c69e4c04582
+
+
+
+<디비실행 명령어>
+docker start mariadb
+docker ps -a
+docker ps -a 명령어로 실행중인 목록 확인
+
+
