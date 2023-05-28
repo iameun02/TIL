@@ -409,9 +409,9 @@ https://towardsdatascience.com/fine-tuning-the-bart-large-model-for-text-summari
 
 
 
-<디비실행 명령어>
-docker start mariadb
-docker ps -a
-docker ps -a 명령어로 실행중인 목록 확인
+<디비실행 명령어> _자동실행 구현 예정 <br> 
+docker start mariadb  <br>
+docker ps -a  <br>
+docker ps -a 명령어로 실행중인 목록 확인  <br>
 
 
