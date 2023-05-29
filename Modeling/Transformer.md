@@ -249,8 +249,19 @@
    ```
 
 
+7. decoder layer 동결, encoder layer 학습
+```python
+ import torch.nn as nn
 
+# Freeze the initial layers
+for param in model.parameters():
+     param.requires_grad = False
 
+# Unfreeze specific layers or groups of layers
+for name, param in model.named_parameters():
+    if "encoder.layer" in name:
+        param.requires_grad = True
+```
 <br><br>
 
 ### <b>Memo to study</b> <br> 
