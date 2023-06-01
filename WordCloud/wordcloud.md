@@ -37,3 +37,14 @@ plt.figure(figsize = (10, 10)) # 크기 지정하기
 plt.axis('off') # 축 없애기
 #plt.imshow(img_wordcloud) # 결과 보여주기
 ```
+<br><br>
+참고사이트
+
+1. [불용어](https://www.ranks.nl/stopwords/korean)
+2. [시각화](https://docs.anychart.com/Basic_Charts/Tag_Cloud)
+
+
+<br><br>
+디비저장 정보 <br>
+[id, section, word, count, date]
+
