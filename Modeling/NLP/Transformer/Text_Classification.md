@@ -11,6 +11,8 @@ BERT모델을 훈련시키기 위해 체크포인트만 변경 <br>
 
 ### 1. Data Set
 
+트윗이 주어지면 분노(Anger), 혐오(Disgust), 두려움(Fear), 기쁨(joy), 슬픔(Sadness), 놀람(Surprise)의 여섯개 감정으로 분류하는 모델을 훈련시킴.
+
 ### 2. Text to Token
 
 ### 3. Classification Training
