@@ -50,7 +50,16 @@ print(train_ds[:5])
 train_ds[:5]
 train_ds['text'][:5]
 ```
+포멧에 따른 데이터셋 로딩 방법 <br>
 
+csv <br>
+load_dataset('csv', data_files = 'my_files.csv')
+
+text <br>
+load_dataset('text', data_files = 'my_files.txt')
+
+json <br>
+load_dataset('json', data_files = 'my_files.jsonl) 
 
 ### 2. Text to Token
 
