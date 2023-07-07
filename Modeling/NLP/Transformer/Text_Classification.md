@@ -10,7 +10,7 @@ BERT모델을 훈련시키기 위해 체크포인트만 변경 <br>
 <br><br>
 
 ### 1. Data Set
-
+#### Data Load
 트윗이 주어지면 분노(Anger), 혐오(Disgust), 두려움(Fear), 기쁨(joy), 슬픔(Sadness), 놀람(Surprise)의 여섯개 감정으로 분류하는 모델을 훈련시킴. <br>
 
 데이터 출처 : https://oreil.ly/959YT <br>
@@ -60,6 +60,18 @@ load_dataset('text', data_files = 'my_files.txt')
 
 json <br>
 load_dataset('json', data_files = 'my_files.jsonl) 
+
+```python
+#example
+dataset_url = 'https://www.dropbox.com"
+
+emotions_remote = load_dataset('csv', data_files = dataset_url,
+sep = ';', names = ['text','label'])
+```
+#### Data Preprocessing
+from Dataset to DataFrame
+```ptrhon
+```
 
 ### 2. Text to Token
 
