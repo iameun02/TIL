@@ -69,11 +69,75 @@ emotions_remote = load_dataset('csv', data_files = dataset_url,
 sep = ';', names = ['text','label'])
 ```
 #### Data Preprocessing
-from Dataset to DataFrame
-```ptrhon
-```
+1. from Dataset to DataFrame
 
-### 2. Text to Token
+    ```python
+    import pandas as pd
 
-### 3. Classification Training
+
+    emotions.set_format(type= 'pandas')
+    df = emotions['train'][:]
+    df
+    ```
+    ClassLabel 클래스 객체에는 int2str(), str2int()메서드가 있음
+    ```python
+    df['label_name'] = emotions['train'].features['label'].int2str(df['label'])
+    ```
+
+2. 클래스 분포 살펴보기 <br>
+   샘플링 전략을 사용할때는 일반적으로 훈련세트에만 사용하기 때문에
+   train/test 분할 전에는 샘플링 전략을 적용하지 않음
+   ```python
+   import matplotlib.pyplot as plt
+   df['label_name'].value_counts(ascending=True).plot.barh()
+   ```
+
+3. 트윗 길이 확인<br>
+   트랜스포머 모델은 최대 문맥길이(Maximum context size)라는 최대 입력 시퀀스 길이가 존재 <br>
+   텍스트가 모델의 문맥 크기보다 길면 잘라내야 하는데, 잘린텍스트에 중요한 정보가 있을 경우 성능에 손실이 생길 수 있음.
+    ```python
+    df['Words Per Tweet'] = df['text'].str.split().apply(len)
+    df.boxplot('Words Per Tweet', by = 'label_name' ,grid = False,
+           showfliers = False, color = 'black')
+    ```
+4. 데이터셋의 출력 포맷 초기화 <br>
+   ```python
+   emotions.reset_format()
+   ```
+
+### 2. Text to Token (정수인코딩)
+트랜스포머 모델은 원시문자열을 입력으로 받지 못하기 때문에 텍스타가 토큰화되어, 수치벡터로 인코딩필요
+토큰화 : 문자열을 기본단위로 분할하는 단계, 단어를 부분단위로 나누기 위한 최적분할은 일반적으로 말뭉치에서 학습됨. 문자토큰화와, 단어토큰화는 극단적인 토큰화 방식 중 하나. 하지만 단어같은 언어구조를 주어진 데이터내에서 학습해야한다는 큰 단점으로 문자수준의 토큰화는 거의 사용하지 않음. 대신 텍스트의 일부구조가 유지되는 단어 토큰화를 사용 <br>
+    1) 문자토큰화
+   
+    text ='Tokenizing text is a core task of NLP'
+    tokenized_text= list(text)
+    tokenized_text
+
+    token_idx = {ch : idx for idx, ch in enumerate(sorted(set(tokenized_text)))}  
+
+    input_ids = [token_idx[token] for token in tokenized_text]
+    input_ids
+    
+    2) 단어토큰화
+
+### 3. Make it Tensor and One-hot encoding
+    1) 문자토큰화
+   
+    import torch
+    import torch.nn.functional as F
+
+    input_ids= torch.tensor(input_ids)
+    input_ids
+
+    onehotencoding = F.one_hot(input_ids, num_classes= len(token_idx))
+    onehotencoding.shape
+
+    print(f'token : {tokenized_text[0]}')
+    print(f'tensor idx : {input_ids[0]}')
+    print(f'onehot encoding :  {onehotencoding[0]}')
+
+   2) 단어토큰화
+
+### 4. Classification Training
 
