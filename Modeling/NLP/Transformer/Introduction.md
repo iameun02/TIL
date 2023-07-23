@@ -442,7 +442,7 @@ M: "M"은 million(백만)을 나타냅니다. 만약 누군가가 말뭉치 크�
  
  <br>
 
-13. # of  multi head attention vs # of layers
+13. #of  multi head attention vs # of layers
 
 신경망의 문맥에서 "헤드(Head) 개수"와 "레이어(Layer) 개수"는 아키텍처의 다른 측면을 나타냅니다.
 
@@ -470,7 +470,7 @@ M: "M"은 million(백만)을 나타냅니다. 만약 누군가가 말뭉치 크�
 
 <br>
 
-14. Token Matrix (Max_length , Dimension)
+1.  Token Matrix (Max_length , Dimension)
    
 
 차원의 크기 (Dimension Size):
